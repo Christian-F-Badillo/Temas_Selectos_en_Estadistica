@@ -1,0 +1,4 @@
+- source: course_info.qmd
+  quarto-pub:
+    - id: 276d85d1-e588-46ad-b8a6-bd6a0ec31118
+      url: 'https://christian-badillo.quarto.pub/temas-selectos-estadistica-info'

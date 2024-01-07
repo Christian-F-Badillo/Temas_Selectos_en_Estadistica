@@ -1,0 +1,1427 @@
+---
+title: "Introducción"
+subtitle: "Probabilidad"
+author: "Christian F. Badillo Hernández"
+date: 01/08/24
+lang: "es"
+date-format: "D MMM YYYY"
+format:
+    revealjs:
+        incremental: true
+        scrollable: true
+        smaller: false   
+        theme: night
+        logo: images/Lab25_logo_2015.png
+        footer: "Temas Selectos en Estadística"
+        preview-links: true
+        preload-iframes: true
+        slide-number: true
+        transition: convex
+        background-transition: fade
+        transition-speed: slow
+        navigation-mode: linear
+        touch: true
+        controls: true
+        embed-resources: true
+        page-layout: custom
+        reference-location: document
+        link-external-newwindow: true
+engine: knirt
+server: shiny
+runtime: shiny
+---
+
+# Logística del curso
+
+## Evaluación 
+- Se realizarán 3 tareas que se entregarán en el Classroom del curso.
+- Para obtener el certificado es necesario entregar las tareas y tener un 80% de asistencia.
+- Se aceptan oyentes, pero deberan entregar las tareas.
+
+## Objetivos
+- Explicar la Estadística desde una visión de comparación de modelos.
+
+- Indagar y explicar los fundamentos de probabilidad y estadística a traves de la simulaciones computacionales.
+
+# Modelamiento en Estadística
+
+> "All the models are wrong, but some are useful". George Box.^[Box, George E. P. 1976. Science and statistics. *Journal of the American Statistical Association, 71 (356)*, p. 791–799, [doi:10.1080/01621459.1976.10480949](https://www-sop.inria.fr/members/Ian.Jermyn/philosophy/writings/Boxonmaths.pdf)]
+
+##
+
+![](images/Stats_benefits.jpg){width="900" height="650"}
+
+## ¿Qué es un modelo?
+- Un modelo es una ***representación*** de un sistema.
+
+- Los modelos pueden ser físicos, matemáticos, computacionales, de juguete, idealizados, etc.
+
+- Sirven como herramienta para aprender, explicar y predecir el comportamiento de un sistema.
+
+##
+
+- El debate actual en Filosofía de la Ciencia es acerca del uso de modelos y simulaciones computacionales como fuentes de conocimiento junto a los problemas epistemológicos que esto conlleva.
+
+- Los modelos son tan importantes dado que todo lo que llamamos *ciencia* se basa en ellos.
+
+##
+
+- Los modelos en estadística son representaciones de los datos que se obtienen de un fenómeno estocástico (aleatorio).
+
+- Consecuencia de esto es que todo lo que se estudia en estadística se basa en la teoría de probabilidad, la cual empezó como un estudio de los juegos de azar (principalmente dados y cartas).
+
+## Mecanismos de Generación de Datos
+
+- Antes de empezar a hacer pruebas estadísticas es necesario preguntarse: ¿Cómo se generaron los datos?
+
+- Este proceso se conoce como ***procesos de generación de datos*** (*Data Generating Process*).
+
+##
+
+- Lo que determina este proceso puede ser una función matemática, la cual se conoce como ***modelo generativo*** que describe como se combinan las variables de interés para generar los datos.
+
+- Pero también puede ser la metodología experimental o de muestreo que se utilizó para obtener los datos.
+
+##
+
+![](images/DPG.png)
+
+##
+
+![Proceso de la Inferencia Estadística. Tomada de *All of Statistics: A Concise Course in Statistical Inference*, por Wasserman, L., 2004 (p. ix), Springer.](images/dgp_2.png)
+
+## {.smaller}
+
+La ***estadística descriptiva*** se encarga de caracterizar las observaciones (datos).
+
+La ***estadística inferencial*** hace ingenieria inversa dado que infiere el proceso que genera los datos y permite generar predicciones.
+
+Algunos modelos estadísticos son:
+
+* Regresión Lineal.
+* Regresión Logística. 
+* Modelos Lineales Generalizados (t-student, ANOVA, ANCOVA, etc.).
+* Ecuaciones Estructurales.
+* K-Nearest Neighborhood.
+* Redes neuronales.
+* Transformes (chatGPT, Bingchat, etc).
+
+##
+
+::: {.r-stack}
+
+![](images/regresion.jpg){.fragment .fade-in-then-semi-out width="900" height="650"}
+
+![](images/ANOVA.jpg){.fragment .fade-right width="900" height="650"}
+
+![](images/cluster_an.png){.fragment .fade-left width="900" height="650"}
+
+![](images/SEM.png){.fragment .fade-up width="900" height="650"}
+
+![](images/ann.jpg){.fragment .fade-down width="900" height="650"}
+
+![](images/transformer_llm.png){.fragment .fade-right width="900" height="650"}
+
+:::
+
+## Modelos en Psiología
+
+::: {.r-stack}
+![](images/Book_1_models.jpg){.fragment .fade-in-then-semi-out height="550" width="500"}
+
+![](images/Book_2_models.jpg){.fragment .fade-right width="500" height="550"}
+
+![](images/Book_3_models.jpg){.fragment .fade-left width="500" height="550"}
+
+![](images/Book_4_models.jpg){.fragment .fade-up width="500" height="550"}
+
+![](images/Psi_models_social.jpg){.fragment .fade-down width="500" height="550"}
+
+![](images/Orga_ai.png){.fragment .fade-right width="500" height="550"}
+
+:::
+
+## Consideraciones
+
+* "All the models are wrong, but some are useful". George Box.
+
+* Los modelos por más complejos que sean, son inutiles si no se usan adecuadamente y prestando atención a el tipo de datos, proposito de su uso, evitar el sobreajuste, las suposiciones que hacen, etc.
+
+# Probabilidad
+
+> "How often have I said to you that when you have eliminated the impossible, whatever remains, however improbable, must be the truth?" Sherlock Holmes. ^[Sherlock Holmes, en *The Sign of the Four*, por Arthur Conan Doyle, 1890.]
+
+## Definiciones {.smaller}
+
+* La ***probabilidad*** es una medida de la incertidumbre de un fenómeno.
+
+* La ***teoría de probabilidad*** es el estudio de los fenómenos aleatorios y se basa en un conjunto de axiomas.
+
+* El ***espacio muestral*** es el conjunto de todos los posibles resultados de un fenómeno aleatorio.
+
+* Un ***evento*** es un subconjunto del espacio muestral.
+
+## Diagrama de Venn 
+
+::: {.nonincremental}
+* Un ***diagrama de Venn*** es una representación gráfica del espacio muestral y sus eventos.
+:::
+
+<center>
+<img src= "images/Venn_diagram.gif" width="900" height="600">
+</center>
+
+## Axiomas de Probabilidad {.smaller}
+
+- Sea $\Omega$ un espacio muestral, entonces una ***medida de probabilidad*** es una función $P: \Omega \rightarrow \left[ 0, 1 \right]$, que asigna a cada evento $A$ un número real $P(A)$, llamado ***probabilidad*** de $A$, que satisface los siguientes axiomas:
+
+1. $0 \leq P(A) \leq 1$ para todo evento $A$.
+
+2. $P(\Omega) = 1$.
+
+3. Si $A_1, A_2, \dots$ son eventos mutuamente excluyentes, entonces:
+$$
+\begin{align}
+&P(A_1 \cup A_2 \cup \dots) = \\ 
+&P(A_1) + P(A_2) + \dots 
+\end{align}
+$$
+
+## Interprecación Frecuentista de la Probabilidad {.smaller}
+
+* Existen dos interpretaciones de la probabilidad: la ***frecuentista*** y la ***bayesiana***.
+
+* La ***interpretación frecuentista*** define la probabilidad como la frecuencia relativa de un evento en un número infinito de repeticiones del experimento (matemáticamente es un límite).
+
+* Bajo esta interpretación se utiliza la regla de Laplace para asignar probabilidades a los eventos.
+
+## Regla de Laplace
+
+* La ***regla de Laplace*** establece que si un experimento aleatorio tiene $n$ resultados posibles, todos igualmente probables, y $m$ de estos resultados corresponden al evento $A$, entonces la probabilidad de $A$ es:
+$$
+P(A) = \frac{m}{n}
+$$
+
+## Ejemplo
+
+* Si se lanza un volado, la probabilidad de que salga cara es $P(\text{cara}) = \frac{1}{2}$.
+
+* Sin embargo, sí después de lanzar el volado 10 veces, salió cara 8 veces, la frecuencia relativa de cara es $\frac{8}{10} = 0.8$, lo cual es diferente a $\frac{1}{2}$. Pero conforme se lanzan más veces el volado, la frecuencia relativa se acerca a $\frac{1}{2}$, lo que corresponde a la regla de Laplace.
+
+## 
+
+<center>
+<img src= "images/Freq_inter_proba.gif" width="900" height="600">
+</center>
+
+## Técnicas de Conteo {.smaller}
+
+:::: {.panel-tabset}
+
+## Combinatoria
+
+* Existen eventos difíciles de contar, para ello existen diversas técnicas de conteo.
+
+* La ***combinatoria*** es la rama de las matemáticas que estudia las técnicas de conteo.
+
+* Dos factores clave para contar son: el reemplazo y el orden.
+
+* El reemplazo se refiere a si los elementos se pueden repetir o no en su selección.
+
+* El orden se refiere a si importa el orden en el que se seleccionan los elementos.
+
+## Permutación
+
+* Una ***permutación*** es una selección de $r$ elementos de un conjunto de $n$ elementos, donde el orden importa y no hay reemplazo.
+
+* El número de permutaciones de $r$ elementos de un conjunto de $n$ elementos se denota como $P(n, r)$ y se calcula como:
+$$
+P(n, r) = \frac{n!}{(n - r)!}
+$$
+
+* Donde $n! = n \cdot (n - 1) \cdot (n - 2) \cdot \ldots \cdot 2 \cdot 1$ se conoce como factorial de $n$.
+
+* Por ejemplo, si tienes una lista de reproducción con 10 canciones diferentes, la forma en que decides ordenarlas es una permutación de esas canciones y el número de permutaciones es 
+$$
+P(10, 10) = 10! = 3,628,800
+$$
+
+* En una carrera de 6 personas, el número de formas en que se puede constituir el podio es 
+$$
+P(6, 3) = \frac{6!}{3!} = 120
+$$
+
+## Combinación
+
+* Una ***combinación*** es una selección de $r$ elementos de un conjunto de $n$ elementos, donde el orden no importa y no se pueden repetir los elementos.
+
+* El número de combinaciones de $r$ elementos de un conjunto de $n$ elementos se denota como $C(n, r)$ y se calcula como:
+$$
+\begin{align}
+C(n, r) &= \frac{P(n, r)}{r!} \\
+&= \frac{n!}{r! (n - r)!}
+\end{align}
+$$
+
+* Por ejemplo, si tienes una lista de reproducción con 10 canciones diferentes, el número de formas en que puedes seleccionar 5 canciones para una lista de reproducción es 
+$$
+C(10, 5) = \frac{10!}{5! (10 - 5)!} = 252
+$$
+
+* En una carrera de 6 personas, el número de formas en que se puede seleccionar a los 3 ganadores es 
+$$
+C(6, 3) = \frac{6!}{3! (6 - 3)!} = 20
+$$
+
+* ***¿Por qué el número de combinaciones es menor que el número de permutaciones?***
+
+## Comb con Reemplazo
+
+* Una ***combinación con reemplazo*** es una selección de $r$ elementos de un conjunto de $n$ elementos, donde el orden no importa y hay reemplazo.
+
+* El número de combinaciones con reemplazo de $r$ elementos de un conjunto de $n$ elementos se denota como $C_r(n)$ y se calcula como:
+$$
+\begin{align}
+C_r(n) &= C(n + r - 1, r) \\
+&= \frac{(n + r - 1)!}{r! (n - 1)!}
+\end{align}
+$$
+
+* Por ejemplo, si tienes una lista de reproducción con 10 canciones diferentes, el número de formas en que puedes seleccionar 5 canciones para una lista de reproducción es 
+$$
+\begin{align}
+C_5(10) &= C(10 + 5 - 1, 5) \\
+&= \frac{(10 + 5 - 1)!}{5! (10 - 1)!} \\
+&= 2002
+\end{align}
+$$
+
+* Si tenemos una caja con distintos colores de bolas, 2 rojas, 3 azules y 4 verdes, el número de formas en que podemos seleccionar 2 bolas es 
+$$
+\begin{align}
+C_2(2 + 3 + 4) &= C(2 + 3 + 4 + 2 - 1, 2) \\
+&= \frac{(2 + 3 + 4 + 2 - 1)!}{2! (3 + 4)!} \\
+&= 45
+\end{align}
+$$
+
+## Perm con Reemplazo
+
+* Una ***permutación con reemplazo*** es una selección de $r$ elementos de un conjunto de $n$ elementos, donde el orden importa y hay reemplazo.
+
+* El número de permutaciones con reemplazo de $r$ elementos de un conjunto de $n$ elementos se denota como $P_r(n)$ y se calcula como:
+$$
+P_r(n) = n^r
+$$
+
+* Por ejemplo, si tienes una lista de reproducción con 10 canciones diferentes, el número de formas en que puedes seleccionar 5 canciones para una lista de reproducción es
+$$
+P_5(10) = 10^5 = 100,000
+$$
+
+* El número de formas en que se pueden ordenar las letras de la palabra "ESTADISTICA" es
+$$
+P_{10}(10) = 10^{10} = 10,000,000,000
+$$
+
+* El número de placas de automóvil que se pueden formar con 6 letras es
+$$
+P_6(26) = 26^6 = 308,915,776
+$$
+
+## Resumen
+
+| | Orden Importa | Orden No Importa |
+|:---:|:---:|:---:|
+| Con Reemplazo | $P_r(n) = n^r$ | $C_r(n) = C(n + r - 1, r)$ |
+| Sin Reemplazo | $P(n, r) = \frac{n!}{(n - r)!}$ | $C(n, r) = \frac{n!}{r! (n - r)!}$ |
+
+::::
+
+## Conteo: Ejemplos {.smaller}
+
+* Si organizamos de forma aleatoria las letras de la palabra "estadística". ***¿Cuál es la probabilidad de que la palabra "estadística" se forme?***
+
+* *Pista: No hay reemplazo y el orden importa.*
+
+* Dado que hay 10 letras y no hay reemplazo, el número de posibles palabras es $P(10, 10) = 10! = 3,628,800$. Y solo una de esas palabras es "ESTADISTICA". Por lo tanto, la probabilidad de que la palabra "ESTADISTICA" se forme es $\frac{1}{10!} = 2.76 \times 10^{-7}$.
+
+* ***Usando las mismas letras. ¿Cuál la probabilidad que una palabra formada al azar empiece con la letra "E"?***
+
+* Igualmente, tenemos $P(10, 10) = 10! = 3,628,800$ posibles palabras. Dado que ya elegimos a la letra "E" para que sea la primera letra, solo nos quedan 9 letras para elegir para la segunda posición, 8 para la tercera, etc. Por lo tanto, el número de palabras que empiezan con la letra "E" es $P(9, 9) = 9! = 362,880$. Por lo tanto, la probabilidad de que la palabra resultante empiece con la letra "E" es $\frac{9!}{10!} = 0.1$.
+
+## Conteo: Ejemplos {.smaller}
+
+* Si tenemos una caja con distintos colores de bolas: 2 rojas, 3 azules y 4 verdes. ***¿Cuál es la probabilidad de que al seleccionar 2 bolas, ambas sean rojas?***
+
+* Dado que hay 9 bolas y no hay reemplazo, el número de posibles selecciones es $C(9, 2) = \frac{9!}{2! (9 - 2)!} = 36$. Y solo una de esas selecciones es de 2 bolas rojas. Por lo tanto, la probabilidad de que al seleccionar 2 bolas, ambas sean rojas es $\frac{1}{36} = 0.0278$.
+
+* Si tenemos una baraja de poker con 52 cartas, ***¿Cuál es la probabilidad de que al seleccionar 5 cartas, todas sean de corazones?***
+
+* Dado que hay 13 cartas de corazones y no hay reemplazo, el número de posibles selecciones es $C(13, 5) = \frac{13!}{5! (13 - 5)!} = 1,287$. Y hay $C(52, 5) = \frac{52!}{5! (52 - 5)!} = 2,598,960$ posibles formas de tomar 5 cartas. Por lo tanto, la probabilidad de que al seleccionar 5 cartas, todas sean de corazones es $\frac{1,287}{2,598,960} = 0.000495$.
+
+## Probabilidad Condicional {.smaller}
+
+* La ***probabilidad condicional*** de un evento $A$ dado un evento $B$ es la probabilidad de que ocurra $A$ dado que $B$ ya ocurrió y se denota como $P(A | B)$.
+
+* La probabilidad condicional se calcula como:
+$$
+P(A | B) = \frac{P(A \cap B)}{P(B)}
+$$
+
+* Donde $P(A \cap B)$ es la probabilidad de que ocurran $A$ y $B$.
+
+## {.smaller}
+
+::: {.panel-tabset}
+## Tabla
+
+| | Ojos Azules | Ojos Cafés | Ojos Verdes | Total |
+|:---:|:---:|:---:|:---:|:---:|
+| Cabello Rubio | 0.05 | 0.1 | 0.05 |<font color='green'> 0.2 </font>|
+| Cabello Castaño | 0.1 | 0.45 | 0.05 | <font color='green'> 0.6 </font>|
+| Cabello Pelirrojo | 0.05 | 0.1 | 0.05 | <font color='green'> 0.2 </font>|
+| Total | <font color='red'> 0.2 </font>| <font color='red'> 0.65 </font>| <font color='red'> 0.15 </font>|<font color='blue'> 1.0 </font> |
+: Probabilidad de color de ojos y cabello. {#tbl-letters}
+
+## Prob 1
+::: {.nonincremental}
+* La probabilidad de que alguien tenga cabello castaño dado que tiene ojos azules es:
+$$
+\begin{align}
+&P(\text{Cabello Castaño} | \text{Ojos Azules}) = \\
+&\frac{Cabello Castaño \cap Ojos Azules}{Ojos Azules} = \\
+&\frac{0.1}{0.2} = 0.5
+\end{align}
+$$
+:::
+
+## Prob 2
+::: {.nonincremental}
+* La probabilidad de que alguien tenga ojos azules dado que tiene cabello castaño es:
+$$
+\begin{align}
+&P(\text{Ojos Azules} | \text{Cabello Castaño}) = \\
+&\frac{Ojos Azules \cap Cabello Castaño}{Cabello Castaño} = \\
+&\frac{0.1}{0.6} = 0.1667
+\end{align}
+$$
+:::
+:::
+
+## Marginalización {.smaller}
+
+* La ***marginalización*** es el proceso de calcular la probabilidad de un evento marginal (o marginalizar una variable) a partir de la probabilidad conjunta de dos eventos (o variables).
+
+* En la @tbl-letters se puede ver que la probabilidad de que alguien tenga ojos azules es $P(\text{Ojos Azules}) = 0.2$. La cual se calcula como:
+$$
+\begin{align}
+&P(\text{Ojos Azules}) = \\
+&\sum_{i=1}^{3} P(\text{Ojos Azules} \cap \text{Cabello} = i) = \\
+&0.05 + 0.1 + 0.05 = 0.2
+\end{align}
+$$
+
+## Marginalización {.smaller}
+
+* En general la probabilidad marginal de un evento $A$ se calcula como:
+$$
+P(A) = \sum_{i=1}^{n} P(A \cap B = i)
+$$
+
+* Esta misma formula se conoce como la ***ley de la probabilidad total***.
+
+* Dado que $P(A \cap B) = P(A | B) P(B)$, la ley de la probabilidad total se puede escribir como:
+$$
+P(A) = \sum_{i=1}^{n} P(A | B = i) P(B = i)
+$$
+
+* Lo cual representa una suma ponderada de las probabilidades condicionales.
+
+## Ejemplo {.smaller}
+
+* La probabilidad de que alguien tenga cabello castaño es $P(\text{Cabello Castaño}) = 0.6$. La cual se calcula como:
+$$
+\begin{align}
+&P(\text{Cabello Castaño}) = \\
+&\sum_{i=1}^{3} P(\text{Cabello Castaño} \cap \text{Ojos} = i) =  \\
+&P(\text{C. Castaño} | \text{O. Azules}) \cdot P(\text{O. Azules}) + \\
+&P(\text{C. Castaño} | \text{O. Cafés}) \cdot P(\text{O. Cafés}) + \\
+&P(\text{C. Castaño} | \text{O. Verdes}) \cdot P(\text{O. Verdes}) = \\
+&(0.5 \cdot 0.2) + (0.7 \cdot 0.65) + (0.3 \cdot 0.15) = 0.6
+\end{align}
+$$
+
+##
+
+![Ley de probabilidad total. Tomada de *Introduction to Probability*, por Blitzstein, J. K., & Hwang, J., 2019 (p. 55), CRC Press.](images/Ltp.png){width="850" height="500"}
+
+## Independencia {.smaller}
+
+* Dos eventos $A$ y $B$ son ***independientes*** si la probabilidad de que ocurra $A$ no cambia dado que $B$ ya ocurrió. Es decir, si $P(A | B) = P(A)$.
+
+* Si $A$ y $B$ son independientes, entonces $P(A \cap B) = P(A) P(B)$. La probabilidad de que ambos eventos ocurran es igual a la probabilidad de que ocurra $A$ por la probabilidad de que ocurra $B$.
+
+* Por ejemplo, si se lanzan dos monedas, la probabilidad de que la primera moneda salga cara es $P(\text{cara}) = \frac{1}{2}$. Puesto que un volado no afecta al otro la probabilidad de que ambas monedas salgan cara es $P(\text{cara} \cap \text{cara}) = \frac{1}{2} \cdot \frac{1}{2} = \frac{1}{4}$.
+
+## Interpretación Bayesiana
+
+* La ***interpretación bayesiana*** define la probabilidad como la medida de la creencia de que un evento ocurra, y es el resultado de la combinación de la evidencia  y la creencia previa.
+
+* La probabilidad bayesiana se calcula con el ***Teorema de Bayes***.
+
+## Teorema de Bayes
+
+* El ***Teorema de Bayes*** establece que si $A_1, A_2, \dots$ son eventos mutuamente excluyentes y exhaustivos, y $B$ es un evento tal que $P(B) > 0$, entonces:   
+$$
+\color{red}{P(A_i | B)} = \frac{\color{cyan}{P(A_i)} \color{yellowgreen}{P(B | A_i)}}{\color{pink}{\int_{-\infty}^{\infty} P(A_j) P(B | A_j)}}
+$$
+
+## Partes del Teorema de Bayes {.smaller}
+
+* $\color{red}{P(A_i | B)}$ es la ***posterior*** de $A_i$ dado $B$. Es la *creencia final* de que ocurra $A_i$ dado que observamos $B$. Representa la combinación de nuestro conocimiento previo y la evidencia.
+
+* $\color{cyan}{P(A_i)}$ es el ***prior*** de $A_i$. Es la creencia de que ocurra $A_i$ antes de que ocurra $B$. Representa nuestro conocimiento previo.
+
+* $\color{yellowgreen}{P(B | A_i)}$ es la ***verosimilitud*** de $B$ dado $A_i$. Es la probabilidad de que ocurra $B$ dado que $A_i$ ya ocurrió. Esta parte representa nuestro modelo generativo.
+
+* $\color{pink}{\int_{-\infty}^{\infty} P(A_j) P(B | A_j)}$ es la ***evidencia*** (veorsimilitud marginal). Es la probabilidad de que ocurra $B$. Es decir, la probabilidad de que ocurra $B$ independientemente de $A_i$. Esta parte representa la probabilidad de que ocurra $B$ bajo cualquier otro modelo generativo. Pero no es necesario calcularla dado que es una constante.
+
+## Ejemplo {.smaller}
+
+* Si tenemos una moneda justa su probabiliad de obtener cara es $P(Cara) = \frac{1}{2}$. 
+
+* Supongamos que nuestra creencia es que el volado está cargado y que la probabilidad de que salga cara es $P(\text{cara}) = 0.2$, y dado que tenemos incertidumbre podemos representar nuestra creencia acerca del sesgo de la moneda con una distribución de probabilidad.
+
+* Conforme se lanzan más veces el volado, nuestra creencia se va actualizando y a la creencia del sesgo se va acercando más a $P(Cara) = \frac{1}{2}$. 
+
+* Esta actualizaci de nuestra creencia se da cuando el prior se combina con la verosimilitud y se obtiene una posterior, y para volver a actualizar nuestra creencia el nuevo prior es la posterior anterior que se combina de nuevo con la evidencia del siguiente lanzamiento. Este proceso se conoce como ***actualización bayesiana***.
+
+* Aún no cubrimos el material necesario para formalizar esta idea pero podemos observablo por medio de una simulación.
+
+##
+
+![](images/Bayes.gif){width="900" height="600"}
+
+##
+
+![](images/Bayes_theorem_meme.png){width="900" height="600"}
+
+## 
+
+![](images/Bayes_theorem_meme_2.png){width="900" height="600"}
+
+##
+
+![](images/Bayes_theorem_meme_3.png){width="900" height="600"}
+
+##
+
+![](images/Bayes_crit.jpg){width="900" height="600"}
+
+## Canción 1
+
+{{< video https://youtu.be/lm53uqt-ln0?si=a9Mv0R7bKdXqY3Fh width="100%" height="550px" >}}
+
+##
+
+![](images/Time_out.jpg){width="900" height="600"}
+
+# Distribuciones de Probabilidad
+
+> "Probability theory is nothing but common sense reduced to calculation". Pierre-Simon Laplace.^[Laplace, Pierre-Simon. 1814. *Essai philosophique sur les probabilités*. Paris: Courcier.]
+
+## Variables Aleatorias {.smaller}
+
+* Una ***variable aleatoria*** es una función que asigna un número real entreo 0 y 1 a cada elemento del espacio muestral. Es decir, asigna una probabilidad a cada elemento del espacio muestral que puede ser distinta o igual para cada elemento.
+
+* Una variable aleatoria se puede clasificar como ***discreta*** o ***continua***.
+
+* Una variable aleatoria ***discreta*** es aquella que puede tomar un número finito o infinito contable de valores.
+
+* Una variable aleatoria ***continua*** es aquella que puede tomar un número infinito no contable de valores.
+
+* Todos los fenomenos aleatorios se pueden representar con variables aleatorias.
+
+## Ejemplos {.smaller}
+
+* El número de caras que se obtienen al lanzar un volado 10 veces es una variable aleatoria discreta. Ya que solo puede tomar valores enteros entre 0 y 10.
+
+* La altura de una persona es una variable aleatoria continua. Puede tomar cualquier valor entre $0 \ m$ y $\infty$ (en teoría).
+
+* El tiempo que tarda en llegar un autobús es una variable aleatoria continua. Puede tomar cualquier valor entre $0 \ s$ y nunca (cuando se nos hace tarde).
+
+* El número de personas que llegan a un restaurante en un día es una variable aleatoria discreta. No hay 3.5 personas.
+
+## Distribuciones de Probabilidad Discretas {.smaller}
+
+* Cuando la variable aleatoria es discreta, la forma funcional específica en que asigna probabilidades a cada valor se conoce como ***función de masa de probabilidad*** (PMF).
+
+* Todas las distribuciones de probabilidad discretas son variables aleatorias, pero sus PMF son distintas.
+
+* La PMF de una variable aleatoria discreta $X$ debe satisfacer los axiomas de probabilidad, es decir, debe ser una función que asigna un número real entre 0 y 1 a cada valor de $X$ y la suma de todas las probabilidades debe ser 1.
+
+## Distribución Bernoulli {.smaller}
+
+* La ***distribución Bernoulli*** es una distribución de probabilidad discreta que se utiliza para modelar un fenómeno que tiene dos posibles resultados: el lanzamiento de un volado, percepción de estimulos, etc.
+
+* La distribución Bernoulli se denota como $X \sim \text{Bernoulli}(p)$, donde $p$ es la probabilidad de que ocurra el evento de interés (llamado éxito).
+
+* La PMF de la distribución Bernoulli es:
+$$
+f(x) =
+\begin{cases}
+p & \text{si } x = 1 \\
+1 - p & \text{si } x = 0
+\end{cases}
+$$
+
+##
+
+```{r}
+#| panel: input
+sliderInput("p", "Probabilidad de éxito", min = 0, max = 1, value = 0.5, step = 0.01)
+```
+
+```{r}
+#| context: server
+output$bernplot <- renderPlot({
+    library(ggplot2)
+    library(ggdark)
+
+    p <- input$p
+    x <- c(0, 1)
+    y <- c(1 - p, p)
+    df <- data.frame(x, y)
+
+    ggplot(df, aes(x, y)) +
+      geom_col(fill = "blue") +
+      scale_x_continuous(breaks = c(0, 1)) +
+      scale_y_continuous(breaks = c(0, 1)) +
+      labs(x = "x", y = "f(x)") +
+      xlim(-0.5, 1.5) + ylim(0, 1) +
+      dark_theme_gray() +
+      theme(axis.text = element_text(size = 30),
+            axis.title = element_text(size = 40),
+            plot.title = element_text(size = 50))
+  })
+```
+
+```{r}
+#| panel: fill
+plotOutput("bernplot",  width = "100%", height = "590px")
+```
+
+## Distribución Uniforme Discreta {.smaller}
+
+* La ***distribución uniforme discreta*** se usa para fenómenos que tienen un número de resultados igualmente probables contables. 
+
+* El lanzamiento de un dado, decidir al azar entre varias opciones, simular numeros aleatorios, la lotería, etc.
+
+* La distribución uniforme discreta se denota como $X \sim \text{Uniforme}(a, b)$, donde $a$ y $b$ son los valores mínimo y máximo que puede tomar la variable aleatoria $X$.
+
+* La PMF de una variable aleatoria $X \sim \text{Uniforme}(a, b)$ es:
+$$
+f(x) =
+\begin{cases}
+\frac{1}{b - a + 1} & \text{si } x = a, a + 1, \dots, b \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+##
+
+```{r}
+#| panel: input
+sliderInput("a", "Valor mínimo", min = 0, max = 10, value = 0, step = 1)
+sliderInput("b", "Valor máximo", min = 0, max = 10, value = 10, step = 1)
+```
+
+```{r}
+#| context: server
+
+output$unifplot <- renderPlot({
+    library(ggplot2)
+    library(ggdark)
+
+    a <- input$a
+    b <- input$b
+    x <- seq(a, b, 1)
+    y <- rep(1 / (b - a + 1), length(x))
+    df <- data.frame(x, y)
+
+    ggplot(df, aes(x, y)) +
+      geom_col(fill = "blue") +
+      scale_x_continuous(breaks = seq(a, b, 1)) +
+      scale_y_continuous(breaks = seq(0,1, 0.1)) +
+      labs(x = "x", y = "f(x)") +
+      xlim(a - 0.5, b + 0.5) + ylim(0, 1) +
+      dark_theme_gray() +
+      theme(axis.text = element_text(size = 30),
+            axis.title = element_text(size = 40),
+            plot.title = element_text(size = 50))
+  })
+```
+
+```{r}
+#| panel: fill
+
+plotOutput("unifplot",  width = "100%", height = "590px")
+```
+
+## Distribución Binomial {.smaller}
+
+* La ***distribución binomial*** se utiliza para modelar el número de presentaciones de un evento de interés en un número fijo de repeticiones. 
+
+* El número de caras que se obtienen al lanzar un volado 10 veces, el número de personas que llegan a un restaurante en un día, etc.
+
+* La distribución binomial se denota como $X \sim \text{Binomial}(n, p)$, donde $n$ es el número de repeticiones del experimento y $p$ es la probabilidad de que ocurra el evento de interés (llamado éxito).
+
+* Su ***función de masa de probabilidad*** es:
+$$
+f(x) =
+\begin{cases}
+{n \choose x} p^x (1 - p)^{n - x} & \text{si } x = 0, 1, \dots, n \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+* Donde ${n \choose x} = \frac{n!}{x! (n - x)!}$^[La notación *x!* se conoce como factorial y se define como $n! = n \cdot (n - 1) \cdot (n - 2) \cdot \ldots \cdot 2 \cdot 1$ .] es el número de formas de obtener $x$ éxitos en $n$ repeticiones del experimento y se conoce como ***coeficiente binomial***.^[El coeficiente binomial se lee "n sobre x".]
+
+## 
+    
+```{r}
+#| panel: input
+    sliderInput("n", "Número de repeticiones", min = 1, max = 100, value = 10, step = 1)
+    sliderInput("p_bin", "Probabilidad de éxito", min = 0, max = 1, value = 0.5, step = 0.01)
+```
+
+```{r}
+#| context: server
+    output$binplot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        n <- input$n
+        p <- input$p_bin
+        x <- seq(0, n, 1)
+        y <- dbinom(x, n, p)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_col(fill = "blue") +
+          scale_x_continuous(breaks = seq(0, n, 1)) +
+          scale_y_continuous(breaks = c(0, 1)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(-0.5, n + 0.5) + ylim(0, 1) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}  
+#| panel: fill
+    plotOutput("binplot",  width = "100%", height = "590px")
+```
+
+## Distribución Geométrica {.smaller}
+
+* La ***distribución geométrica*** se utiliza para modelar el número de repeticiones necesarias para que ocurre el primer éxito.
+
+* Por ejemplo, el número de lanzamientos de un volado hasta que sale cara, el número de intentos hasta adivinar la contraseña del teléfono de tu ex, etc.
+
+* La distribución geométrica se denota como $X \sim \text{Geométrica}(p)$, donde $p$ es la probabilidad de que ocurra el evento de interés (llamado éxito).
+
+* Su PMF es:
+$$
+f(x) =
+\begin{cases}
+p (1 - p)^{x - 1} & \text{si } x = 1, 2, \dots \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+## 
+
+```{r}
+#| panel: input
+    sliderInput("p_geom", "Probabilidad de éxito", min = 0, max = 1, value = 0.5, step = 0.01)
+```
+
+```{r}
+#| context: server
+
+output$geomplot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        p <- input$p_geom
+        x <- seq(1, 20, 1)
+        y <- dgeom(x, p)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_col(fill = "blue") +
+          scale_x_continuous(breaks = seq(1, 20, 1)) +
+          scale_y_continuous(breaks = c(0, 1)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(0.5, 20.5) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}
+#| panel: fill
+    plotOutput("geomplot",  width = "100%", height = "590px")
+```
+
+## Distribución de Possion {.smaller}
+
+* La ***distribución de Possion*** es una distribución que se utiliza para modelar el número de ocurrencias de un evento de interés en un intervalo de tiempo o espacio fijo.
+
+* Por ejemplo, el número de personas que llegan a un restaurante en un día, el número de mensajes de texto que recibes en un día, el número de potenciales de acción en una neurona en un segundo, etc.
+
+* La distribución de Possion se denota como $X \sim \text{Possion}(\lambda)$, donde $\lambda$ es el número de ocurrencias promedio del evento de interés en el intervalo de tiempo o espacio fijo.
+
+* La PMF la distribución de Possion es:
+$$
+f(x) =
+\begin{cases}
+\frac{\lambda^x e^{-\lambda}}{x!} & \text{si } x = 0, 1, \dots \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+## 
+
+```{r}
+#| panel: input
+    sliderInput("lambda", "Número de ocurrencias promedio", min = 0, max = 10, value = 1, step = 0.1)
+```
+
+```{r}  
+#| context: server
+    output$possplot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        lambda <- input$lambda
+        x <- seq(0, 10, 1)
+        y <- dpois(x, lambda)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_col(fill = "blue") +
+          scale_x_continuous(breaks = seq(0, 10, 1)) +
+          scale_y_continuous(breaks = c(0, 1)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(-0.5, 10.5) + ylim(0, 0.4) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}
+#| panel: fill
+    plotOutput("possplot",  width = "100%", height = "590px")
+```
+
+## Canción 2 {.smaller}
+
+{{< video https://www.youtube.com/watch?v=ZINXFoQMZVs width="100%" height="550px" >}}
+
+## Distribuciones de Probabilidad Continuas {.smaller}
+
+* Las distribuciones de probabilidad continuas se utilizan para modelar variables que tienen un número infinito no contable de resultados. Son las más utilizadas en la práctica.
+
+* Cuando las variables aleatorias son continuas la función específica que asigna probabilidades a cada valor se conoce como ***función de densidad de probabilidad*** (PDF).
+
+* A diferencia de las distribuciones discretas, la PDF de una variable aleatoria continua $X$, no se puede evaluar en un punto. Ya que la probabilidad de que $X$ tome un valor específico es cero. Es prácticamente imposible que alguien mida exáctamente $1.75 \ m$ de altura.
+
+* Para calcular probabilidades se utiliza el concepto de ***densidad de probabilidad***. La cual se define como la probabilidad de que $X$ tome un valor en un intervalo específico y se denota como $P(a \leq X \leq b)$. 
+
+* Podemos calcular la probabilidad de que una persona mida entre $1.5 \ m$ y $2 \ m$.
+
+## Probabilidad de una variable aleatoria continua {.smaller}
+
+* Para calcular la probabilidad de que $X$ tome un valor en un intervalo específico es necesario integrar la PDF de $X$ en ese intervalo. Es decir, $P(a \leq X \leq b) = \int_{a}^{b} f(x) dx$. ¿Quíen dijo que no ibamos a usar integrales?
+
+* No se preocupen, no es necesario calcular la integral debido a que existen tablas de distribuciones de probabilidad y software que calculan la probabilidad por nosotros (Python, R, etc.).
+
+* Por ejemplo, si en R queremos calcular la probabilidad que una persona mida entre $1.5 \ m$ y $2 \ m$, podemos utilizar la función `pnorm` de la siguiente manera.
+```{r echo = TRUE }
+#| code-line-numbers: "|1|3"
+prob <- pnorm(2, 1.65, 0.1) - pnorm(1.5, 1.65, 0.1)
+print(
+    paste0("La probabilidad de que una persona mida entre 1.5m y 2m es ", 
+    round(prob, 4))
+    )
+```
+
+## Distribución Uniforme Continua {.smaller}
+
+* La ***distribución uniforme continua*** es la versión continua de la distribución uniforme discreta. Se utiliza para modelar un fenómeno aleatorio que tiene un número infinito no numerable de resultados igualmente probables en un rango específico.
+
+* La distribución uniforme continua se denota como $X \sim \text{Uniforme}(a, b)$, donde $a$ y $b$ son los valores mínimo y máximo que puede tomar la variable aleatoria $X$.
+
+* La PDF es:
+$$
+f(x) =
+\begin{cases}
+\frac{1}{b - a} & \text{si } a \leq x \leq b \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+## 
+
+```{r}
+#| panel: input
+    sliderInput("a_unif", "Valor mínimo", min = 0, max = 15, value = 0, step = 0.1)
+    sliderInput("b_unif", "Valor máximo", min = 0, max = 10, value = 10, step = 0.1)
+```
+
+```{r}  
+#| context: server
+    output$unif_con_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        a <- input$a_unif
+        b <- input$b_unif
+        x <- seq(a, b, 0.01)
+        y <- dunif(x, a, b)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          scale_x_continuous(breaks = seq(a, b, 1)) +
+          scale_y_continuous(breaks = seq(0, 1/ (b - a) + 0.1, 0.1)) +    
+          labs(x = "x", y = "f(x)") +
+          xlim(a - 0.1, b + 0.1) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}  
+#| panel: fill
+    plotOutput("unif_con_plot",  width = "100%", height = "590px")
+```
+
+## Distribución Exponencial {.smaller}
+
+* La ***distribución exponencial*** está relacionada con la distribución de Possion debido a que se utiliza para modelar el tiempo entre ocurrencias de un evento de interés.
+
+* La distribución exponencial se denota como $X \sim \text{Exponencial}(\lambda)$, donde $\lambda$ es el número de ocurrencias promedio del evento de interés en el intervalo de tiempo o espacio fijo.
+
+* La PDF de una variable aleatoria $X \sim \text{Exponencial}(\lambda)$ es:
+$$
+f(x) =
+\begin{cases}
+\lambda e^{-\lambda x} & \text{si } x \geq 0 \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+## 
+
+```{r}  
+#| panel: input
+    sliderInput("lambda_exp", "Número de ocurrencias promedio", min = 0, max = 10, value = 1, step = 0.1)
+```
+
+```{r}
+#| context: server
+    output$exp_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        lambda <- input$lambda_exp
+        x <- seq(0, 10, 0.01)
+        y <- dexp(x, lambda)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          scale_x_continuous(breaks = seq(0, 10, 1)) +
+          scale_y_continuous(breaks = seq(0, lambda + 0.1, 0.5)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(-0.1, 10.1) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}
+#| panel: fill
+    plotOutput("exp_plot",  width = "100%", height = "590px")
+```
+
+## Distribución Normal {.smaller}
+
+* La ***distribución normal*** se centra en un valor medio $\mu$ y tiene una dispersión $\sigma$ alrededor del valor central, es simétrica alrededor de $\mu$ y tiene forma de campana. 
+
+* Su aparición es muy común en la naturaleza y por tanto, en muchos modelos estadísticos.
+
+* Una propiedad que tiene la distribución normal es que el 68% de los datos se encuentran a una distancia de $\sigma$ de $\mu$, el 95% de los datos se encuentran a una distancia de $2 \sigma$ de $\mu$ y el 99.7% de los datos se encuentran a una distancia de $3 \sigma$ de $\mu$. 
+
+* La distribución normal se denota como $X \sim \text{Normal}(\mu, \sigma)$, donde $\mu$ es la media y $\sigma$ es la desviación estándar. Su PDF es:
+$$
+f(x) = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left(\frac{x - \mu}{\sigma}\right)^2}
+$$
+
+## 
+
+```{r}
+#| panel: input
+    sliderInput("mu_norm", "Media", min = -5, max = 5, value = 0, step = 0.1)
+    sliderInput("sigma_norm", "Desviación estándar", min = 0.1, max = 5, value = 1, step = 0.1)
+```
+
+```{r}
+#| context: server
+    output$norm_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        mu <- input$mu_norm
+        sigma <- input$sigma_norm
+        x <- seq(mu - 4 * sigma, mu + 4 * sigma, 0.01)
+        y <- dnorm(x, mu, sigma)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          geom_vline(xintercept = mu, color = "red", linetype = "dashed") +
+          geom_vline(xintercept = mu - sigma, color = "white", linetype = "dashed") +
+          geom_vline(xintercept = mu + sigma, color = "white", linetype = "dashed") +
+          geom_vline(xintercept = mu - 2 * sigma, color = "pink", linetype = "dashed") +
+          geom_vline(xintercept = mu + 2 * sigma, color = "pink", linetype = "dashed") +
+          geom_vline(xintercept = mu - 3 * sigma, color = "green", linetype = "dashed") +
+          geom_vline(xintercept = mu + 3 * sigma, color = "green", linetype = "dashed") +
+          scale_x_continuous(breaks = seq(mu - 3 * sigma, mu + 3 * sigma, 1)) +
+          scale_y_continuous(breaks = seq(0, 1 / (sigma * sqrt(2 * pi)) + 0.1, 0.05)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(- 5 - sigma * 4, 5 + sigma*4) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}  
+#| panel: fill
+    plotOutput("norm_plot",  width = "100%", height = "590px")
+```
+
+## Distribución Normal Estándar {.smaller}
+
+* Cuando la distribución normal tiene media $\mu = 0$ y desviación estándar $\sigma = 1$ se conoce como ***distribución normal estándar***.
+
+* La PDF de $Z \sim \text{Normal}(0, 1)$ es:
+$$
+f(z) = \frac{1}{\sqrt{2 \pi}} e^{-\frac{1}{2} z^2}
+$$
+
+* Esta distribución es muy importante por su facilidad de uso y por su relación con otras distribuciones de probabilidad. 
+
+* El proceso de convertir una variable aleatoria normal en una variable aleatoria normal estándar se conoce como ***estandarización***. Y simplemente consiste en restarle la media y dividir entre la desviación estándar. Es decir, si $X \sim \text{Normal}(\mu, \sigma)$, entonces $Z = \frac{X - \mu}{\sigma} \sim \text{Normal}(0, 1)$.
+
+##
+```{r echo = FALSE}
+x <- seq(-5, 5, 0.01)
+est_norm <- dnorm(x, 0, 1)
+df <- data.frame(x, est_norm)
+
+library(ggplot2)
+library(ggdark)
+ggplot(df, aes(x, est_norm)) +
+  geom_line(color = "blue") +
+  geom_ribbon(aes(ymin = 0, ymax = est_norm), fill = "blue", alpha = 0.2) +    
+  scale_x_continuous(breaks = seq(-3, 3, 1)) +
+  scale_y_continuous(breaks = seq(0, 0.6, 0.1)) +
+  labs(x = "x", y = "f(x)", title = "Distribución Normal\nEstándar") +
+  xlim(-5, 5) +
+  dark_theme_gray() +
+  theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+## Distribución Lognormal {.smaller}
+
+* La ***distribución lognormal*** es una distribución de probabilidad que resulta de aplicar el logaritmo natural ($ln$) a una variable aleatoria normal. Se utiliza para modelar fenómenos aleatorios que tienen una distribución normal en escala logarítmica o procesos multiplicativos, como el crecimiento de poblaciones, el precio de las acciones, etc.
+
+* La distribución lognormal se denota como $X \sim \text{Lognormal}(\mu, \sigma)$, donde $\mu$ es la media y $\sigma$ es la desviación estándar de la variable aleatoria normal.
+
+* La PDF es:
+$$
+f(x) =
+\begin{cases}
+\frac{1}{x \sigma \sqrt{2 \pi}} e^{-\frac{1}{2} \left(\frac{ln(x) - \mu}{\sigma}\right)^2} & \text{si } x \geq 0 \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+##
+
+```{r}
+#| panel: input
+    sliderInput("mu_lognorm", "Media", min = -2.5, max = 2.5, value = 0, step = 0.1)
+    sliderInput("sigma_lognorm", "Desviación estándar", min = 0.1, max = 5, value = 1, step = 0.1)
+```
+
+```{r}
+#| context: server
+    output$lognorm_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        mu <- input$mu_lognorm
+        sigma <- input$sigma_lognorm
+        x <- seq(0, 10, 0.01)
+        y <- dlnorm(x, mu, sigma)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          scale_x_continuous(breaks = seq(0, 10, 1)) +
+          scale_y_continuous(breaks = seq(0,  ceiling(max(y)) + 0.1, round(max(y) / 10, 2))) +
+          labs(x = "x", y = "f(x)") +
+          xlim(-0.1, 10.1) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}
+#| panel: fill
+    plotOutput("lognorm_plot",  width = "100%", height = "590px")
+```
+
+
+## Distribución Chi Cuadrada {.smaller}
+
+* La ***distribución chi cuadrada*** se origina cuando se suman al cuadrado $k$ variables aleatorias normales estándar independientes. Se utiliza para modelar la varianza, la suma de cuadrados de errores, etc.
+
+* La distribución chi cuadrada se denota como $X \sim \chi^2(k)$, donde $k$ es el número de grados de libertad^[Un grado de libertad es el número de variables que son libres de variar. Por ejemplo, si tenemos dos variables aleatorias $X$ y $Y$ y sabemos que $X + Y = 1$, entonces $Y$ no es libre de variar y solo tenemos un grado de libertad, dado que si conocemos el valor de $X$ podemos calcular el valor de $Y$.] y se conoce como ***parámetro de forma***.
+
+* La PDF es:
+$$
+f(x) =
+\begin{cases}
+\frac{1}{2^{k/2} \Gamma(k/2)} x^{k/2 - 1} e^{-x/2} & \text{si } x \geq 0 \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+## 
+    
+```{r}
+#| panel: input
+    sliderInput("k_chi", "Grados de libertad", min = 2, max = 10, value = 1, step = 1)
+```
+
+```{r}
+#| context: server
+    output$chi_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        k <- input$k_chi
+        x <- seq(0, 20, 0.01)
+        y <- dchisq(x, k)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          scale_x_continuous(breaks = seq(0, 10, 1)) +
+          scale_y_continuous(breaks = seq(0, ceiling(max(y)) + 0.1, round(max(y) / 5, 2))) +
+          labs(x = "x", y = "f(x)") +
+          xlim(-0.1, 20.1) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}
+#| panel: fill
+    plotOutput("chi_plot",  width = "100%", height = "590px")
+```
+
+## Distribución Gamma {.smaller}
+
+* La ***distribución gamma*** generaliza a la distribución exponencial y chi cuadrada. Se utiliza para modelar el tiempo entre ocurrencias de un evento de interés cuando el número de ocurrencias promedio no es constante.
+
+* La distribución gamma se denota como $X \sim \text{Gamma}(\alpha, \beta)$, donde $\alpha$ es el número de ocurrencias promedio del evento de interés y $\beta$ es el tiempo promedio entre ocurrencias.
+
+* La PDF es:
+$$
+f(x) =
+\begin{cases}
+\frac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha - 1} e^{-\beta x} & \text{si } x \geq 0 \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+##
+
+```{r}
+#| panel: input
+    sliderInput("alpha_gamma", "Número de ocurrencias promedio", min = 0.1, max = 10, value = 1, step = 0.1)
+    sliderInput("beta_gamma", "Tiempo promedio entre ocurrencias", min = 0.1, max = 10, value = 1, step = 0.1)
+```
+
+```{r}
+#| context: server
+    output$gamma_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        alpha <- input$alpha_gamma
+        beta <- input$beta_gamma
+        x <- seq(0, 10, 0.01)
+        y <- dgamma(x, alpha, beta)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          scale_x_continuous(breaks = seq(0, 10, 1)) +
+          scale_y_continuous(breaks = seq(0, beta^alpha / gamma(alpha) + 0.1, 0.1)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(-0.1, 10.1) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}
+#| panel: fill
+    plotOutput("gamma_plot",  width = "100%", height = "590px")
+```
+
+## Distribución Beta {.smaller}
+
+* La ***distribución beta*** se utiliza para modelar la probabilidad de que ocurra un evento de interés. Por ejemplo, la probabilidad de que un equipo de fútbol gane un partido, la probabilidad de que un paciente se recupere de una enfermedad, etc.
+
+* La distribución beta se denota como $X \sim \text{Beta}(\alpha, \beta)$, donde $\alpha$ y $\beta$ son parámetros de forma.
+
+* La PDF es:
+$$
+f(x) =
+\begin{cases}
+\frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)} x^{\alpha - 1} (1 - x)^{\beta - 1} & \text{si } 0 \leq x \leq 1 \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+##
+
+```{r}  
+#| panel: input
+    sliderInput("alpha_beta", "Parámetro de forma 1", min = 0.1, max = 10, value = 1, step = 0.1)
+    sliderInput("beta_beta", "Parámetro de forma 2", min = 0.1, max = 10, value = 1, step = 0.1)
+```
+
+```{r}
+#| context: server
+    output$beta_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        alpha <- input$alpha_beta
+        beta <- input$beta_beta
+        x <- seq(0, 1, 0.01)
+        y <- dbeta(x, alpha, beta)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          scale_x_continuous(breaks = seq(-0.1, 1.1, 0.1)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(-0.1, 1.1) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50))
+      })
+```
+
+```{r}  
+#| panel: fill
+    plotOutput("beta_plot",  width = "100%", height = "590px")
+```
+
+## Distribución t de Student {.smaller}
+
+* La ***distribución t de Student*** se utiliza para modelar la media de una variable aleatoria normal cuando el tamaño de la muestra es pequeño.
+
+* La distribución t de Student se denota como $X \sim t(n)$, donde $n$ es el tamaño de la muestra.
+
+* Se usa en la prueba t para comparar la media de dos grupos.
+
+* La PDF es:
+$$
+f(x) =
+\begin{cases}
+\frac{\Gamma\left(\frac{n + 1}{2}\right)}{\sqrt{n \pi} \Gamma\left(\frac{n}{2}\right)} \left(1 + \frac{x^2}{n}\right)^{-\frac{n + 1}{2}} & \text{si } x \in \mathbb{R} \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+##
+
+```{r}
+#| panel: input
+    sliderInput("n_t", "Tamaño de la muestra", min = 1, max = 100, value = 1, step = 10)
+```
+
+```{r}  
+#| context: server
+    output$t_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        n <- input$n_t
+        x <- seq(-8, 8, 0.01)
+        y <- dt(x, n)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          scale_x_continuous(breaks = seq(-5, 5, 1)) +
+          scale_y_continuous(breaks = seq(0, 0.5, 0.1)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(-5, 5) +
+          ylim(0, 0.5) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50)) 
+      })
+```
+
+```{r}  
+#| panel: fill
+    plotOutput("t_plot",  width = "100%", height = "590px")
+```
+
+## Distribución F de Fisher {.smaller}
+
+* La ***distribución F de Fisher*** se utiliza para modelar la razón de varianzas de dos variables aleatorias normales cuando el tamaño de la muestra es pequeño. Y se obtiene al dividir dos variables aleatorias chi cuadrada independientes.
+
+* La distribución F de Fisher se denota como $X \sim F(n_1, n_2)$, donde $n_1$ y $n_2$ son los grados de libertad de las variables aleatorias chi cuadrada.
+
+* Se usa en el análisis de varianza (ANOVA) para comparar la varianza de dos o más grupos.
+
+* La PDF es:
+$$
+f(x) =
+\begin{cases}
+\frac{\Gamma\left(\frac{n_1 + n_2}{2}\right)}{\Gamma\left(\frac{n_1}{2}\right) \Gamma\left(\frac{n_2}{2}\right)} \left(\frac{n_1}{n_2}\right)^{\frac{n_1}{2}} x^{\frac{n_1}{2} - 1} \left(1 + \frac{n_1}{n_2} x\right)^{-\frac{n_1 + n_2}{2}} & \text{si } x \geq 0 \\
+0 & \text{en otro caso}
+\end{cases}
+$$
+
+##
+
+```{r}
+#| panel: input
+    sliderInput("n1_f", "Grados de libertad 1", min = 1, max = 100, value = 1, step = 10)
+    sliderInput("n2_f", "Grados de libertad 2", min = 1, max = 100, value = 1, step = 10)
+```
+
+```{r}
+#| context: server
+    output$f_plot <- renderPlot({
+        library(ggplot2)
+        library(ggdark)
+
+        n1 <- input$n1_f
+        n2 <- input$n2_f
+        x <- seq(0, 5, 0.01)
+        y <- df(x, n1, n2)
+        df <- data.frame(x, y)
+
+        ggplot(df, aes(x, y)) +
+          geom_line(color = "blue") +
+          geom_ribbon(aes(ymin = 0, ymax = y), fill = "blue", alpha = 0.2) +
+          scale_x_continuous(breaks = seq(0, 5, 1)) +
+          labs(x = "x", y = "f(x)") +
+          xlim(0, 5) +
+          dark_theme_gray() +
+          theme(axis.text = element_text(size = 30),
+                axis.title = element_text(size = 40),
+                plot.title = element_text(size = 50)) 
+      })
+```
+
+```{r}
+#| panel: fill
+    plotOutput("f_plot",  width = "100%", height = "590px")
+```
+
+## Cancion 3
+
+{{< video https://www.youtube.com/watch?v=Cy07eubC-jI width="100%" height="550px" >}}
+
+## Distribución acumulativa {.smaller}
+
+* La destribución acumulativa (CDF) de una variable aleatoria describe la probabilidad de que la variable aleatoria tome un valor menor o igual a un valor específico.
+
+* Se denota como $F(x) = P(X \leq x)$.
+
+* La distribución acumulativa de una v. a. discreta se puede calcular sumando la PMF de la variable aleatoria hasta el valor de interés.
+$$
+F(x) = \sum_{i = -\infty}^{x} f(i)
+$$
+
+* Si es una v. a. continua, se puede calcular integrando la PDF de la variable aleatoria hasta el valor de interés.
+$$
+F(x) = \int_{-\infty}^{x} f(t) dt
+$$
+
+## CDF Discreta {.smaller}
+
+![](images/cdf_discrete_poisson.png)
+
+## CDF Continua {.smaller}
+
+![](images/cum_norm.png)
+
+##
+<center>
+![](images/Prob_dist.jpg)
+</center>
+
+
+## Fin
+
+![](images/Probs_cat.jpg){width=100% height="550px"}
