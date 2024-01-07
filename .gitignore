@@ -2,3 +2,4 @@
 \rsconnect
 \env
 *.vscode
+*.Rhistory
