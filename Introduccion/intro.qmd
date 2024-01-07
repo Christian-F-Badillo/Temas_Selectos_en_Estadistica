@@ -34,22 +34,35 @@ runtime: shiny
 # Logística del curso
 
 ## Evaluación 
+
 - Se realizarán 3 tareas que se entregarán en el Classroom del curso.
 - Para obtener el certificado es necesario entregar las tareas y tener un 80% de asistencia.
 - Se aceptan oyentes, pero deberan entregar las tareas.
 
 ## Objetivos
+
 - Explicar la Estadística desde una visión de comparación de modelos.
 
 - Indagar y explicar los fundamentos de probabilidad y estadística a traves de la simulaciones computacionales.
+
+## Classroom {.smaller}
+
+* Las tareas se entregan en el Classroom del curso, el código de la clase es: ***pkhxe3q***.
+
+* En el Classroom se publicarán las tareas y las presentaciones.
+
+* En el Classroom se pueden hacer preguntas y comentarios de los temas del curso. También se aceptan memes.
+
+* El código fuente de las presentaciones del curso se encuentra en un repositorio de GitHub: [https://github.com/Christian-F-Badillo/Temas_Selectos_en_Estadistica](https://github.com/Christian-F-Badillo/Temas_Selectos_en_Estadistica). Son libres de usarlo y modificarlo.
+
+##
+
+![](images/Stats_benefits.jpg){width="900" height="650"}
 
 # Modelamiento en Estadística
 
 > "All the models are wrong, but some are useful". George Box.^[Box, George E. P. 1976. Science and statistics. *Journal of the American Statistical Association, 71 (356)*, p. 791–799, [doi:10.1080/01621459.1976.10480949](https://www-sop.inria.fr/members/Ian.Jermyn/philosophy/writings/Boxonmaths.pdf)]
 
-##
-
-![](images/Stats_benefits.jpg){width="900" height="650"}
 
 ## ¿Qué es un modelo?
 - Un modelo es una ***representación*** de un sistema.
