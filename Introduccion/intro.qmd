@@ -1350,7 +1350,7 @@ $$
 
 * La ***distribución F de Fisher*** se utiliza para modelar la razón de varianzas de dos variables aleatorias normales cuando el tamaño de la muestra es pequeño. Y se obtiene al dividir dos variables aleatorias chi cuadrada independientes.
 
-* La distribución F de Fisher se denota como $X \sim F(n_1, n_2)$, donde $n_1$ y $n_2$ son los grados de libertad de las variables aleatorias chi cuadrada.
+* La distribución F de Fisher se denota como $X \sim F(\nu_1, \nu_2)$, donde $\nu_1$ y $\nu_2$ son los grados de libertad de las variables aleatorias chi cuadrada.
 
 * Se usa en el análisis de varianza (ANOVA) para comparar la varianza de dos o más grupos.
 
@@ -1358,7 +1358,7 @@ $$
 $$
 f(x) =
 \begin{cases}
-\frac{\Gamma\left(\frac{n_1 + n_2}{2}\right)}{\Gamma\left(\frac{n_1}{2}\right) \Gamma\left(\frac{n_2}{2}\right)} \left(\frac{n_1}{n_2}\right)^{\frac{n_1}{2}} x^{\frac{n_1}{2} - 1} \left(1 + \frac{n_1}{n_2} x\right)^{-\frac{n_1 + n_2}{2}} & \text{si } x \geq 0 \\
+\frac{\Gamma\left(\frac{\nu_1 + \nu_2}{2}\right)}{\Gamma\left(\frac{\nu_1}{2}\right) \Gamma\left(\frac{\nu_2}{2}\right)} \left(\frac{\nu_1}{\nu_2}\right)^{\frac{\nu_1}{2}} x^{\frac{\nu_1}{2} - 1} \left(1 + \frac{\nu_1}{\nu_2} x\right)^{-\frac{\nu_1 + \nu_2}{2}} & \text{si } x \geq 0 \\
 0 & \text{en otro caso}
 \end{cases}
 $$
@@ -1367,8 +1367,8 @@ $$
 
 ```{r}
 #| panel: input
-    sliderInput("n1_f", "Grados de libertad 1", min = 1, max = 100, value = 1, step = 10)
-    sliderInput("n2_f", "Grados de libertad 2", min = 1, max = 100, value = 1, step = 10)
+    sliderInput("n1_f", "\u03BD 1", min = 1, max = 100, value = 1, step = 10)
+    sliderInput("n2_f", "\u03BD 2", min = 1, max = 100, value = 1, step = 10)
 ```
 
 ```{r}
