@@ -1,0 +1,94 @@
+---
+title: "Tarea 1"
+author: "Christian Badillo"
+date: today
+date-format: long
+format:
+    pdf: 
+        documentclass: article
+        papersize: a4
+        geometry: margin=1in    
+        toc: false
+        number-sections: true
+        lang: es
+        fontsize: 12pt
+        fig-align: center
+---
+
+# Probabilidad.
+
+1. Los boletos de la lotería nacional se conforman de 11 dígitos, del 00000000000 al 99999999999. ¿Cuántos boletos hay en total? ¿Importa el orden de los dígitos? ¿Se pueden repetir los dígitos? Justifica tu método de conteo.
+    
+    1. Si compro un boleto, ¿cuál es la probabilidad de que me gane el premio mayor?
+
+    2. Si quisiera modelar la probabilidad de cuantos boletos debo de comprar para ganarme el premio mayor, ¿qué distribución de probabilidad usaría? ¿Por qué?
+
+    3. Si quisiera modelar la probabilidad de que alguien se gane el premio mayor, ¿qué distribución de probabilidad usaría? ¿Por qué?
+
+2. En una urna hay 5 canicas rojas, 3 canicas azules y 2 canicas verdes. Si saco 3 canicas de la urna.
+ 
+    1. ¿Cuál es la probabilidad de que las 3 sean rojas?
+
+    2. ¿Cuál es la probabilidad de que las 3 sean de colores diferentes?
+
+3. ¿Cuál es la diferencia entre la interpretación frecuentista y la interpretación bayesiana de la probabilidad? ¿Cuál es la interpretación que más te convence? ¿Por qué?
+
+4. ¿Cuál es la diferencia entre la probabilidad conjunta y la probabilidad condicional?
+
+5. ¿Cuál es la diferencia entre la probabilidad marginal y la probabilidad conjunta?
+
+6. Si tengo la siguiente tabla de la probabilidad conjunta de que alguien tenga diabetes y que tenga sobrepeso.
+
+    | Sobrepeso | Diabetes | Probabilidad |
+    |-----------|----------|--------------|
+    | Si        | Si       | 0.31         |
+    | Si        | No       | 0.07         |
+    | No        | Si       | 0.25         |
+    | No        | No       | 0.37         |
+
+    1. ¿Cuál es la probabilidad de que alguien tenga sobrepeso?
+
+    2. ¿Cuál es la probabilidad de que alguien tenga diabetes?
+
+    3. ¿Cuál es la probabilidad de que alguien tenga sobrepeso y diabetes?
+
+    4. ¿Cuál es la probabilidad de que alguien tenga sobrepeso dado que tiene diabetes?
+
+    5. ¿Cuál es la probabilidad de que alguien tenga diabetes dado que tiene sobrepeso?
+
+    6. ¿Por qué la probabilidad de que alguien tenga sobrepeso y diabetes es diferente a la probabilidad de que alguien tenga sobrepeso dado que tiene diabetes?
+
+7. ¿Cuál la diferencia entre la probabilidad de un evento discreto y la función de masa de probabilidad de una variable aleatoria discreta?
+
+8. Elige 3 distribuciones de probabilidad discretas y 3 distribuciones de probabilidad continuas. Para cada una de ellas, presenta dos ejemplos para su uso.
+
+# Estadística descriptiva.
+
+1. ¿Qué representan los momentos de una distribución de probabilidad?
+
+2. Si tengo la siguiente distribución de probabilidad discreta.
+
+    | x | P(x) |
+    |---|------|
+    | 1 | 0.1  |
+    | 2 | 0.2  |
+    | 3 | 0.3  |
+    | 4 | 0.4  |
+
+    1. ¿Cuál es la media?
+
+    2. ¿Cuál es la varianza?
+
+    3. ¿Cuál es la desviación estándar?
+
+3. ¿Cuál es la diferencia entre la media y la mediana?
+
+4. ¿Cuál es la diferencia entre la varianza y la desviación estándar?
+
+5. ¿Cuál es la diferencia entre la varianza y la varianza muestral?
+
+7. ¿Qué información nos da el coeficiente de asimetría de Fisher?
+
+8. ¿Qué información nos da el coeficiente de curtosis?
+
+9. Las estatura de 10 personas son las siguientes: 1.5, 1.6, 1.7, 1.8, 1.9, 1.9, 1.9, 2.0, 2.1, 2.2. Calcula la media, la mediana, la varianza, la desviación estándar. ¿Qué puedes decir de la distribución de las estaturas?
