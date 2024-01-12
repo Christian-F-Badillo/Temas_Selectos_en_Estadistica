@@ -1,6 +1,6 @@
 ---
 title: "Estadística Descriptiva"
-subtitle: "Visualización de Datos y Teoremas Importantes"
+subtitle: "Visualización de Datos y Teorema del Límite Central"
 author: "Christian F. Badillo Hernández"
 date: 01/08/24
 lang: "es"
@@ -292,9 +292,6 @@ $$
 ```{r}
 #| panel: input
 sliderInput("n", "Número de observaciones:", min = 2, max = 150, value = 2, step = 1)
-```
-
-```{r}
 ```
 
 ```{r}
@@ -651,7 +648,7 @@ y <- dnorm(x, mean(mtcars$mpg), sd(mtcars$mpg))
 ggplot() +
   geom_histogram(aes(x = mtcars$mpg, y = after_stat(density)), binwidth = 2, fill = "blue", color = "black") +
   geom_density(aes(x = mtcars$mpg), fill = "green", alpha = 0.5) +
-  geom_line(aes(x = x, y = y), color = "white", size = 6) +
+  geom_line(aes(x = x, y = y), color = "white", size = 3) +
   geom_vline(xintercept = mean(mtcars$mpg), color = "red", linetype = "dashed", size = 4) +
   dark_theme_gray() +
   labs(x = "Millas por galón", y = "Densidad") +
@@ -836,3 +833,166 @@ ggplot(iris, aes(x = Petal.Length, y = Sepal.Length, color = factor(Species))) +
 ```
 
 :::
+
+## Diagrama de dispersión e histogramas {.smaller}
+
+::: {.nonincremental}
+
+* Para observar de mejor manera la forma de los datos cuando tenemos dos v.a. relacionadas, podemos utilizar un diagrama de dispersión con histogramas en los ejes.
+
+```{r scatterhist1, echo=FALSE, fig.align='center'}
+library(ggdark)
+library(ggplot2)
+install.packages("patchwork")
+library(patchwork)
+
+plot1 <- ggplot(iris, aes(x = Petal.Length, y = Sepal.Length, color = Species)) +
+  geom_point(aes(color = Species), size = 4) +
+  geom_point(shape = 1, colour = "black", size = 4) +  
+  stat_smooth(method = "lm", fullrange = FALSE) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  dark_theme_gray() +
+  labs(x = "Longitud del pétalo", y = "Longitud del sépalo") +
+  theme(legend.position = c(0.15, 0.9))
+
+dens1 <- ggplot(iris, aes(x = Petal.Length, fill = factor(Species))) +
+  geom_density(alpha = 0.5) +
+  dark_theme_gray() +
+
+  theme(legend.position = "none",
+  axis.line=element_blank(),
+  axis.text.x=element_blank(),
+  axis.text.y=element_blank(), 
+  panel.border=element_blank(),
+  panel.grid.major=element_blank(),
+  panel.grid.minor=element_blank(), 
+  axis.ticks = element_blank()) + 
+
+  labs(x = "", y = "", fill = "", title = "")
+
+dens2 <- ggplot(iris, aes(x = Sepal.Length, fill = factor(Species))) +
+  dark_theme_gray() +
+  geom_density(alpha = 0.5) +
+
+  theme(legend.position = "none",
+  axis.line=element_blank(),
+  axis.text.x=element_blank(),
+  axis.text.y=element_blank(), 
+  panel.border=element_blank(),
+  panel.grid.major=element_blank(),
+  panel.grid.minor=element_blank(), 
+  axis.ticks = element_blank()) + 
+
+  labs(x = "", y = "", fill = "", title = "") + 
+  coord_flip()
+
+
+dens1 + plot_spacer() + plot1 + dens2 + 
+  plot_layout(ncol = 2, widths = c(4, 1), heights = c(1, 4))
+```
+
+:::
+
+## Teorema del límite central {.smaller}
+
+* El ***teorema del límite central*** establece que si tenemos una muestra aleatoria de tamaño $n$ de una población con media $\mu$ y varianza $\sigma^2$, entonces la distribución de la media muestral se aproxima a una distribución normal con media $\mu$ y varianza $\frac{\sigma^2}{n}$ cuando $n$ es grande.
+
+* Es decir, si tenemos una muestra aleatoria de tamaño $n$ de una población con media $\mu$ y varianza $\sigma^2$, entonces:
+$$
+\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)
+$$
+
+* Donde $\bar{X}$ es la media muestral.
+
+* El teorema del límite central es uno de los resultados más importantes de la estadística. Ya que nos permite utilizar la distribución normal para aproximar la distribución de la media muestral de cualquier población.
+
+##
+
+```{r}
+#| panel: input
+library(shiny)
+
+distributions <- c("Poisson", "Uniforme continua", "Exponencial", "Normal", "Gamma")
+
+selectInput("dist", "Distribución:", choices = distributions, selected = "Normal")
+numericInput("n_clt", "Tamaño de la muestra:", min = 2, max = 1000, value = 2, step = 1)
+```
+
+```{r}
+#| context: server
+
+library(ggplot2)
+library(ggdark)
+
+output$clt <- renderPlot({
+    n <- input$n_clt
+    dist <- input$dist
+    samples_from_dist <- n
+
+    if(dist == "Poisson"){
+        samples <- array(numeric(0), dim = c(samples_from_dist, n))
+        set.seed(123)
+        for(i in 1:n){
+            samples[, i] <- rpois(samples_from_dist, lambda = 5)
+            mu_estimates <- apply(samples, 2, mean)
+        }
+      x <- seq(3, 7, 0.01)
+      y <- dnorm(x, 5, sqrt(5) / sqrt(n))
+      }
+    if(dist == "Uniforme continua"){
+        samples <- array(numeric(0), dim = c(samples_from_dist, n))
+        set.seed(123)
+        for(i in 1:n){
+            samples[, i] <- runif(samples_from_dist, min = 0, max = 10)
+            mu_estimates <- apply(samples, 2, mean)
+        }
+      x <- seq(0, 10, 0.01)
+      y <- dnorm(x, 5, sqrt(25 / 12) / sqrt(n))
+      }
+    if(dist == "Exponencial"){
+        samples <- array(numeric(0), dim = c(samples_from_dist, n))
+        set.seed(123)
+        for(i in 1:n){
+            samples[, i] <- rexp(samples_from_dist, rate = 1/2)
+            mu_estimates <- apply(samples, 2, mean)
+        }
+      x <- seq(0, 4, 0.01)
+      y <- dnorm(x, 2, 2 / sqrt(n))
+      }
+    if(dist == "Normal"){
+        samples <- array(numeric(0), dim = c(samples_from_dist, n))
+        set.seed(123)
+        for(i in 1:n){
+            samples[, i] <- rnorm(samples_from_dist, mean = 2, sd = 3)
+            mu_estimates <- apply(samples, 2, mean)
+        }
+      x <- seq(0, 5, 0.01)
+      y <- dnorm(x, 2, 3 / sqrt(n))
+      }
+    if(dist == "Gamma"){
+        samples <- array(numeric(0), dim = c(samples_from_dist, n))
+        set.seed(123)
+        for(i in 1:n){
+            samples[, i] <- rgamma(samples_from_dist, shape = 2, rate = 3)
+            mu_estimates <- apply(samples, 2, mean)
+        }
+    x <- seq(0, 5, 0.01)
+    y <- dnorm(x, 2/3, (sqrt(2) / 3) / sqrt(n))
+    }
+
+    ggplot()+
+      geom_density(aes(x = mu_estimates), fill = "blue", alpha = 0.5) +
+      geom_line(aes(x = x, y = y), color = "white", size = 1) +
+      dark_theme_gray() +
+      labs(x = "x", y = "Densisdad", title = "Teorema del límite central") +
+      theme(axis.text = element_text(size = 30),
+            axis.title = element_text(size = 30),
+            plot.title = element_text(size = 40))
+})
+```
+
+```{r}
+#| panel: fill
+plotOutput("clt", width = "100%", height = "590px")
+```
