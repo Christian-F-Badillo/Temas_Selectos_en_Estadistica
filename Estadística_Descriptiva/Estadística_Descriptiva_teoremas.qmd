@@ -682,7 +682,7 @@ $$
 
 * No es un momento estadístico.
 
-## Ejemplo: Rango {.smaller}
+## Ejemplo: Rango
 ::: {.nonincremental}
 * Siguiendo con los datos de los vehículos de 1973-1974, tenemos que el rango de la v.a. `mpg` es:
 
@@ -805,7 +805,7 @@ ggplot(iris, aes(x = Species, y = Petal.Length)) +
 
 * Para visualizar la relación entre dos v.a. se utiliza un ***diagrama de dispersión***. En este diagrama se representa cada observación como un punto en un plano cartesiano, donde el eje $x$ representa una v.a. y el eje $y$ representa otra v.a.
 
-## Ejemplo
+## Ejemplo {.smaller}
 ::: {.nonincremental}
 * Tenemos los datos de la longitud de los pétalos y sépalos de la flor de iris, los cuales se pueden encontrar en el conjunto de datos `iris` de `R`:
 
@@ -977,7 +977,7 @@ output$clt <- renderPlot({
             samples[, i] <- rgamma(samples_from_dist, shape = 2, rate = 3)
             mu_estimates <- apply(samples, 2, mean)
         }
-    x <- seq(0, 5, 0.01)
+    x <- seq(0, 1.5, 0.01)
     y <- dnorm(x, 2/3, (sqrt(2) / 3) / sqrt(n))
     }
 
