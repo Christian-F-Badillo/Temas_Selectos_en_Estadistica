@@ -66,3 +66,44 @@ ggplot() +
           legend.title = element_text(size=10), #change legend title font size
           legend.text = element_text(size=22)) #change legend text font size 
     
+
+######################### Ridge vs Lasso vs OLS
+
+install.packages("glmnet")
+library(gmlnet)
+library(ggplot2)
+library(ggdark)
+
+data(mtcars)
+
+x <- as.matrix(mtcars[, -1])
+y <- mtcars$mpg
+
+linear_model <- lm(y ~ x)
+betas <- as.vector(coef(linear_model))
+
+ridge_model <- cv.glmnet(x, y, alpha = 0)
+best_lambda <- ridge_model$lambda.min
+best_model_ridge <- glmnet(x, y, alpha = 0, lambda = best_lambda)
+betas_ridge <- as.vector(coef(best_model_ridge))
+
+lasso_model <- cv.glmnet(x, y, alpha = 1)
+best_lambda <- lasso_model$lambda.min
+best_model_lasso <- glmnet(x, y, alpha = 1, lambda = best_lambda)
+betas_lasso <- as.vector(coef(best_model_lasso))
+
+group <- c(rep("Mínimos cuadrados", length(betas)),
+           rep("Ridge", length(betas_ridge)),
+           rep("Lasso", length(betas_lasso)))
+
+beta_hat <- data.frame(c(betas, betas_ridge, betas_lasso), group)
+colnames(beta_hat) <- c("beta", "group")
+
+ggplot(beta_hat, aes(x = beta, y = group)) +
+    geom_point(color = "#F8766D", size = 3) +
+    geom_vline(xintercept = 0, color = "white", size = 1.5) +
+    labs(x = "\u03B2", y = "") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+          axis.title = element_text(size = 40),
+          plot.title = element_text(size = 50))

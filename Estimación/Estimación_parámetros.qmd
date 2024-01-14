@@ -1,0 +1,516 @@
+---
+title: "Estadística Inferencial"
+subtitle: "Estimación de parámetros"
+author: "Christian F. Badillo Hernández"
+date: 01/15/24
+lang: "es"
+date-format: "D MMM YYYY"
+format:
+    revealjs:
+        incremental: true
+        scrollable: true
+        smaller: false   
+        theme: night
+        logo: img/Lab25_logo_2015.png
+        footer: "Temas Selectos en Estadística"
+        preview-links: true
+        preload-iframes: true
+        slide-number: true
+        transition: convex
+        background-transition: fade
+        transition-speed: slow
+        navigation-mode: linear
+        touch: true
+        controls: true
+        embed-resources: true
+        page-layout: custom
+        reference-location: document
+        link-external-newwindow: true
+        fig-height: 7
+        fig-responsive: true
+server: shiny
+runtime: shiny
+---
+
+## Introducción {.smaller}
+
+- La ***estadística inferencial*** se encarga de hacer inferencias sobre una población a partir de una muestra. Es un modo de aprender sobre la población a partir de la muestra.
+
+- Recuerden que cuando realizamos un muestreo obtenemos un conjunto de datos $x_1, x_2, \ldots, x_n \sim f(x)$, donde $f(x)$ es la distribución de probabilidad de la población.
+
+- Un ***modelo estadístico*** es una familia de distribuciones de probabilidad que describe la población de la cual se obtuvo la muestra.
+
+- Existen dos tipos de modelos estadísticos: ***paramétricos*** y ***no paramétricos***.
+    - Los modelos paramétricos tienen un número finito de parámetros que describen la distribución de probabilidad.
+    - Los modelos no paramétricos tienen un número infinito de parámetros que describen la distribución de probabilidad.
+
+- El conjunto de todos los posibles valores de los parámetros de un modelo estadístico se conoce como ***espacio paramétrico***. Y se denota por $\Theta$.
+
+- En esta presentación nos enfocaremos en los modelos paramétricos.
+
+## Ejemplo {.smaller}
+
+- Supongamos que tenemos una muestra de tamaño $n$ de una distribución Bernoulli con parámetro $p$.
+    - El problema de estimación de parámetros consiste en estimar el valor de $p$ a partir de la muestra.
+
+- Supongamos que tenemos una muestra de tamaño $n$ de una distribución normal con parámetros $\mu$ y $\sigma^2$.
+    - El problema de estimación de parámetros consiste en estimar los valores de $\mu$ y $\sigma^2$ a partir de la muestra.
+
+- Un modelo de K-means es un modelo no paramétrico.
+    - El problema de estimación de parámetros consiste en estimar el número de grupos a partir de la muestra.
+
+- Un modelo de árbol de decisión es un modelo no paramétrico.
+    - El problema de estimación de parámetros consiste en estimar el número de niveles (categorías) a partir de la muestra.
+
+## Estimación de parámetros {.smaller}
+
+- La ***estimación de parámetros*** es el proceso de estimar los parámetros de un modelo estadístico a partir de una muestra.
+
+- Hay dos escuelas de pensamiento en la estimación de parámetros:
+    - La ***escuela bayesiana***, que utiliza el teorema de Bayes para estimar los parámetros.
+    - La ***escuela frecuentista***, que utiliza la función de verosimilitud para estimar los parámetros.
+
+- La diferenca entre ambas escuelas de pensamiento es que la bayesiana supone que los parámetros son variables aleatorias, mientras que la frecuentista supone que los parámetros son constantes.
+
+## Lab 25
+<center>
+![](img/bayes_freq.png){height="500px" width="500px"}
+</center>
+
+## Estimación de parámetros 
+
+- Una ***estimación puntual*** es un valor único que estima el valor de un parámetro. Se denota por $\hat{\theta}$.
+
+- A pesar que el parámetro de la población es un valor fijo, la *estimación puntual* es una **variable aleatoria**, ya que depende de la muestra. 
+    - Cada muestra tiene una estimación puntual diferente.
+
+- En el marco bayesiano, la estimación puntual es el valor esperado de la distribución posterior. Y tanto el parámetro como la estimación puntual son variables aleatorias.
+
+## Propiedades de un estimador {.smaller}
+
+- Los estimadores hacen referencia a las reglas que se utilizan para estimar los parámetros de un modelo estadístico. Por ejemplo, la media muestral es un estimador de la media poblacional y su estimación puntual es la media muestral.
+
+- Un buen estimador debe tener las siguientes propiedades:
+
+    1. ***Insesgado:*** El valor esperado de la estimación puntual es igual al valor del parámetro. Es decir, $E(\hat{\theta}) = \theta$.
+
+    2. ***Consistente:*** La estimación puntual se acerca más al valor real conforme se incrementa la muestra. Formalmente, $\lim_{n \to \infty} P(|\hat{\theta} - \theta| > \epsilon) = 0$.
+
+    3. ***Eficiente:*** La varianza de la estimación puntual es la menor posible. Es decir, $Var(\hat{\theta}) = \frac{1}{I(\theta)}$, donde $I(\theta)$ es la información de Fisher. Es decir, existe poca variación en la estimación puntual para muestras cada vez más grandes.
+
+## 
+
+```{r}
+#| panel: input
+library(shiny)
+numericInput("n_bias", "Tamaño de la muestra:", value = 10, min = 2, max = 1000, step = 20)
+
+```
+
+```{r}
+#| context: server
+output$bias <- renderPlot({
+# Generar una muestra de tamaño n
+n <- input$n_bias
+n_samples <- input$n_bias
+samples_mean <- array(numeric(), dim = c(n, n_samples))
+mean_normal <- 10
+sd_normal <- 4 
+
+set.seed(14082001)
+for(i in 1:n_samples){
+    samples_mean[, i] <- rnorm(n, mean = mean_normal, sd = sd_normal)
+}
+
+# Calcular la media muestral
+samples_mean <- apply(samples_mean, 2, mean)
+
+# Calcular el sesgo
+bias <- mean(samples_mean) - mean_normal
+
+library(ggplot2)
+library(ggdark)
+dens <- max(density(samples_mean)$y)
+
+ggplot(data.frame(samples_mean), aes(x = samples_mean)) +
+    geom_density(color = "#F8766D", size = 1.5) +
+    geom_vline(xintercept = mean_normal, color = "white", size = 1.5) +
+    geom_vline(xintercept = mean(samples_mean), color = "red", size = 1.5) +
+    geom_text(aes(x = mean(samples_mean) - 0.5, y = 0.5*dens, label = paste("Sesgo = ", round(bias, 3), sep ="")), color = "pink", size = 8) +
+    labs(x = "Media muestral", y = "Densidad") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+})
+```
+
+```{r}
+#| panel: fill
+plotOutput("bias", width = "100%", height = "590px")
+```
+
+## Regresión {.smaller}
+
+- El objetivo de cualquier modelo estadístico es **aprender** para ***predecir***. Existen dos problemas de aprendizaje:
+    - ***Regresión:*** El objetivo es predecir una variable continua.
+    - ***Clasificación:*** El objetivo es predecir una variable categórica.
+
+- Existen distintos modelos de regresión, entre otros:
+    - Regresión lineal.
+    - Regresión logística.
+    - Regresión de Poisson.
+    - Regresión polinomial.
+    - Máquinas de soporte vectorial.
+    - Redes neuronales.
+
+- Para cada modelo de regresión existen distintos algoritmos de aprendizaje, entre otros:
+    - Mínimos cuadrados.
+    - Máxima verosimilitud.
+    - Descenso del gradiente.
+    - Bayes.
+
+## Regresión lineal {.smaller}
+
+- El ***modelo de regresión lineal*** es un modelo paramétrico que asume que la variable dependiente $y$ es una *combinación lineal* de las variables independientes $x_1, x_2, \ldots, x_p$. Una combinación lineal es una suma ponderada de las variables independientes.
+
+- El modelo de regresión lineal se define como:
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p + \epsilon
+$$
+
+- Donde $\beta_0, \beta_1, \ldots, \beta_p$ son los parámetros del modelo y $\epsilon$ es el error aleatorio. Cada $\beta_i$ es el efecto de la variable independiente $x_i$ sobre la variable dependiente $y$.
+
+- El objetivo es estimar los parámetros $\beta_0, \beta_1, \ldots, \beta_p$ a partir de una muestra.
+
+- Una notación más compacta del modelo de regresión lineal es la matricial:
+$$
+y = X \beta + \epsilon
+$$
+
+- Donde X es la ***matriz de diseño*** y $\beta$ es el vector de parámetros.
+
+## Matriz de diseño {.smaller}
+
+- La matriz de diseño $X$ es una matriz de $o \times v$ que contiene los valores de las variables independientes para cada observación.
+
+- La matriz de diseño tiene la siguiente forma:
+$$
+X = \begin{bmatrix}
+1 & x_{11} & x_{12} & \ldots & x_{1p} \\
+1 & x_{21} & x_{22} & \ldots & x_{2p} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+1 & x_{n1} & x_{n2} & \ldots & x_{np} \\
+\end{bmatrix}
+$$
+
+- La primera columna de la matriz de diseño es un vector de unos que representa el intercepto del modelo. Cada **columna** representa una *variable independiente*, y cada **fila** representa una *observación*.
+
+- Es utilizada para estimar los parámetros del modelo de regresión lineal. Y también en los modelos de ANOVA.
+
+## Ejemplo {.smaller}
+
+- Supongamos que queremos predecir el precio de una casa a partir de su tamaño y el número de habitaciones. El modelo de regresión lineal es:
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon
+$$
+
+- Donde $y$ es el precio de la casa, $x_1$ es el tamaño de la casa, $x_2$ es el número de habitaciones, $\beta_0$ es el intercepto, $\beta_1$ es el efecto del tamaño sobre el precio, $\beta_2$ es el efecto del número de habitaciones sobre el precio, y $\epsilon$ es el error aleatorio.
+
+- La matriz de diseño es:
+$$
+X = \begin{bmatrix}
+1 & 100 & 3 \\
+1 & 200 & 4 \\
+1 & 150 & 3 \\
+1 & 250 & 5 \\
+1 & 300 & 6 \\
+\end{bmatrix}
+$$
+
+## Teoría de Decisión Estadística {.smaller}
+
+- Antes de hablar de cómo estimar los parámetros de un modelo estadístico, es necesario hablar de la ***teoría de decisión estadística***.
+
+- La teoría de decisión estadística es una rama de la estadística que se encarga de tomar decisiones (el valor de cada parámetro) a partir de la información de una muestra.
+
+- La teoría de decisión estadística se basa en la ***función de pérdida (costo)***, que es una función que mide el costo de tomar una decisión.
+
+- La función de pérdida más común es la ***función de pérdida cuadrática***, que se define como:
+$$
+L(\theta, \hat{\theta}) = (\theta - \hat{\theta})^2
+$$
+
+- Donde $\theta$ es el valor real del parámetro y $\hat{\theta}$ es la estimación puntual del parámetro.
+
+- La función de pérdida cuadrática es la función de pérdida más común porque es fácil de derivar y tiene propiedades matemáticas deseables.
+
+- Existes otras funciones de pérdida, como la función de pérdida absoluta, la función de pérdida de Huber, la función de pérdida de Charbonneau, etc. Que son utilizadas en problemas específicos y en modelos específicos.
+
+## Función de pérdida en la regresión lineal {.smaller}
+
+- En los modelos lineales tenemos distintas funciones de pérdida.
+    - ***Mínimos cuadrados:*** $L(\beta, \hat{\beta}) = (\beta - \hat{\beta})^2$
+    - ***Lasso:*** $L(\beta, \hat{\beta}) = |\beta - \hat{\beta}|$
+    - ***Ridge:*** $L(\beta, \hat{\beta}) = (\beta - \hat{\beta})^2 + \lambda \sum_{j=1}^p \beta_j^2$
+
+- En la regresión lineal, la función de pérdida más común es la función de pérdida cuadrática. Por lo que el ***estimador de mínimos cuadrados*** es el estimador más común en la regresión lineal.
+
+- Las funciones de pérdida Lasso y Ridge son utilizadas en la regresión lineal para evitar el sobreajuste del modelo y cada una tiene sus propiedades.
+
+- La regresión con la función Ridge se conoce como ***regresión de Ridge*** y la regresión con la función Lasso se conoce como ***regresión Lasso***. La primera se utiliza cuando las variables independientes están correlacionadas y la segunda cuando las variables independientes están correlacionadas y se desea hacer selección de variables.
+
+## Ejemplo {.smaller}
+:::{.nonincremental}
+- Usando los datos del dataset `mtcars`, vamos a estimar el modelo de regresión lineal para predecir el consumo de gasolina de un auto a partir de sus características.
+
+- En este caso tenemos 11 variables independientes y 1 variable dependiente. Por lo que el modelo de regresión lineal es:
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_{11} x_{11} + \epsilon
+$$
+
+- Y su matriz de diseño es:
+
+```{r table1 , echo = FALSE, tidy = FALSE}
+m_dis <- mtcars[, 2:11]
+intercept <- rep(1, length(mtcars$mpg))
+m_dis <- cbind(intercept, m_dis)
+
+knitr::kable(m_dis, caption = "Matriz de diseño")
+```
+
+- Veamos como se comparan los estimadores de mínimos cuadrados, Ridge y Lasso.
+
+<center>
+![](img/ridge_lasso_ols.png)
+</center>
+
+:::
+
+## Mínimos cuadrados {.smaller}
+
+* El ***estimador de mínimos cuadrados*** es el estimador más común en la regresión lineal y data del siglo XIX, cuando Legendre y Gauss lo utilizaron para estimar la órbita de los cuerpos celestes.
+
+* La idea central es encontrar un conjunto de parámetros $\hat{\beta}$ que minimicen la distancia entre los valores observados $y$ y los valores predichos $\hat{y}$. El error de predicción se conoce como ***residuo***.
+
+* La ***función de pérdida*** es la suma de los residuos al cuadrado:
+$$
+\begin{align*}
+L(\beta, \hat{\beta}) &= \\
+&\sum_{i=1}^n (y_i - \hat{y}_i)^2 = \\
+&\sum_{i=1}^n (y_i - \hat{\beta}_0 - \hat{\beta}_1 x_{i1} - \ldots - \hat{\beta}_p x_{ip})^2
+\end{align*}
+$$
+
+## Resolviendo Mínimos cuadrados {.smaller}
+
+* En el caso de la regresión lineal, el método de mínimos cuadrados tiene una solución cerrada. Es decir, existe una fórmula para calcular los estimadores de mínimos cuadrados.
+
+* La ***solución general*** cerrada de mínimos cuadrados es:
+$$
+\hat{\beta} = (X^T X)^{-1} X^T y
+$$
+
+* Donde $X$ es la matriz de diseño, $y$ es el vector de la variable dependiente y $\hat{\beta}$ es el vector de los estimadores de mínimos cuadrados. 
+
+* No se preocupen por la fórmula, ya que la computadora la calcula automáticamente. Una versión más sencilla para una variable independiente es:
+$$
+\hat{\beta} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}
+$$
+
+* Y el intercepto es:
+$$
+\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}
+$$
+
+## Ejemplo 1: Una variable independiente {.smaller}
+
+:::{.nonincremental}
+- Supongamos que queremos predecir el precio de una casa a partir de su tamaño. El modelo de regresión lineal es:
+$$
+y = \beta_0 + \beta_1 x_1 + \epsilon
+$$
+
+- Supongamos que tenemos la siguiente muestra:
+
+```{r echo = TRUE}
+set.seed(14082001)
+x <- rnorm(100, mean = 100, sd = 10)
+y <- 10 + 2*x + rnorm(100, mean = 0, sd = 35)
+
+df <- data.frame(x, y)
+library(ggplot2)
+library(ggdark)
+
+ggplot(df, aes(x = x, y = y)) +
+    geom_point(color = "#F8766D", size = 6) +
+    labs(x = "Tamaño", y = "Precio") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+* Utilicemos las formulas para calcular los estimadores de mínimos cuadrados.
+
+```{r echo = TRUE}
+# Calculamos los estimadores de mínimos cuadrados
+beta_1 <- sum((x - mean(x))*(y - mean(y)))/sum((x - mean(x))^2)
+beta_0 <- mean(y) - beta_1*mean(x)
+
+# Imprimimos los estimadores de mínimos cuadrados
+print(beta_0)
+print(beta_1)
+```
+
+* El modelo de regresión lineal es:
+$$
+y = 57.51 + 1.55 x_1 + \epsilon
+$$
+
+* El intercepto es 57.51 y el efecto del tamaño sobre el precio es 1.55.
+:::
+
+## Regresión lineal como una distribución Normal {.smaller}
+
+- El modelo de regresión lineal se puede ver como una distribución Normal. Es decir, el modelo de regresión lineal es una distribución Normal con media $\mu$ y varianza $\sigma^2$.
+
+- En este caso la media es:
+$$
+\mu = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p
+$$
+
+- Y la varianza es:
+$$
+\sigma^2 = \epsilon
+$$
+
+* De este modo, el modelo de regresión lineal se puede ver como:
+$$
+y \sim N(\mu, \sigma^2)
+$$
+
+* El valor esperado es $\mu$, por tanto ***la regresión lineal sirve para predecir el valor esperado de la variable dependiente dado un conjunto de valores de las variables independientes.***
+$$
+E(y) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p
+$$
+
+## Regresión lineal como una distribución Normal {.smaller}
+
+<center>
+![](img/Normal_ols.jpg)
+</center>
+
+## Supuestos {.smaller}
+
+- La regresión lineal tiene ciertos supuestos que se deben tomar en cuenta:
+
+    - ***Linealidad:*** El modelo de regresión lineal asume que la relación entre la variable dependiente y las variables independientes es lineal.
+
+    - ***Homocedasticidad:*** El modelo de regresión lineal asume que la varianza de la variable dependiente es constante.
+
+    - ***Normalidad:*** El modelo de regresión lineal asume que la variable dependiente sigue una distribución Normal.
+
+    - ***Independencia:*** El modelo de regresión lineal asume que las observaciones son independientes.
+
+    - ***No colinealidad:*** El modelo de regresión lineal asume que las variables independientes no están correlacionadas.
+
+    - ***Distribución del error:*** El modelo de regresión lineal asume que el error sigue una distribución Normal.
+
+- Si alguna de estos supuestos no se cumple, entonces el modelo de regresión lineal no es el adecuado.
+
+## Limitaciones
+
+* Además, la regresión lineal tiene ciertas limitaciones:
+
+    - ***Sobreajuste:*** Si el número de observaciones es menor al número de variables independientes, entonces el modelo no se estima correctamente.
+    - ***Valores atípicos:*** El modelo de regresión lineal es sensible a los valores atípicos.
+
+## Ejemplo 2: Regresión lineal como modelo psicológico {.smaller}
+
+- A veces se puede obtener un modelo lineal de donde en realidad no lo hay. Por ejemplo, en psicología se utiliza la ley generalizada de igualación para explicar el comportamiento de elección entre programas de reforzamiento.
+
+- La ley generalizada de igualación de Herrnstein dice que la proporción de respuestas a una alternativa depende de la proporción de recompensas obtenidas de esa alternativa, la preferencia por esa alternativa y la sensibilidad a la diferencia de recompensas entre las alternativas.
+
+- Formalmente, la ley generalizada de igualación dice que:
+$$
+\frac{B_1}{B_1 + B_2} = \alpha \left( \frac{R_1}{R_1 + R_2} \right)^s
+$$
+
+- O también se puede escribir como:
+$$
+\frac{R_1}{R_2} = \alpha \left( \frac{R_1}{R_2} \right)^s
+$$
+
+- Donde $B_1$ y $B_2$ son el número de respuestas a las alternativas 1 y 2, respectivamente. Y $R_1$ y $R_2$ son el número de recompensas obtenidas de las alternativas 1 y 2, respectivamente. $\alpha$ es la preferencia por una alternativa y $s$ es la sensibilidad a la diferencia de recompensas entre las alternativas.
+
+## Ejemplo 2: Regresión lineal como modelo psicológico {.smaller}
+
+:::{.nonincremental}
+- A simple vista, la ley generalizada de igualación no es un modelo lineal. Sin embargo, si tomamos el logaritmo de ambos lados de la ecuación, entonces obtenemos:
+$$
+\log \left( \frac{R_1}{R_2} \right) = \log \alpha + s \log \left( \frac{R_1}{R_2} \right)
+$$
+
+- Que es un modelo lineal. Por tanto, podemos estimar los parámetros $\alpha$ y $s$ utilizando el modelo de regresión lineal.
+
+```{r echo = TRUE}
+# Cargamos los datos
+x <- c(-4.74, -4.2, -3.26, -3.17, 2.8, 3.2)
+y <- c(-4.16, -3, -2.16, -1.94, 2.7, 4.64)
+
+data <- data.frame(x, y)
+
+# Calculamos los estimadores de mínimos cuadrados
+beta_1 <- sum((x - mean(x))*(y - mean(y)))/sum((x - mean(x))^2)
+beta_0 <- mean(y) - beta_1*mean(x)
+
+# Imprimimos los estimadores de mínimos cuadrados
+print(beta_0)
+print(beta_1)
+```
+
+- El modelo de regresión lineal es:
+$$
+\log \left( \frac{R_1}{R_2} \right) = 0.85 + 0.96 \log \left( \frac{R_1}{R_2} \right)
+$$
+
+- Podemos visualizar el modelo de regresión lineal:
+
+```{r echo = TRUE}
+library(ggplot2)
+library(ggdark)
+
+ggplot(data, aes(x = x, y = y)) +
+    geom_point(color = "#F8766D", size = 6) +
+    geom_abline(intercept = beta_0, slope = beta_1, color = "white", size = 1.5) +
+    labs(y = "Tasa de Respuestas Log(R1/R2)", x = "Tasa de Reforzamiento Log(R1/R2)") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 20),
+        axis.title = element_text(size = 30),
+        plot.title = element_text(size = 50))
+```
+:::
+
+## Correlación y causalidad {.smaller}
+
+- Dos conceptos importantes en la regresión lineal son la ***correlación*** y la ***causalidad***.
+
+- La ***correlación*** es una medida de la relación entre dos variables. La correlación puede ser positiva, negativa o nula.
+
+- La ***causalidad*** es una relación entre dos variables donde una variable causa un cambio en la otra variable.
+
+- La correlación no implica causalidad. Es decir, dos variables pueden estar correlacionadas pero no necesariamente una causa la otra.
+
+- La regresión lineal no implica causalidad. Es decir, el modelo de regresión lineal puede ser utilizado para predecir el valor esperado de la variable dependiente, pero no necesariamente una variable causa la otra.
+
+## {.smaller}
+
+- La correlación se define como:
+$$
+r = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2 \sum_{i=1}^n (y_i - \bar{y})^2}}
+$$
+
+- Donde $r$ es el coeficiente de correlación de Pearson, $x$ es la variable independiente, $y$ es la variable dependiente, $\bar{x}$ es la media de $x$, $\bar{y}$ es la media de $y$ y $n$ es el número de observaciones.
+
+- El coeficiente de correlación de Pearson es un valor entre -1 y 1. Si $r$ es positivo, entonces la correlación es positiva. Si $r$ es negativo, entonces la correlación es negativa. Y si $r$ es nulo, entonces la correlación es nula.
