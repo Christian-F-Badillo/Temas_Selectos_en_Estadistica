@@ -99,11 +99,35 @@ group <- c(rep("Mínimos cuadrados", length(betas)),
 beta_hat <- data.frame(c(betas, betas_ridge, betas_lasso), group)
 colnames(beta_hat) <- c("beta", "group")
 
-ggplot(beta_hat, aes(x = beta, y = group)) +
-    geom_point(color = "#F8766D", size = 3) +
+ggplot(beta_hat, aes(x = beta, y = group, color = group)) +
+    geom_point(size = 4) +
     geom_vline(xintercept = 0, color = "white", size = 1.5) +
     labs(x = "\u03B2", y = "") +
     dark_theme_gray() +
     theme(axis.text = element_text(size = 30),
           axis.title = element_text(size = 40),
+          plot.title = element_text(size = 50)) +
+    theme(legend.position="none")
+
+
+###################################### Simpson`s Paradox
+
+install.packages("bayestestR")
+library(bayestestR)
+library(ggplot2)
+library(ggdark)
+
+# Simulamos los datos
+data <- simulate_simpson(n = 50, r = 0.5, groups = 4)
+colnames(data) <- c("x", "y", "grupo")
+
+ggplot(data, aes(x = x, y = y, color = grupo)) +
+    geom_point(size = 6) +
+    stat_smooth(method = "lm", size = 1, level = 0.95, alpha = 0.3) +
+    geom_smooth(method = "lm", color = "white", 
+                size = 1.5, level = 0.95, alpha = 0.6) +
+    labs(y = "Variable Dependiente", x = "Variable Independiente") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 20),
+          axis.title = element_text(size = 30),
           plot.title = element_text(size = 50))

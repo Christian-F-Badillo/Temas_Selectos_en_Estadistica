@@ -1,0 +1,4 @@
+- source: Solución_tarea_1.qmd
+  quarto-pub:
+    - id: 70a30e2a-51fb-4d52-96c2-9e8185bae698
+      url: 'https://christian-badillo.quarto.pub/temas_selectos_estadistica_tarea_1'

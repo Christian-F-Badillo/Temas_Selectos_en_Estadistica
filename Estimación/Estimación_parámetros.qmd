@@ -426,6 +426,12 @@ $$
     - ***Sobreajuste:*** Si el número de observaciones es menor al número de variables independientes, entonces el modelo no se estima correctamente.
     - ***Valores atípicos:*** El modelo de regresión lineal es sensible a los valores atípicos.
 
+## 
+
+<center>
+![](img/Linear_regresi'_ouliers.jpg)
+</center>
+
 ## Ejemplo 2: Regresión lineal como modelo psicológico {.smaller}
 
 - A veces se puede obtener un modelo lineal de donde en realidad no lo hay. Por ejemplo, en psicología se utiliza la ley generalizada de igualación para explicar el comportamiento de elección entre programas de reforzamiento.
@@ -498,13 +504,15 @@ ggplot(data, aes(x = x, y = y)) +
 
 - La ***correlación*** es una medida de la relación entre dos variables. La correlación puede ser positiva, negativa o nula.
 
-- La ***causalidad*** es una relación entre dos variables donde una variable causa un cambio en la otra variable.
+- Una relación de ***causalidad*** se define para dos o más variables cuando al modificar el valor de una variable, modifica el valor de otras o su distribución de probabilidad.
 
 - La correlación no implica causalidad. Es decir, dos variables pueden estar correlacionadas pero no necesariamente una causa la otra.
 
 - La regresión lineal no implica causalidad. Es decir, el modelo de regresión lineal puede ser utilizado para predecir el valor esperado de la variable dependiente, pero no necesariamente una variable causa la otra.
 
-## {.smaller}
+- Sin embargo, se puede utilizar la regresión lineal para probar la causalidad. Por ejemplo, si se tiene un experimento aleatorizado, entonces se puede utilizar la regresión lineal para probar la causalidad. Aquellos interesados en la causalidad pueden consultar el libro de ***Causal Inference: The Mixtape*** de Scott Cunningham, y si quieren profundizar en el tema, pueden consultar el libro de ***Causality*** de Judea Pearl. Un libro para el público general es ***The Book of Why*** de Judea Pearl.
+
+## Correlación y causalidad {.smaller}
 
 - La correlación se define como:
 $$
@@ -514,3 +522,311 @@ $$
 - Donde $r$ es el coeficiente de correlación de Pearson, $x$ es la variable independiente, $y$ es la variable dependiente, $\bar{x}$ es la media de $x$, $\bar{y}$ es la media de $y$ y $n$ es el número de observaciones.
 
 - El coeficiente de correlación de Pearson es un valor entre -1 y 1. Si $r$ es positivo, entonces la correlación es positiva. Si $r$ es negativo, entonces la correlación es negativa. Y si $r$ es nulo, entonces la correlación es nula.
+
+- La correlación nos indica la fuerza de la relación entre dos variables de forma lineal, es decir, si el valor absoluto de $r$ es cercano a 1, entonces la distancia entre los puntos y la línea de regresión es pequeña.
+
+- Cuando se eleva al cuadrado el coeficiente de correlación de Pearson, se obtiene el coeficiente de determinación $R^2$. El coeficiente de determinación es una medida de la varianza explicada por el modelo de regresión lineal.
+
+## Canción
+
+{{< video https://www.youtube.com/watch?v=D5hxMQNHyfc width="100%" height="550px" >}}
+
+## Intervalos de confianza {.smaller}
+
+- Las estimaciones puntuales son útiles, pero no nos dicen nada sobre la incertidumbre de la estimación. Por ejemplo, si estimamos la media de una población, entonces la estimación puntual es la media muestral. Pero no sabemos si la media muestral es cercana o lejana a la media poblacional.
+
+- Los ***intervalos de confianza*** son un rango de valores que contiene el valor real del parámetro con una cierta probabilidad $1 - \alpha$. Es decir, si el intervalo de confianza es $[a, b]$, entonces el valor real del parámetro está en el intervalo $[a, b]$ con una probabilidad $1 - \alpha$.
+
+- El valor de $\alpha$ se conoce como ***nivel de confianza***. Los valores más comunes de $\alpha$ son 0.05, 0.01 y 0.1. Y los niveles de confianza más comunes son 95\%, 99\% y 90\%.
+
+- Los intervalos de confianza se calculan a partir de la distribución de probabilidad de la estimación puntual, en el caso de la regresión lineal, la distribución es la normal.
+
+## Cálculo de intervalos de confianza {.smaller}
+
+- Para cálcular los intervalos de confianza en la regresión lineal, se utiliza la distribución t de Student, recuerden que esta distribución converge a la distribución Normal cuando el tamaño de la muestra es grande.
+
+- El intervalo de confianza para la regresión lineal es:
+$$
+\hat{\beta}_j \pm t_{\alpha/2, n-p-1} \sqrt{\frac{MSE}{\sum_{i=1}^n (x_{ij} - \bar{x}_j)^2}}
+$$
+
+- Donde $\hat{\beta}_j$ es el estimador de mínimos cuadrados del parámetro $\beta_j$, $t_{\alpha/2, n-p-1}$ es el valor crítico de la distribución t de Student, $MSE$ es el error cuadrático medio y $x_{ij}$ es el valor de la variable independiente $j$ de la observación $i$.
+
+- El ***error cuadrático medio*** es la varianza del error, se calcula como:
+$$
+MSE = \frac{1}{n-p-1} \sum_{i=1}^n (y_i - \hat{y}_i)^2
+$$
+
+- Donde $n$ es el número de observaciones y $p$ es el número de variables independientes.
+
+## Ejemplo: Intervalos de confianza {.smaller}
+
+:::{.nonincremental}
+
+- Usemos los datos de la flor Iris para estimar si el largo del pétalo es una buena variable para predecir el largo del sépalo independientemente de la especie.
+
+```{r echo = FALSE}
+# Datos
+data <- iris[, c(1, 3)]
+
+knitr::kable(head(data), caption = "Datos")
+```
+
+- El modelo de regresión lineal es:
+$$
+y = \beta_0 + \beta_1 x_1 + \epsilon
+$$
+
+- Donde $y$ es el largo del sépalo, $x_1$ es el largo del pétalo, $\beta_0$ es el intercepto, $\beta_1$ es el efecto del largo del pétalo sobre el largo del sépalo, y $\epsilon$ es el error aleatorio.
+
+- La matriz de diseño es:
+
+```{r echo = FALSE}
+# Matriz de diseño
+intercept <- rep(1, length(data$Sepal.Length))
+m_dis <- cbind(intercept, data$Petal.Length)
+
+knitr::kable(head(m_dis), caption = "Matriz de diseño")
+```
+
+- Calculamos los estimadores de mínimos cuadrados:
+
+```{r echo = TRUE}
+# Calculamos los estimadores de mínimos cuadrados
+
+# Calculamos la matriz de diseño
+X <- data$Petal.Length
+y <- data$Sepal.Length
+
+# Calculamos los estimadores de mínimos cuadrados
+linear_model <- lm(y ~ X)
+beta_0 <- linear_model$coefficients[1]
+beta_1 <- linear_model$coefficients[2]
+
+# Imprimimos los estimadores de mínimos cuadrados
+print(beta_0)
+print(beta_1)
+```
+
+- El modelo de regresión lineal es:
+$$
+y = 4.31 + 0.41 x_1 + \epsilon
+$$
+
+- El intercepto es 4.31 y el efecto del largo del pétalo sobre el largo del sépalo es 0.41.
+
+- Calculamos el error cuadrático medio:
+
+```{r echo = TRUE}
+# Calculamos el error cuadrático medio
+MSE <- mean(linear_model$residuals^2)
+print(MSE)
+```
+
+- El error cuadrático medio es 0.16.
+
+- La correlación entre el largo del pétalo y el largo del sépalo es:
+
+```{r echo = TRUE}
+# Calculamos la correlación
+cor(data$Petal.Length, data$Sepal.Length)
+```
+
+- La correlación es 0.87. Lo que indica que hay una correlación positiva entre el largo del pétalo y el largo del sépalo.
+
+- Calculamos el intervalo de confianza para el intercepto:
+
+```{r echo = TRUE}
+# Calculamos el intervalo de confianza para el intercepto
+alpha <- 0.05
+n <- length(data$Sepal.Length)
+p <- 1
+t_alpha <- qt(1 - alpha/2, n - p - 1)
+
+# Calculamos el intervalo de confianza
+beta_0 - t_alpha*sqrt(MSE/sum((data$Petal.Length - mean(data$Petal.Length))^2))
+beta_0 + t_alpha*sqrt(MSE/sum((data$Petal.Length - mean(data$Petal.Length))^2))
+```
+
+- El intervalo de confianza para el intercepto es $[4.27, 4.34]$. Lo que indica que el intercepto está entre 4.27 y 4.34 con una probabilidad de 95\%.
+
+- Podemos graficar el intervalo de confianza:
+
+```{r echo = TRUE}
+# Graficamos el intervalo de confianza
+library(ggplot2)
+library(ggdark)
+
+ggplot(data, aes(x = Petal.Length, y = Sepal.Length)) +
+    geom_point(color = "#F8766D", size = 6) +
+    geom_smooth(method = "lm", color = "green", 
+        size = 1.5, level = 0.95, alpha = 1) +
+    labs(y = "Largo del Sépalo", x = "Largo del Pétalo") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 20),
+        axis.title = element_text(size = 30),
+        plot.title = element_text(size = 50))
+```
+
+:::
+
+## Paradoja de Simpson {.smaller}
+
+:::{.nonincremental}
+- La ***paradoja de Simpson*** es un fenómeno en el que una tendencia que aparece en varios grupos desaparece o se invierte cuando se combinan los grupos.
+
+- La paradoja de Simpson es resultado de no tomar en cuenta una variable de confusión. Es decir, una variable que afecta tanto a la variable dependiente como a la variable independiente.
+
+- Usemos R para simular la paradoja de Simpson.
+
+```{r echo = TRUE}
+# Simulamos la paradoja de Simpson
+install.packages("bayestestR")
+library(bayestestR)
+library(ggplot2)
+library(ggdark)
+
+# Simulamos los datos
+data <- simulate_simpson(n = 50, r = 0.5, groups = 4)
+colnames(data) <- c("x", "y", "grupo")
+
+# Gráfica y modelo de regresión lineal
+ggplot(data, aes(x = x, y = y, color = grupo)) +
+    geom_point(size = 6) +
+    stat_smooth(method = "lm", size = 1, level = 0.95, alpha = 0.3) +
+    geom_smooth(method = "lm", color = "white", 
+                size = 1.5, level = 0.95, alpha = 0.6) +
+    labs(y = "Variable Dependiente", x = "Variable Independiente") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 20),
+          axis.title = element_text(size = 30),
+          plot.title = element_text(size = 50))
+```
+
+- En este caso, la variable de confusión es el grupo. Si tomamos en cuenta el grupo, entonces la relación entre la variable independiente y la variable dependiente es positiva. Pero si no tomamos en cuenta el grupo, entonces la relación entre la variable independiente y la variable dependiente es negativa.
+
+:::
+
+## Canción
+
+{{< video https://www.youtube.com/watch?v=nGqzoqXZch0&ab_channel=TheRaf width="100%" height="550px" >}}
+
+# Máxima verosimilitud
+
+> "Natural selection is a mechanism for generating an exceedingly high degree of improbability." - Ronald Fisher
+
+## Idea general {.smaller}
+
+- La ***máxima verosimilitud*** es un método de estimación de parámetros que consiste en encontrar los parámetros que maximizan la probabilidad de obtener los datos observados.
+
+- Para utilizar la máxima verosimilitud, se debe especificar una ***función de verosimilitud***. La función de verosimilitud es una función que mide la probabilidad de obtener los datos observados dado un conjunto de parámetros.
+
+- La función de verosimilitud se define como:
+$$
+L(\theta | x) = P(x | \theta)
+$$
+
+- Donde $L(\theta | x)$ es la función de verosimilitud, $x$ son los datos observados y $\theta$ son los parámetros del modelo.
+
+- Muchas veces es más fácil trabajar con el logaritmo de la función de verosimilitud, que se define como:
+$$
+\log L(\theta | x) = \ell (\theta | x) = \log P(x | \theta)
+$$
+
+- Es importante recordar que la función de verosimilitud es una función de los parámetros del modelo y no representa la probabilidad de los parámetros, aunque la función de verosimilitud puede originarse de una distribución de probabilidad.
+
+## Ejemplo 1: Máxima verosimilitud {.smaller}
+
+:::{.nonincremental}
+
+- Simulemos lanzamientos de una moneda, nuestro objetivo es estimar la probabilidad de obtener cara.
+
+```{r echo = FALSE}
+# Simulamos los datos
+set.seed(1401892373)
+data <- rbinom(16, size = 1, prob = 0.5)
+
+# Graficamos los datos
+
+library(ggplot2)
+library(ggdark)
+
+ggplot(data.frame(data), aes(x = data)) +
+    geom_bar(fill = "#F8766D", color = "white", alpha = 0.8) +
+    scale_x_continuous(breaks = c(0, 1), labels = c("Cruz", "Cara")) +
+    scale_y_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)) +
+    labs(x = "", y = "Frecuencia") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+- Tenemos 7 volados con cara y 9 volados con cruz. Para estimar su probabilidad primero debemos especificar una función de verosimilitud, en este caso la función de verosimilitud es:
+$$
+L(p | x) = p^x (1 - p)^{n - x}
+$$
+
+- Donde $L(p | x)$ es la función de verosimilitud, $x$ son los datos observados, $p$ es la probabilidad de obtener cara y $n$ el número de lanzamientos. ¿A cuál distribución de probabilidad corresponde esta función de verosimilitud?
+
+- Podemos graficar la función de verosimilitud:
+
+```{r echo = TRUE}
+# Graficamos la función de verosimilitud
+p <- seq(0, 1, 0.01)
+n <- length(data)
+x <- sum(data)
+L <- p^x*(1 - p)^(n - x)
+
+ggplot(data.frame(p, L), aes(x = p, y = L)) +
+    geom_line(color = "#F8766D", size = 1.5) +
+    labs(x = "Probabilidad de Cara", y = "Verosimilitud") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+- El valor puntual se cálcula maximizando la función de verosimilitud. Para ello, en general se deriva la función de verosimilitud y se iguala a cero. Hagamos por puro ejercicio el cálculo del valor puntual de forma analítica.
+$$
+\begin{align*}
+&\frac{\partial \ell(p | x)}{\partial p} = \\
+&\frac{\partial}{\partial p} log \left( p^x (1 - p)^{n - x} \right) = \\
+&\frac{\partial}{\partial p} \left( x log(p) + (n - x) log(1 - p) \right) = \\
+&\frac{x}{p} - \frac{n - x}{1 - p} = 0
+\end{align*}
+$$
+
+- Ahora resolvemos la ecuación para $p$:
+$$
+\begin{align*}
+&\frac{x}{p} - \frac{n - x}{1 - p} = 0 \Rightarrow \\
+&\frac{x}{p} = \frac{n - x}{1 - p} \Rightarrow \\
+&x(1 - p) = p(n - x) \Rightarrow \\
+&x - xp = pn - px \Rightarrow \\
+&x = pn + xp - px \Rightarrow \\
+&x = pn \Rightarrow \\
+&p = \frac{x}{n}
+\end{align*}
+$$
+
+- Entonces el valor puntual es:
+$$
+\hat{p} = \frac{x}{n} = \frac{7}{16} = 0.4375
+$$
+
+- Y se puede ver en la gráfica de la función de verosimilitud que el valor puntual es el máximo de la función de verosimilitud.
+
+```{r echo = FALSE}
+ggplot(data.frame(p, L), aes(x = p, y = L)) +
+    geom_line(color = "#F8766D", size = 1.5) +
+    geom_vline(xintercept = 0.4375, color = "white", size = 1.5) +
+    geom_hline(yintercept = max(L), color = "white", size = 1.5) +
+    labs(x = "Probabilidad de Cara", y = "Verosimilitud") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+:::
+

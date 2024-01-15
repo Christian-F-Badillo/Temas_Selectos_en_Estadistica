@@ -1,0 +1,250 @@
+---
+title: "Temas Selectos en Estadística"
+subtitle: "Tarea 1"
+author: "Christian F. Badillo Hernández"
+date: 01/15/24
+lang: "es"
+date-format: "D MMM YYYY"
+format:
+    revealjs:
+        incremental: true
+        scrollable: true
+        smaller: false   
+        theme: night
+        logo: Lab25_logo_2015.png
+        footer: "Temas Selectos en Estadística"
+        preview-links: true
+        preload-iframes: true
+        slide-number: true
+        transition: convex
+        background-transition: fade
+        transition-speed: slow
+        navigation-mode: linear
+        touch: true
+        controls: true
+        embed-resources: true
+        page-layout: custom
+        reference-location: document
+        link-external-newwindow: true
+        fig-height: 7
+        fig-responsive: true
+---
+
+## Primer Problema {.smaller}
+
+1. Los boletos de la lotería nacional se conforman de 11 dígitos, del 00000000000 al 99999999999. ¿Cuántos boletos hay en total? ¿Importa el orden de los dígitos? ¿Se pueden repetir los dígitos? Justifica tu método de conteo.
+
+    - Respuesta: 
+        - Dado que el orden importa y los se pueden repetir los dígitos, se utiliza la permutación con repetición. Entonces el número de boletos es $10^{11} = 100000000000$.
+    
+    1. Si compro un boleto, ¿cuál es la probabilidad de que me gane el premio mayor?
+
+        - Respuesta:
+            - La probabilidad de que me gane el premio mayor es $\frac{1}{100000000000}$, ya que solo hay un boleto ganador y hay $100000000000$ boletos en total, en notación científica es $1.0 \times 10^{-11}$.
+
+    2. Si quisiera modelar la probabilidad de cuantos boletos debo de comprar para ganarme el premio mayor, ¿qué distribución de probabilidad usaría? ¿Por qué?
+
+        - Respuesta:
+            - Se utilizaría la distribución de probabilidad binomial, ya que se trata de un experimento binomial, donde la probabilidad de éxito es $\frac{1}{100000000000}$ y la probabilidad de fracaso es $1 - \frac{1}{100000000000}$.
+
+    3. Si quisiera modelar la probabilidad de que alguien se gane el premio mayor, ¿qué distribución de probabilidad usaría? ¿Por qué?
+
+        - Respuesta:
+            - Se utilizaría la distribución de probabilidad uniforme, ya que todos los boletos tienen la misma probabilidad de ganar, con parametro $a = 0$ y $b = 100000000000$. Su pmf es $f(x) = \frac{1}{b - a} = \frac{1}{100000000000}$.
+
+## Segundo Problema {.smaller}
+
+2. En una urna hay 5 canicas rojas, 3 canicas azules y 2 canicas verdes. Si saco 3 canicas de la urna.
+ 
+    1. ¿Cuál es la probabilidad de que las 3 sean rojas?
+
+        - Respuesta:
+            - El orden de las canicas no importa, por lo que se utiliza la combinación. Entonces la probabilidad de que las 3 sean rojas es $\frac{C(5, 3)}{C(10, 3)} = \frac{10}{120} = \frac{1}{12}$.
+
+    2. ¿Cuál es la probabilidad de que las 3 sean de colores diferentes?
+
+        - Respuesta:
+            - El orden de las canicas no importa, por lo que se utiliza la combinación. Además son eventos independientes, entonces la probabilidad de que las 3 sean de colores diferentes es $\frac{C(5, 1) \times C(3, 1) \times C(2, 1)}{C(10, 3)} = \frac{30}{120} = \frac{1}{4}$.
+
+## Tercer Problema {.smaller}
+
+* ¿Cuál es la diferencia entre la interpretación frecuentista y la interpretación bayesiana de la probabilidad? ¿Cuál es la interpretación que más te convence? ¿Por qué?
+
+    - Respuesta:
+        - La interpretación frecuentista de la probabilidad es la probabilidad de que ocurra un evento en un experimento aleatorio, mientras que la interpretación bayesiana de la probabilidad es la probabilidad de que ocurra un evento en un experimento aleatorio, dada la información previa que se tiene.
+
+* ¿Cuál es la diferencia entre la probabilidad conjunta y la probabilidad condicional?
+
+    - Respuesta:
+        - La probabilidad conjunta es la probabilidad de que ocurran dos eventos al mismo tiempo, mientras que la probabilidad condicional es la probabilidad de que ocurra un evento dado que otro evento ya ocurrió.
+
+* ¿Cuál es la diferencia entre la probabilidad marginal y la probabilidad conjunta?
+
+    - Respuesta:
+        - La probabilidad marginal es la probabilidad de que ocurra un evento, mientras que la probabilidad conjunta es la probabilidad de que ocurran dos eventos al mismo tiempo.
+
+## Cuarto Problema {.smaller}
+
+* Si tengo la siguiente tabla de la probabilidad conjunta de que alguien tenga diabetes y que tenga sobrepeso.
+
+    | Sobrepeso | Diabetes | Probabilidad |
+    |-----------|----------|--------------|
+    | Si        | Si       | 0.31         |
+    | Si        | No       | 0.07         |
+    | No        | Si       | 0.25         |
+    | No        | No       | 0.37         |
+
+    1. ¿Cuál es la probabilidad de que alguien tenga sobrepeso?
+
+    - Respuesta:
+        - La probabilidad de que alguien tenga sobrepeso es $0.31 + 0.07 = 0.38$.
+
+    2. ¿Cuál es la probabilidad de que alguien tenga diabetes?
+
+    - Respuesta:
+        - La probabilidad de que alguien tenga diabetes es $0.31 + 0.25 = 0.56$.
+
+    3. ¿Cuál es la probabilidad de que alguien tenga sobrepeso y diabetes?
+
+    - Respuesta:
+        - La probabilidad de que alguien tenga sobrepeso y diabetes es $0.31$.
+
+    4. ¿Cuál es la probabilidad de que alguien tenga sobrepeso dado que tiene diabetes?
+
+    - Respuesta:
+        - La probabilidad de que alguien tenga sobrepeso dado que tiene diabetes es $\frac{0.31}{0.56} = 0.5535714$.
+
+    5. ¿Cuál es la probabilidad de que alguien tenga diabetes dado que tiene sobrepeso?
+
+    - Respuesta:
+        - La probabilidad de que alguien tenga diabetes dado que tiene sobrepeso es $\frac{0.31}{0.38} = 0.8157895$.
+
+    6. ¿Por qué la probabilidad de que alguien tenga sobrepeso y diabetes es diferente a la probabilidad de que alguien tenga sobrepeso dado que tiene diabetes?
+
+    - Respuesta:
+        - Esto es debido a que la probabilidad de $P(A | B) \neq P(B | A)$, pues mientras que la probabilidad conjunta es la misma para ambos casos, la probabilidad marginal de cada uno es diferente. Es decir, saber que alguien tiene sobrepeso aporta más información para saber si tiene diabetes, que saber que sí alguien tiene diabetes entonces tiene sobrepeso.
+
+## Quinto Problema {.smaller}
+
+-  ¿Cuál la diferencia entre la probabilidad de un evento discreto y la función de masa de probabilidad de una variable aleatoria discreta?
+
+    - Respuesta:
+        - La probabilidad de un evento discreto es la probabilidad de que ocurra un evento en un experimento aleatorio, mientras que la función de masa de probabilidad de una variable aleatoria discreta asigna una probabilidad a cada valor de la variable aleatoria.
+
+-  Elige 3 distribuciones de probabilidad discretas y 3 distribuciones de probabilidad continuas. Para cada una de ellas, presenta dos ejemplos para su uso.
+
+## Sexto Problema {.smaller}
+
+- ¿Qué representan los momentos de una distribución de probabilidad?
+
+    - Respuesta:
+        - Los momentos de una distribución de probabilidad son un conjunto de estadísticos que resumen la distribución de probabilidad. Los momentos de una distribución de probabilidad son:
+            - Media: $\mu = E(X)$
+            - Varianza: $\sigma^2 = Var(X)$
+            - Sesgo: $\gamma_1 = E\left[\left(\frac{X - \mu}{\sigma}\right)^3\right]$
+            - Curtosis: $\gamma_2 = E\left[\left(\frac{X - \mu}{\sigma}\right)^4\right]$
+
+
+## Séptimo Problema {.smaller}
+
+- Si tengo la siguiente distribución de probabilidad discreta.
+
+    | x | P(x) |
+    |---|------|
+    | 1 | 0.1  |
+    | 2 | 0.2  |
+    | 3 | 0.3  |
+    | 4 | 0.4  |
+
+    1. ¿Cuál es la media?
+
+    - Respuesta:
+        - La media es 
+        $$
+        \begin{align}
+            \mu &= E(X) \\
+            &= \sum_{i = 1}^{4} x_i \times P(x_i) \\
+            &= 1 \times 0.1 + 2 \times 0.2 + 3 \times 0.3 + 4 \times 0.4 \\
+            &= 3
+        \end{align}
+        $$
+
+    2. ¿Cuál es la varianza?
+
+    - Respuesta:
+        - La varianza es 
+        $$
+        \begin{align}
+            \sigma^2 &= Var(X) \\
+            &= \sum_{i = 1}^{4} (x_i - \mu)^2 \times P(x_i) \\
+            &= (1 - 3)^2 \times 0.1 + (2 - 3)^2 \times 0.2 \\
+            &+ (3 - 3)^2 \times 0.3 + (4 - 3)^2 \times 0.4 \\
+            &= 1
+        \end{align}
+        $$
+
+    3. ¿Cuál es la desviación estándar?
+
+    - Respuesta:
+        - La desviación estándar es $\sigma = \sqrt{\sigma^2} = \sqrt{1} = 1$.
+
+## Octavo Problema {.smaller}
+
+3. ¿Cuál es la diferencia entre la media y la mediana?
+
+- Respuesta:
+    - La media es el promedio de los datos, mientras que la mediana es el valor que se encuentra en el centro de los datos.
+
+4. ¿Cuál es la diferencia entre la varianza y la desviación estándar?
+
+- Respuesta:
+    - La varianza es la media de las diferencias al cuadrado de los datos con respecto a la media, mientras que la desviación estándar es la raíz cuadrada de la varianza y se encuentra en las mismas unidades que los datos.
+
+5. ¿Cuál es la diferencia entre la varianza y la varianza muestral?
+
+- Respuesta:
+    - La varianza es la media de las diferencias al cuadrado de los datos con respecto a la media, mientras que la varianza muestral es la media de las diferencias al cuadrado de los datos con respecto a la media, pero se divide entre $n - 1$.
+
+7. ¿Qué información nos da el coeficiente de asimetría de Fisher?
+
+- Respuesta:
+    - El coeficiente de asimetría de Fisher nos dice si la distribución de probabilidad es simétrica o asimétrica. Si el coeficiente de asimetría de Fisher es 0, entonces la distribución de probabilidad es simétrica. Si el coeficiente de asimetría de Fisher es positivo, entonces la distribución de probabilidad es asimétrica positiva. Si el coeficiente de asimetría de Fisher es negativo, entonces la distribución de probabilidad es asimétrica negativa.
+
+8. ¿Qué información nos da el coeficiente de curtosis?
+
+- Respuesta:
+    - El coeficiente de curtosis nos dice si la distribución de probabilidad es achatada o puntiaguda con respecto a la distribución normal. Si el coeficiente de curtosis es 3, entonces la distribución de probabilidad es similar a la distribución normal. Si el coeficiente de curtosis es mayor, entonces la distribución de probabilidad es puntiaguda. Si el coeficiente de curtosis es menor, entonces la distribución de probabilidad es achatada.
+
+## Noveno Problema {.smaller}
+
+- Las estatura de 10 personas son las siguientes: 1.5, 1.6, 1.7, 1.8, 1.9, 1.9, 1.9, 2.0, 2.1, 2.2. Calcula la media, la mediana, la varianza, la desviación estándar. ¿Qué puedes decir de la distribución de las estaturas?
+
+    - Respuesta:
+        - La media o valor esperado es: 
+        $$
+        \begin{align}
+            \mu &= E(X) \\
+            &= \frac{1.5 + 1.6 + 1.7 + 1.8 + 1.9}{10} \\
+            &+ \frac{1.9 + 1.9 + 2.0 + 2.1 + 2.2}{10} \\
+            &= 1.86
+        \end{align}
+        $$
+
+        - La mediana es: $1.9$.
+
+        - La varianza es: 
+        $$
+        \begin{align}
+            \sigma^2 &= Var(X) \\
+            &= \frac{(1.5 - 1.86)^2 + (1.6 - 1.86)^2 + (1.7 - 1.86)^2}{10} \\
+            &+ \frac{(1.8 - 1.86)^2 + (1.9 - 1.86)^2}{10} \\
+            &+ \frac{(1.9 - 1.86)^2 + (2.0 - 1.86)^2 + (2.1 - 1.86)^2}{10} \\
+            &+ \frac{(2.2 - 1.86)^2}{10} \\
+            &= 0.0471
+        \end{align}
+        $$
+
+        - La desviación estándar es:
+        $$
+        \sigma = \sqrt{\sigma^2} = \sqrt{0.0471} = 0.2171
+        $$
