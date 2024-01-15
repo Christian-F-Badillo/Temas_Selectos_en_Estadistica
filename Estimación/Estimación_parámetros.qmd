@@ -830,3 +830,194 @@ ggplot(data.frame(p, L), aes(x = p, y = L)) +
 ```
 :::
 
+## Modelos Lineales Generalizados {.smaller}
+
+- Los ***modelos lineales generalizados*** son una generalización de la regresión lineal que permite modelar variables dependientes que no siguen una distribución Normal.
+
+- Los modelos lineales generalizados se pueden ver como una distribución de probabilidad con una función de enlace.
+
+- La ***función de enlace (link function)*** es una función que relaciona la media de la distribución con la variable independiente.
+
+- Los modelos lineales generalizados se pueden ver como:
+$$
+g(E(y)) = \beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p + \epsilon
+$$
+
+- Donde $g(E(y))$ es la función de enlace, $E(y)$ es el valor esperado de la variable dependiente, $\beta_0$ es el intercepto, $\beta_p$ es el efecto de la variable independiente $p$ sobre la variable dependiente y $x_p$ es el valor de la variable independiente $p$.
+
+## Funciones de enlace {.smaller}
+
+* Algunas funciones de enlace son:
+$$
+\begin{array}{|c|c|c|}
+\hline
+\text{Distribución} & \text{Función de enlace} & \text{Rango} \\
+\hline
+\text{Normal} & \text{Identidad} = E(y) & (-\infty, \infty) \\
+\hline
+\text{Binomial} & \text{Logit} = \log \left( \frac{p}{1 - p} \right) & (0, 1) \\
+\hline
+\text{Poisson} & \text{Log} = \log(\lambda) & (0, \infty) \\
+\hline
+\end{array}
+$$
+
+- Cada función de enlace tiene sus propiedades y se utiliza en problemas específicos.
+
+## Supuestos de los modelos GLM {.smaller}
+
+- Los datos son independientes.
+
+- La variable dependiente sigue una distribución de probabilidad de la familia exponencial (Normal, Binomial, Poisson, Gamma, etc.).
+
+- Los modelos GLM no asumen una relación lineal entre la variable dependiente y las variables independientes, pero si asumen una relación lineal entre la variable dependiente y la función de enlace. Por ejemplo, en el caso de la regresión logística, la relación entre la variable dependiente y la variable independiente es no lineal, pero la relación entre la variable dependiente y la función de enlace es lineal.
+$$
+\log \left( \frac{p}{1 - p} \right) = \beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p
+$$
+
+- No se necesita que las variables sean homocedásticas.
+
+- Los errores tienen que ser independientes pero no neceistan seguir una distribución Normal.
+
+## Modelo de Rasch {.smaller}
+
+- El ***modelo de Rasch*** es un modelo lineal generalizado que se utiliza para medir habilidades y actitudes. Pertenece a la familia de los modelos de respuesta a ítem.
+
+- El modelo de Rasch se puede ver como:
+$$
+\log \left( \frac{p}{1 - p} \right) = \theta - \beta_i
+$$
+
+- Donde $p$ es la probabilidad de que un individuo $i$ responda correctamente un ítem, $\theta$ es la habilidad del individuo $i$ y $\beta_i$ es la dificultad del ítem $i$.
+
+- La probabilidad de que un individuo $i$ responda correctamente un ítem $j$ es:
+$$
+p_{ij} = \frac{e^{\theta_i - \beta_j}}{1 + e^{\theta_i - \beta_j}}
+$$
+
+- El modelo de Rasch es un modelo de regresión logística donde la variable dependiente es la respuesta correcta a un ítem y la variable independiente es la diferencia entre la habilidad del individuo y la dificultad del ítem.
+
+## Estimación de parámetros {.smaller}
+
+- La estimación de parámetros en los modelos lineales generalizados se realiza utilizando la máxima verosimilitud o con métodos bayesianos. Es por ello que es importante conocer la máxima verosimilitud.
+
+- Estimar los parámetros en el modelo de Rasch es un proceso complicado y normalmente se realiza en dos pasos. En el primer paso se estima la dificultad de los ítems y en el segundo paso se estima la habilidad de los individuos. Y se requiere resolver un conjunto de ecuaciones.
+
+- Con el fin de no complicar el curso, no veremos la estimación de parámetros en el modelo de Rasch completo.
+
+## Ejemplo 2: Modelo de Rasch {.smaller}
+
+:::{.nonincremental}
+
+- Simulemos datos para el modelo de Rasch para una persona y 10 ítems.
+```{r echo = TRUE}
+# Simulamos los datos
+set.seed(14012024)
+# Simulamos las habilidades
+theta <- rnorm(1, mean = 0, sd = 1)
+
+# Simulamos las dificultades
+
+beta <- rnorm(10, mean = 0, sd = 1)
+
+# Simulamos las respuestas correctas
+
+p <- exp(theta - beta)/(1 + exp(theta - beta))
+y <- rbinom(10, size = 1, prob = p)
+
+# Graficamos los datos
+
+library(ggplot2)
+library(ggdark)
+
+ggplot() +
+    geom_bar(data = data.frame(y), aes(x = y), fill = "#F8766D", color = "white", alpha = 0.8) +
+    scale_x_continuous(breaks = c(0, 1), labels = c("Incorrecto", "Correcto")) +
+    scale_y_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)) +
+    labs(x = "", y = "Frecuencia") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+- Tenemos 7 respuestas correctas y 3 respuestas incorrectas. Para simplificar el ejemplo, supongamos que conocemos las dificultades de los ítems. Y queremos estimar la habilidad de la persona, utilizando el primer ítem.
+
+- La función de verosimilitud logarítmica para el primer ítem es:
+$$
+\begin{align*}
+\ell(\theta | y_1) &= \log \left( \frac{e^{\theta - \beta_1}}{1 + e^{\theta - \beta_1}} \right)^{y_1} \left( \frac{1}{1 + e^{\theta - \beta_1}} \right)^{1 - y_1} \\
+&= y_1 (\theta - \beta_1) - (1 - y_1) \log(1 + e^{\theta - \beta_1})
+\end{align*}
+$$
+
+- Podemos graficar la función de verosimilitud logarítmica:
+
+```{r echo = TRUE}
+# Graficamos la función de verosimilitud logarítmica
+theta <- seq(-5, 5, 0.01)
+
+# Calculamos la función de verosimilitud logarítmica
+log_lik <- y[1]*(theta - beta[1]) - (1 - y[1])*log(1 + exp(theta - beta[1]))
+
+ggplot(data.frame(theta, log_lik), aes(x = theta, y = log_lik)) +
+    geom_line(color = "#F8766D", size = 1.5) +
+    labs(x = "Habilidad", y = "Verosimilitud Logarítmica") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+Si queremos estimar la habilidad de la persona, entonces debemos maximizar la función de verosimilitud logarítmica. Para ello, en general se deriva la función de verosimilitud logarítmica y se iguala a cero. Hagamos por puro ejercicio el cálculo del valor puntual de forma analítica.
+
+$$
+\begin{align*}
+&\frac{\partial \ell(\theta | y_1)}{\partial \theta} = \\
+&\frac{\partial}{\partial \theta} \left( y_1 (\theta - \beta_1) - (1 - y_1) \log(1 + e^{\theta - \beta_1}) \right) = \\
+&y_1 - (1 - y_1) \frac{e^{\theta - \beta_1}}{1 + e^{\theta - \beta_1}} = 0
+\end{align*}
+$$
+
+- Ahora resolvemos la ecuación para $\theta$:
+$$
+\begin{align*}
+&y_1 - (1 - y_1) \frac{e^{\theta - \beta_1}}{1 + e^{\theta - \beta_1}} = 0 \Rightarrow \\
+&y_1 + y_1 e^{\theta - \beta_1} - e^{\theta - \beta_1} = 0 \Rightarrow \\
+&y_1(1 + e^{\theta - \beta_1}) = e^{\theta - \beta_1} \Rightarrow \\
+&y_1 = e^{\theta - \beta_1} - y_1 e^{\theta - \beta_1} \Rightarrow \\
+&y_1 = e^{\theta - \beta_1} (1 - y_1) \Rightarrow \\
+&\frac{y_1}{1 - y_1} = e^{\theta - \beta_1} \Rightarrow \\
+&\log \left( \frac{y_1}{1 - y_1} \right) = \theta - \beta_1 \Rightarrow \\
+&\theta = \log \left( \frac{y_1}{1 - y_1} \right) + \beta_1
+\end{align*}
+$$
+
+- Entonces el valor puntual es:
+$$
+\hat{\theta} = \log \left( \frac{y_1}{1 - y_1} \right) + \beta_1
+$$
+
+- Usando R podemos estimar la habilidad de la persona:
+
+```{r echo = TRUE}
+# Estimamos la habilidad de la persona
+theta_hat <- log(y[1]/(1 - y[1])) + beta[1]
+print(theta_hat)
+```
+
+- Y se puede ver en la gráfica de la función de verosimilitud logarítmica que el valor puntual es el máximo de la función de verosimilitud logarítmica.
+
+```{r echo = FALSE}
+ggplot(data.frame(theta, log_lik), aes(x = theta, y = log_lik)) +
+    geom_line(color = "#F8766D", size = 1.5) +
+    geom_vline(xintercept = log(y[1]/(1 - y[1])) + beta[1], color = "white", size = 1.5) +
+    geom_hline(yintercept = max(log_lik), color = "white", size = 1.5) +
+    labs(x = "Habilidad", y = "Verosimilitud Logarítmica") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+:::
+
