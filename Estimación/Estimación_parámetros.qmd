@@ -282,7 +282,7 @@ knitr::kable(m_dis, caption = "Matriz de diseño")
 - Veamos como se comparan los estimadores de mínimos cuadrados, Ridge y Lasso.
 
 <center>
-![](img/ridge_lasso_ols.png)
+![](img/ridge_lasso_ols.png){width="100%" height="550px"}
 </center>
 
 :::
@@ -398,7 +398,7 @@ $$
 ## Regresión lineal como una distribución Normal {.smaller}
 
 <center>
-![](img/Normal_ols.jpg)
+![](img/Normal_ols.jpg){width="100%" height="550px"}
 </center>
 
 ## Supuestos {.smaller}
@@ -429,7 +429,13 @@ $$
 ## 
 
 <center>
-![](img/Linear_regresi'_ouliers.jpg)
+![](img/Linear_regresi'_ouliers.jpg){width="100%" height="550px"}
+</center>
+
+## 
+
+<center>
+![](img/outliers.jpg){width="100%" height="550px"}
 </center>
 
 ## Ejemplo 2: Regresión lineal como modelo psicológico {.smaller}
@@ -498,6 +504,66 @@ ggplot(data, aes(x = x, y = y)) +
 ```
 :::
 
+##
+
+<center>
+![](img/mem_stats_psycho.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/moments_joke.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/iceberg_linear_regression.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/linear_r_types.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/linear_regression_assumptions.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/linear_regression_calculation.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/lm_joke.jpg){width="100%" height="550px"}
+</center>
+
+## 
+
+<center>
+![](img/lm_mem.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/lr_mem.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/lr_easy.jpg){width="100%" height="550px"}
+</center>
+
 ## Correlación y causalidad {.smaller}
 
 - Dos conceptos importantes en la regresión lineal son la ***correlación*** y la ***causalidad***.
@@ -526,6 +592,30 @@ $$
 - La correlación nos indica la fuerza de la relación entre dos variables de forma lineal, es decir, si el valor absoluto de $r$ es cercano a 1, entonces la distancia entre los puntos y la línea de regresión es pequeña.
 
 - Cuando se eleva al cuadrado el coeficiente de correlación de Pearson, se obtiene el coeficiente de determinación $R^2$. El coeficiente de determinación es una medida de la varianza explicada por el modelo de regresión lineal.
+
+##
+
+<center>
+![](img/r_tramp.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/corelation_mem.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/causation_correlation.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/correlation_joke.jpg){width="100%" height="550px"}
+</center>
 
 ## Canción
 
@@ -669,6 +759,12 @@ ggplot(data, aes(x = Petal.Length, y = Sepal.Length)) +
 ```
 
 :::
+
+## 
+
+<center>
+![](img/ci_mem.jpg){width="100%" height="550px"}
+</center>
 
 ## Paradoja de Simpson {.smaller}
 
@@ -830,6 +926,125 @@ ggplot(data.frame(p, L), aes(x = p, y = L)) +
 ```
 :::
 
+## Ejemplo 2: Máxima verosimilitud {.smaller}
+
+::: {.nonincremental}
+- Simulemos datos de una distribución Normal con media 10 y desviación estándar 2.
+
+```{r echo = FALSE}
+# Simulamos los datos
+set.seed(1401892373)
+data <- rnorm(100, mean = 10, sd = 2)
+
+# Graficamos los datos
+library(ggplot2)
+library(ggdark)
+
+ggplot(data.frame(data), aes(x = data)) +
+    geom_histogram(fill = "#F8766D", alpha = 0.8, bins = 30) +
+    labs(x = "Datos", y = "Frecuencia") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+- Para estimar la media y la desviación estándar, primero debemos especificar una función de verosimilitud, en este caso la función de verosimilitud es:
+$$
+L(\mu, \sigma | x) = \prod_{i=1}^n \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x_i - \mu)^2}{2 \sigma^2}}
+$$
+
+- Dado que es más fácil trabajar con el logaritmo de la función de verosimilitud, entonces la función de verosimilitud es:
+$$
+\begin{align*}
+\ell(\mu, \sigma | x) &= \sum_{i=1}^n \log \left( \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x_i - \mu)^2}{2 \sigma^2}} \right) \\
+
+&= \sum_{i=1}^n \left( \log \left( \frac{1}{\sqrt{2 \pi \sigma^2}} \right) + \log \left( e^{-\frac{(x_i - \mu)^2}{2 \sigma^2}} \right) \right) \\
+
+&= \sum_{i=1}^n \left( \log \left( \frac{1}{\sqrt{2 \pi \sigma^2}} \right) - \frac{(x_i - \mu)^2}{2 \sigma^2} \right) \\
+
+&= \sum_{i=1}^n \left( -\frac{1}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{(x_i - \mu)^2}{2 \sigma^2} \right) \\
+
+\end{align*}
+$$
+
+- Utilzando propiedades de la sumatoria, podemos escribir la función de verosimilitud como:
+$$
+\ell(\mu, \sigma | x) = -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i - \mu)^2
+$$
+
+
+- Para estimar cada parámetro, se deriva la función de verosimilitud con respecto al parámetro y se iguala a cero.
+$$
+\begin{align*}
+&\frac{\partial \ell(\mu, \sigma | x)}{\partial \mu} = \\
+&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i - \mu)^2 \right) = \\
+&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i^2 - 2 x_i \mu + \mu^2) \right) = \\
+&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 - 2 \sum_{i=1}^n x_i \mu + \sum_{i=1}^n \mu^2 \right) \right) = \\
+&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 - 2 n \mu \bar{x} + n \mu^2 \right) \right) = \\
+\end{align*}
+$$
+
+- Ahora todo lo que no tiene $\mu$ se puede eliminar, ya que al derivar con respecto a $\mu$ se anula. Y se obtiene:
+$$
+\begin{align*}
+&\frac{\partial \ell(\mu, \sigma | x)}{\partial \mu} = \\
+&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 - 2 n \mu \bar{x} + n \mu^2 \right) \right) = \\
+&\frac{\partial}{\partial \mu} \left( - \frac{1}{2 \sigma^2} \left(- 2 n \mu \bar{x} + n \mu^2 \right) \right) = \\
+&\frac{\partial}{\partial \mu} \left( \frac{n \mu^2}{2 \sigma^2} - \frac{n \mu \bar{x}}{\sigma^2} \right) = \\
+&\frac{n \mu}{\sigma^2} - \frac{n \bar{x}}{\sigma^2} = 0
+\end{align*}
+$$
+
+- Resolvemos la ecuación para $\mu$:
+$$
+\begin{align*}
+&\frac{n \mu}{\sigma^2} - \frac{n \bar{x}}{\sigma^2} = 0 \Rightarrow \\
+&\frac{n \mu}{\sigma^2} = \frac{n \bar{x}}{\sigma^2} \Rightarrow \\
+&n \mu = n \bar{x} \Rightarrow \\
+&\mu = \bar{x}
+\end{align*}
+$$
+
+- Con un proceso similar se puede calcular el valor puntual de la desviación estándar. El valor puntual de la media es $\bar{x}$ y el valor puntual de la desviación estándar es $s$, que es la desviación estándar muestral.
+
+- Dado que son dos parámetros, se puede graficar la función de verosimilitud en 3D:
+```{r echo = TRUE}
+library(plotly)
+mu <- seq(8, 12, 0.01)
+sigma <- seq(1, 2.5, 0.01)
+L <- matrix(0, nrow = length(mu), ncol = length(sigma))
+
+for (i in 1:length(mu)) {
+    for (j in 1:length(sigma)) {
+        L[i, j] <- sum(dnorm(data, mean = mu[i], sd = sigma[j], log = T))
+    }
+}
+
+plot_ly(x = mu, y = sigma, z = L, type = "surface") %>% 
+    layout(
+        title = "",
+        scene = list(
+            xaxis = list(title = "\u03BC"),
+            yaxis = list(title = "\u03C3"),
+            zaxis = list(title = "Log-Likelihood")
+        )
+    )
+```
+
+- Y podemos verificar nuestras estimaciones.
+
+```{r echo = FALSE}
+max_log = which(L == max(L), arr.ind = TRUE)   
+print(paste("Max Log-Likelihood: ", L[max_log]))
+print(paste("Media muestral = ", mean(data)))
+print(paste("Desviación Estandar muestral = ", sd(data)))
+print(paste("Estimación Puntual de la media = ", mu[187]))
+print(paste("Estimación Puntual de la desv. est. = ", sigma[94]))
+```
+
+:::
+
 ## Modelos Lineales Generalizados {.smaller}
 
 - Los ***modelos lineales generalizados*** son una generalización de la regresión lineal que permite modelar variables dependientes que no siguen una distribución Normal.
@@ -879,6 +1094,40 @@ $$
 
 - Los errores tienen que ser independientes pero no neceistan seguir una distribución Normal.
 
+## Regresión logística {.smaller}
+
+- La ***regresión logística*** es un modelo lineal generalizado que se utiliza para modelar variables dependientes binarias, como por ejemplo, si un paciente tiene o no una enfermedad.
+
+- La regresión logística se puede ver como:
+$$
+\log \left( \frac{p}{1 - p} \right) = \beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p
+$$
+
+- La cual utiliza la distribución logística como función de enlace para modelar variables bernoulli.
+$$
+p = \frac{e^{\beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p}}{1 + e^{\beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p}}
+$$
+
+- Observemos la forma de la distribución logística:
+
+```{r echo = TRUE eval = TRUE}
+# Graficamos la distribución logística
+library(ggplot2)
+library(ggdark)
+
+x <- seq(-10, 10, 0.01)
+y <- exp(x)/(1 + exp(x))
+
+ggplot() +
+    geom_line(aes(x = x, y = y), color = "#F8766D", size = 1) +
+    labs(x = "x", y = "y") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+          axis.title = element_text(size = 40),
+          plot.title = element_text(size = 50))
+```
+
+
 ## Modelo de Rasch {.smaller}
 
 - El ***modelo de Rasch*** es un modelo lineal generalizado que se utiliza para medir habilidades y actitudes. Pertenece a la familia de los modelos de respuesta a ítem.
@@ -905,119 +1154,143 @@ $$
 
 - Con el fin de no complicar el curso, no veremos la estimación de parámetros en el modelo de Rasch completo.
 
-## Ejemplo 2: Modelo de Rasch {.smaller}
+## Ejemplo 3: Modelo de Rasch {.smaller}
 
 :::{.nonincremental}
 
-- Simulemos datos para el modelo de Rasch para una persona y 10 ítems.
+- Simulemos datos para el modelo de Rasch para 100 individuos y 10 ítems.
+
 ```{r echo = TRUE}
+library(reshape2)
+
 # Simulamos los datos
-set.seed(14012024)
-# Simulamos las habilidades
-theta <- rnorm(1, mean = 0, sd = 1)
+set.seed(1401892373)
+n <- 100
+m <- 10
+theta <- rnorm(n, mean = 0, sd = 1)
+beta <- rnorm(m, mean = 0, sd = 1)
+p <- matrix(NA, nrow = n, ncol = m)
 
-# Simulamos las dificultades
+for(i in 1:n){
+    for(j in 1:m){
+        p[i, j] <- exp(theta[i] - beta[j])/(1 + exp(theta[i] - beta[j]))
+    }
+}
 
-beta <- rnorm(10, mean = 0, sd = 1)
+responses <- matrix(NA, nrow = n, ncol = m)
 
-# Simulamos las respuestas correctas
-
-p <- exp(theta - beta)/(1 + exp(theta - beta))
-y <- rbinom(10, size = 1, prob = p)
+for(i in 1:n){
+    for(j in 1:m){
+        responses[i, j] <- rbinom(1, size = 1, prob = p[i, j])
+    }
+}
 
 # Graficamos los datos
+data <- melt(responses)
+data <- data.frame(data)
 
-library(ggplot2)
-library(ggdark)
-
-ggplot() +
-    geom_bar(data = data.frame(y), aes(x = y), fill = "#F8766D", color = "white", alpha = 0.8) +
-    scale_x_continuous(breaks = c(0, 1), labels = c("Incorrecto", "Correcto")) +
-    scale_y_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)) +
-    labs(x = "", y = "Frecuencia") +
+ggplot(data, aes(x = Var1, y =Var2, fill = value)) +
+    labs(x = "Ítem", y = "Persona") +
+    geom_raster(hjust = 0, vjust = 0) +
+    scale_fill_gradient("Respuesta", low = "#6C1D7D", high = "#316995") +
+    scale_y_continuous(breaks = seq(0, 10, 1)) +
+    scale_x_continuous(breaks = seq(0, 100, 5)) +
     dark_theme_gray() +
-    theme(axis.text = element_text(size = 30),
-        axis.title = element_text(size = 40),
-        plot.title = element_text(size = 50))
+    theme(axis.text = element_text(size = 20),
+        axis.title = element_text(size = 30),
+        plot.title = element_text(size = 50),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 20))
 ```
 
-- Tenemos 7 respuestas correctas y 3 respuestas incorrectas. Para simplificar el ejemplo, supongamos que conocemos las dificultades de los ítems. Y queremos estimar la habilidad de la persona, utilizando el primer ítem.
+- En este caso, la variable dependiente es la respuesta correcta a un ítem y la variable independiente es la diferencia entre la habilidad del individuo y la dificultad del ítem.
 
-- La función de verosimilitud logarítmica para el primer ítem es:
+- La función de verosimilitud es muy complicada, para estimarse de forma analítica se requiere resolver un conjunto de ecuaciones. Por motivos de morbo matemático veamos la expresión general de la función de verosimilitud.
 $$
-\begin{align*}
-\ell(\theta | y_1) &= \log \left( \frac{e^{\theta - \beta_1}}{1 + e^{\theta - \beta_1}} \right)^{y_1} \left( \frac{1}{1 + e^{\theta - \beta_1}} \right)^{1 - y_1} \\
-&= y_1 (\theta - \beta_1) - (1 - y_1) \log(1 + e^{\theta - \beta_1})
-\end{align*}
+L(\theta, \beta | x) = \prod_{i=1}^n \prod_{j=1}^m \left( \frac{e^{\theta_i - \beta_j}}{1 + e^{\theta_i - \beta_j}} \right)^{x_{ij}} \left( \frac{1}{1 + e^{\theta_i - \beta_j}} \right)^{1 - x_{ij}}
 $$
 
-- Podemos graficar la función de verosimilitud logarítmica:
+- No se puede resolver de forma analítica, por lo que se utiliza un método numérico para estimar los parámetros. En R tenemos la función `RM` del paquete `eRm` que estima los parámetros del modelo de Rasch.
 
 ```{r echo = TRUE}
-# Graficamos la función de verosimilitud logarítmica
-theta <- seq(-5, 5, 0.01)
+install.packages("eRm")
+library(eRm)
 
-# Calculamos la función de verosimilitud logarítmica
-log_lik <- y[1]*(theta - beta[1]) - (1 - y[1])*log(1 + exp(theta - beta[1]))
+rasch_model <- RM(responses)
+betas <- coef(rasch_model)
+thetas <- person.parameter(rasch_model)
 
-ggplot(data.frame(theta, log_lik), aes(x = theta, y = log_lik)) +
-    geom_line(color = "#F8766D", size = 1.5) +
-    labs(x = "Habilidad", y = "Verosimilitud Logarítmica") +
-    dark_theme_gray() +
-    theme(axis.text = element_text(size = 30),
-        axis.title = element_text(size = 40),
-        plot.title = element_text(size = 50))
+betas <- -coef(rasch_model)
+thetas <- coef(person.parameter(rasch_model))
+
+mes <- paste("Habilidad: ", thetas, sep = "")
+mbs <- paste("Dificultad: ", betas, sep = "")
+
+print(mes)
+print(mbs)
 ```
 
-Si queremos estimar la habilidad de la persona, entonces debemos maximizar la función de verosimilitud logarítmica. Para ello, en general se deriva la función de verosimilitud logarítmica y se iguala a cero. Hagamos por puro ejercicio el cálculo del valor puntual de forma analítica.
-
-$$
-\begin{align*}
-&\frac{\partial \ell(\theta | y_1)}{\partial \theta} = \\
-&\frac{\partial}{\partial \theta} \left( y_1 (\theta - \beta_1) - (1 - y_1) \log(1 + e^{\theta - \beta_1}) \right) = \\
-&y_1 - (1 - y_1) \frac{e^{\theta - \beta_1}}{1 + e^{\theta - \beta_1}} = 0
-\end{align*}
-$$
-
-- Ahora resolvemos la ecuación para $\theta$:
-$$
-\begin{align*}
-&y_1 - (1 - y_1) \frac{e^{\theta - \beta_1}}{1 + e^{\theta - \beta_1}} = 0 \Rightarrow \\
-&y_1 + y_1 e^{\theta - \beta_1} - e^{\theta - \beta_1} = 0 \Rightarrow \\
-&y_1(1 + e^{\theta - \beta_1}) = e^{\theta - \beta_1} \Rightarrow \\
-&y_1 = e^{\theta - \beta_1} - y_1 e^{\theta - \beta_1} \Rightarrow \\
-&y_1 = e^{\theta - \beta_1} (1 - y_1) \Rightarrow \\
-&\frac{y_1}{1 - y_1} = e^{\theta - \beta_1} \Rightarrow \\
-&\log \left( \frac{y_1}{1 - y_1} \right) = \theta - \beta_1 \Rightarrow \\
-&\theta = \log \left( \frac{y_1}{1 - y_1} \right) + \beta_1
-\end{align*}
-$$
-
-- Entonces el valor puntual es:
-$$
-\hat{\theta} = \log \left( \frac{y_1}{1 - y_1} \right) + \beta_1
-$$
-
-- Usando R podemos estimar la habilidad de la persona:
-
-```{r echo = TRUE}
-# Estimamos la habilidad de la persona
-theta_hat <- log(y[1]/(1 - y[1])) + beta[1]
-print(theta_hat)
-```
-
-- Y se puede ver en la gráfica de la función de verosimilitud logarítmica que el valor puntual es el máximo de la función de verosimilitud logarítmica.
+- Por último podemos comparar las habilidades estimadas con las habilidades reales.
 
 ```{r echo = FALSE}
-ggplot(data.frame(theta, log_lik), aes(x = theta, y = log_lik)) +
-    geom_line(color = "#F8766D", size = 1.5) +
-    geom_vline(xintercept = log(y[1]/(1 - y[1])) + beta[1], color = "white", size = 1.5) +
-    geom_hline(yintercept = max(log_lik), color = "white", size = 1.5) +
-    labs(x = "Habilidad", y = "Verosimilitud Logarítmica") +
+# Graficamos las habilidades estimadas
+data_thetas <- data.frame(theta, thetas)
+ggplot(data_thetas, aes(x = theta, y = thetas)) +
+    geom_point(color = "#F8766D", size = 6) +
+    geom_abline(intercept = 0, slope = 1, color = "white", size = 1.5) +
+    labs(y = "Habilidad Estimada", x = "Habilidad Real") +
     dark_theme_gray() +
-    theme(axis.text = element_text(size = 30),
-        axis.title = element_text(size = 40),
+    theme(axis.text = element_text(size = 20),
+        axis.title = element_text(size = 30),
         plot.title = element_text(size = 50))
 ```
+
+- E igualmente podemos comparar las dificultades estimadas con las dificultades reales.
+
+```{r echo = FALSE}
+# Graficamos las dificultades estimadas
+data_betas <- data.frame(beta, betas)
+
+ggplot(data_betas, aes(x = beta, y = betas)) +
+    geom_point(color = "#F8766D", size = 6) +
+    geom_abline(intercept = 0, slope = 1, color = "white", size = 1.5) +
+    labs(y = "Dificultad Estimada", x = "Dificultad Real") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 20),
+        axis.title = element_text(size = 30),
+        plot.title = element_text(size = 50))
+```
+
 :::
 
+## Propiedades del estimador de máxima verosimilitud {.smaller}
+
+- Como vimos anteriormente, un buen estimador debe ser insesgado, consistente y eficiente.
+
+- El estimador de máxima verosimilitud tiene ciertas propiedades que lo hacen un buen estimador.
+
+    1. **Consistencia:** El estimador de máxima verosimilitud es consistente, es decir, cuando el tamaño de la muestra tiende a infinito, el estimador de máxima verosimilitud converge al valor real del parámetro.
+
+    2. **Invarianza:** El estimador de máxima verosimilitud es invariante a la transformación de la función de verosimilitud. Es decir, si se transforma la función de verosimilitud, entonces el estimador de máxima verosimilitud no cambia.
+
+    3. **Eficiencia:** El estimador de máxima verosimilitud es el estimador más eficiente. Es decir, el estimador de máxima verosimilitud tiene la menor varianza entre todos los estimadores insesgados.
+
+    4. **Asintóticamente normal:** El estimador de máxima verosimilitud es asintóticamente normal. Es decir, cuando el tamaño de la muestra tiende a infinito, el estimador de máxima verosimilitud sigue una distribución Normal, con media 0 y varianza igual a la inversa de la información de Fisher.
+
+##
+
+<center>
+![](img/statistics.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/statistics_water.jpg){width="100%" height="550px"}
+</center>
+
+##
+
+<center>
+![](img/sad_science.jpg){width="100%" height="550px"}
+</center>
