@@ -1,0 +1,549 @@
+---
+title: "Estadística Inferencial"
+subtitle: "Estimación de parámetros Bayesiana"
+author: "Christian F. Badillo Hernández"
+date: 01/15/24
+lang: "es"
+date-format: "D MMM YYYY"
+format:
+    revealjs:
+        incremental: true
+        scrollable: true
+        smaller: false   
+        theme: night
+        logo: img/Lab25_logo_2015.png
+        footer: "Temas Selectos en Estadística"
+        preview-links: true
+        preload-iframes: true
+        slide-number: true
+        transition: convex
+        background-transition: fade
+        transition-speed: slow
+        navigation-mode: linear
+        touch: true
+        controls: true
+        embed-resources: true
+        page-layout: custom
+        reference-location: document
+        link-external-newwindow: true
+        fig-height: 7
+        fig-responsive: true
+---
+
+## Teorema de Bayes {.smaller}
+
+- Anteriormente vimos el teorema de Bayes para dos eventos $A$ y $B$:
+$$
+P(A|B)=\frac{P(B|A)P(A)}{P(B)}
+$$
+
+- El termino $P(A|B)$ se conoce como la **posterior** de $A$ dado $B$.
+
+- El termino $P(B|A)$ se conoce como la **verosimilitud** de $B$ dado $A$.
+
+- El termino $P(A)$ se conoce como el **prior** de $A$.
+
+- El termino $P(B)$ se conoce como la **verosimilitud marginal** de $B$. 
+
+## Ejemplo 1. {.smaller}
+
+- Supongamos que somos doctes y queremos saber la probabilidad de que alguien tenga Covid-19, dado que salio positivo en la prueba. Sabemos que la prevalencia de Covid-19 en la población es de $0.65$. Y que la prueba tiene una sensibilidad de $0.97$ y una especificidad de $0.8$. ¿Cuál es la probabilidad de que alguien tenga Covid-19, dado que salio positivo en la prueba?
+
+- Sea $A$ el evento de que alguien tenga Covid-19 y $B$ el evento de que alguien salga positivo en la prueba. Entonces, tenemos que:
+$$
+\begin{align*}
+P(A|B)&=\frac{P(B|A)P(A)}{P(B)}= \\
+&\frac{P(B|A)P(A)}{P(B|A)P(A)+P(B|A^c)P(A^c)}
+\end{align*}
+$$
+
+- Donde $P(B|A)=0.97$, $P(A)=0.65$ y $P(B|A^c)=0.2$. Por lo tanto:
+$$
+P(A|B)=\frac{0.97\times 0.65}{0.97\times 0.65+0.2\times 0.35}=0.9
+$$
+
+## Ejempl0 2. {.smaller}
+
+- Si tenemos dos urnas con bolas blancas y negras. En la primera urna hay $4$ bolas blancas y $6$ bolas negras. En la segunda urna hay $2$ bolas blancas y $8$ bolas negras. Si elegimos una urna al azar y sacamos una bola blanca. ¿Cuál es la probabilidad de que la bola haya salido de la primera urna?
+
+- Sea $A$ el evento de que la bola salga de la primera urna y $B$ el evento de que la bola sea blanca. Entonces, tenemos que:
+$$
+\begin{align*}
+P(A|B)&=\frac{P(B|A)P(A)}{P(B)}= \\
+&\frac{P(B|A)P(A)}{P(B|A)P(A)+P(B|A^c)P(A^c)}
+\end{align*}
+$$
+
+- Donde $P(B|A)=0.4$, $P(A)=0.5$ y $P(B|A^c)=0.2$. Por lo tanto:
+$$
+P(A|B)=\frac{0.4\times 0.5}{0.4\times 0.5+0.2\times 0.5}=0.6
+$$
+
+- Si ahora sacamos una bola negra. ¿Cuál es la probabilidad de que la bola haya salido de la primera urna?
+
+- Respuesta:
+$$
+P(A|B^c)=\frac{0.6\times 0.5}{0.6\times 0.5+0.8\times 0.5}=0.4286
+$$
+
+## Ejemplo 3. {.smaller}
+
+- Imagina que tienes dos cajas de galletas, cada una con dos tipos de galletas: chocolate y vainilla. La Caja 1 tiene 30% de galletas de chocolate y 70% de galletas de vainilla, mientras que la Caja 2 tiene 60% de galletas de chocolate y 40% de galletas de vainilla. Ahora, imagina que eliges una caja al azar y sacas una galleta. Si la galleta es de chocolate, ¿cuál es la probabilidad de que haya salido de la Caja 1?
+
+- Respuesta:
+$$
+P(A|B)=\frac{0.5\times 0.3}{0.5\times 0.3+0.5\times 0.6}=0.3333
+$$
+
+## Estimación de parámetros {.smaller}
+
+- En la estadística inferencial, tenemos una muestra de datos $x_1,\ldots,x_n$ que provienen de una distribución de probabilidad $f(x|\theta)$, donde $\theta$ es un parámetro desconocido.
+
+- Ya vimos dos métodos para estimar $\theta$:
+    - **Estimación de máxima verosimilitud**. Seleccionamos el valor de $\theta$ que maximiza la verosimilitud de los datos.
+    - **Estimación por mínimos cuadrados**. Seleccionamos el valor de $\theta$ que minimiza la suma de los cuadrados de las diferencias entre los datos y el modelo.
+
+- En este tema veremos un tercer método para estimar $\theta$. Este método se conoce como **estimación Bayesiana**.
+
+- Utilizaremos el teorema de Bayes para estimar $\theta$. Existen dos formas de resolver el teorema de Bayes:
+    - ***Analíticamente:*** En este caso, es posible calcular la posterior de $\theta$ de forma analítica con métodos de integración.
+    - ***Mediante algoritmos:*** Cuando no es posible calcular la posterior de forma analítica, podemos utilizar algoritmos para aproximar la posterior de $\theta$. Los algoritmos más comunes son el **Metropolis-Hastings** y sus variantes, tales como el **muestreo de Gibbs** y el **muestreo Hamiltoniano**. En conjunto estos algoritmos se conocen como **algoritmos MCMC** (Markov Chain Monte Carlo).
+
+# Método analítico
+
+## Método analítico {.smaller}
+
+- Supongamos que tenemos una muestra de datos $x_1,\ldots,x_n$ que provienen de una distribución de probabilidad $f(x|\theta)$, donde $\theta$ es un parámetro desconocido. El teorema de Bayes nos dice que:
+$$
+P(\theta|x_1,\ldots,x_n)=\frac{P(x_1,\ldots,x_n|\theta)P(\theta)}{P(x_1,\ldots,x_n)}
+$$
+
+- Donde $P(\theta|x_1,\ldots,x_n)$ es la posterior de $\theta$, $P(x_1,\ldots,x_n|\theta)$ es la verosimilitud de $\theta$, $P(\theta)$ es el prior de $\theta$ y $P(x_1,\ldots,x_n)$ es la verosimilitud marginal de $\theta$.
+
+- El denominador $P(x_1,\ldots,x_n)$ es una integral que se conoce como **evidencia**. Esta integral es muy difícil de calcular en la mayoria de los casos. 
+
+- Para evitar problemas, en sus incios se usaban [priors **conjugados**](https://en.wikipedia.org/wiki/Conjugate_prior#Table_of_conjugate_distributions). Estos priors tienen la propiedad de que la posterior es de la misma familia que el prior. Permitiendo así, calcular la posterior de forma analítica.
+
+- Sin embargo, en la actualidad, se utilizan algoritmos MCMC para aproximar la posterior de $\theta$.
+
+## Ejemplo {.smaller}
+
+- El ejemplo más sencillo para entender la estimación Bayesiana es el caso de una moneda. Supongamos que tenemos una moneda y queremos estimar la probabilidad de que salga cara. Para esto, lanzamos la moneda 20 veces y obtenemos 15 caras.
+
+- El primer paso es definir la veroimilitud de $\theta$, o en otras palabras, el modelo que describe la probabilidad de obtener una cara. En este caso, el modelo es una distribución binomial con parámetros $n=20$ y $\theta$:
+$$
+f(x|\theta)= \theta^x(1-\theta)^{20-x}
+$$
+
+- El segundo paso es espcificar el prior de $\theta$. En este caso, el prior tiene que tener dos propiedaes:
+    - El prior deber de modelar una probabilidad. Por lo tanto, el prior debe de estar entre 0 y 1.
+    - Para poder calcular la posterior, la forma del prior debe de ser la misma que la de la verosimilitud.
+
+- ¿Existe alguna distribución que cumpla con estas dos propiedades? 
+    - Si, la distribución Beta. La distribución Beta tiene dos parámetros $\alpha$ y $\beta$ y su función de densidad es:
+$$
+f(\theta|\alpha,\beta)=\frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha,\beta)}
+$$
+
+- Donde $B(\alpha,\beta)$ es la función Beta. La función Beta es una constante de normalización que hace que la integral de la distribución Beta sea igual a 1.
+
+## Ejemplo {.smaller}
+
+- Sabiendo nuestro prior y nuestra verosimilitud, podemos ponerlos en el teorema de Bayes, la espresión resultante es:
+$$
+\begin{align*}
+P(\theta|x_1,\ldots,x_n)&=\frac{P(x_1,\ldots,x_n|\theta)P(\theta)}{P(x_1,\ldots,x_n)}= \\
+&\frac{\theta^{\sum x_i}(1-\theta)^{n-\sum x_i}\frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha,\beta)}}{\int_0^1 \theta^{\sum x_i}(1-\theta)^{n-\sum x_i}\frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha,\beta)}d\theta}
+\end{align*}
+$$
+
+- Para resaltar la importancia de usar el prior conjugado, veamos que el numerador de la expresión anterior es igual a:
+$$
+\begin{align*}
+&\theta^{\sum x_i}(1-\theta)^{n-\sum x_i}\frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha,\beta)}=\\
+&\theta^{\sum x_i+\alpha-1}(1-\theta)^{n-\sum x_i+\beta-1}\frac{1}{B(\alpha,\beta)}
+\end{align*}
+$$
+
+- En el denominador sucede la misma simplificación. Pero nos queda un factor $\frac{1}{B(\alpha,\beta)}$ tanto en el numerador como en el denominador. Pero dado que $B(\alpha,\beta)$ es una constante, podemos sacarla de la integral. Resultando en:
+$$
+\begin{align*}
+&P(\theta|x_1,\ldots,x_n)= \\
+&\frac{\theta^{\sum x_i+\alpha-1}(1-\theta)^{n-\sum x_i+\beta-1} \frac{1}{B(\alpha,\beta)}}{ \frac{1}{B(\alpha,\beta)}\int_0^1 \theta^{\sum x_i+\alpha-1}(1-\theta)^{n-\sum x_i+\beta-1}d\theta}
+\end{align*}
+$$
+
+- Dado que el numerador y el denominador tienen el mismo factor, podemos simplificarlos. Resultando en:
+$$
+P(\theta|x_1,\ldots,x_n)=\frac{\theta^{\sum x_i+\alpha-1}(1-\theta)^{n-\sum x_i+\beta-1}}{\int_0^1 \theta^{\sum x_i+\alpha-1}(1-\theta)^{n-\sum x_i+\beta-1}d\theta}
+$$
+
+- Comparemos esta expresión con la distribución Beta y recordando que la función Beta es una constante de normalización, tenemos que:
+$$
+f(\theta|\alpha,\beta)=\frac{\theta^{\alpha-1}(1-\theta)^{\beta-1}}{B(\alpha,\beta)}
+$$
+
+- Entonces, podemos ver que la posterior de $\theta$ es una distribución Beta con parámetros $\alpha+\sum x_i$ y $\beta+n-\sum x_i$.
+
+- Por lo tanto, el prior Beta nos ayudo a calcular la posterior de $\theta$ de forma analítica y ***¡¡¡¡ sin realizar ninguna integral !!!!***
+
+## Ejemplo {.smaller}
+
+::: {.nonincremental}
+- Veamos la expresion de la posterior de $\theta$:
+$$
+P(\theta|x_1,\ldots,x_n)=\frac{\theta^{\sum x_i+\alpha-1}(1-\theta)^{n-\sum x_i+\beta-1}}{\int_0^1 \theta^{\sum x_i+\alpha-1}(1-\theta)^{n-\sum x_i+\beta-1}d\theta}
+$$
+
+- O de forma equivalente:
+$$
+P(\theta|x_1,\ldots,x_n)= Beta(\theta|\alpha+\sum x_i,\beta+n-\sum x_i)
+$$
+
+- Ya tenemos la expresión de la posterior de $\theta$. Pero no hemos elegido los valores de $\alpha$ y $\beta$. ¿Cómo elegimos los valores de $\alpha$ y $\beta$? 
+
+- La respuesta es que depende de lo que sepamos de $\theta$ antes de ver los datos. Por ejemplo, si no sabemos nada de $\theta$, podemos elegir $\alpha=1$ y $\beta=1$. Esto es equivalente a decir que $\theta$ tiene una distribución uniforme entre 0 y 1.
+
+- Si pensamos que $\theta$ es más probable que sea cercano a 0.5, podemos elegir $\alpha=2$ y $\beta=2$. Esto es equivalente a decir que $\theta$ tiene una distribución centrada en 0.5.
+
+- Visualicemos estos priors:
+```{r}
+library(ggplot2)
+library(ggdark)
+
+alpha <- c(1, 2)
+betas <- c(1, 2)
+theta <- seq(0, 1, 0.01)
+
+ggplot() +
+    geom_line(aes(x = theta, y = dbeta(theta, alpha[1], betas[1]), color = "red")) +
+    geom_line(aes(x = theta, y = dbeta(theta, alpha[2], betas[2]), color = "white")) +
+    labs(x = expression(theta), y = "Densidad") +
+    dark_theme_gray() +
+    scale_color_manual("Prior", values = c("red", "white"), labels = c("\u03B1 = 1, \u03B2 = 1", "\u03B1 = 2, \u03B2 = 2")) +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50),
+        legend.title = element_text(size=25),
+        legend.text = element_text(size=20),
+        legend.position = c(.07, .8),
+        legend.key.size = unit(2, 'cm'), #change legend key size
+        legend.key.height = unit(2, 'cm'), #change legend key height
+        legend.key.width = unit(2, 'cm'))
+```
+
+- Utilizando estos priors, podemos calcular la posterior de $\theta$:
+```{r}
+caras <- 15
+n <- 20
+
+ggplot() +
+    geom_line(aes(x = theta, y = dbeta(theta, alpha[1] + caras, betas[1] + n - caras), color = "red")) +
+    geom_line(aes(x = theta, y = dbeta(theta, alpha[2] + caras, betas[2] + n - caras), color = "white")) +
+    labs(x = expression(theta), y = "Densidad") +
+    dark_theme_gray() +
+    scale_color_manual("Prior", values = c("red", "white"), labels = c("\u03B1 = 1, \u03B2 = 1", "\u03B1 = 2, \u03B2 = 2")) +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50),
+        legend.title = element_text(size=25),
+        legend.text = element_text(size=20),
+        legend.position = c(.11, .8),
+        legend.key.size = unit(2, 'cm'), #change legend key size
+        legend.key.height = unit(2, 'cm'), #change legend key height
+        legend.key.width = unit(2, 'cm'))
+```
+:::
+
+## Ejemplo {.smaller}
+
+- Ya tenemos la posterior de $\theta$. Pero, ¿cómo podemos utilizarla para estimar $\theta$?
+
+- Una forma de estimar $\theta$ es utilizando la **media posterior** o la **moda posterior** (*maximum a posteriori*). Usemos la media posterior, la cual se define como:
+$$
+\begin{align*}
+&E[\theta|x_1,\ldots,x_n]=\int_0^1 \theta P(\theta|x_1,\ldots,x_n)d\theta= \\
+&\int_0^1 \theta Beta(\theta|\alpha+\sum x_i,\beta+n-\sum x_i)d\theta= \\
+&\frac{\alpha+\sum x_i}{\alpha+\sum x_i+\beta+n-\sum x_i}= \\
+&\frac{\alpha+\sum x_i}{\alpha+\beta+n}
+\end{align*}
+$$
+
+- Entonces para $\alpha=1$, $\beta=1$, $\sum x_i=15$ y $n=20$, tenemos que:
+$$
+E[\theta|x_1,\ldots,x_n]=\frac{1+15}{1+1+20}=0.72
+$$
+
+- Y para $\alpha=2$, $\beta=2$, $\sum x_i=15$ y $n=20$, tenemos que:
+$$
+E[\theta|x_1,\ldots,x_n]=\frac{2+15}{2+2+20}=0.7083
+$$
+
+```{r}
+caras <- 15
+n <- 20
+
+ggplot() +
+    geom_line(aes(x = theta, y = dbeta(theta, alpha[1] + caras, betas[1] + n - caras), color = "red")) +
+    geom_line(aes(x = theta, y = dbeta(theta, alpha[2] + caras, betas[2] + n - caras), color = "white")) +
+    geom_vline(xintercept = (alpha[1] + caras)/(alpha[1] + betas[1] + n), color = "red", linetype = "dashed") +
+    geom_vline(xintercept = (alpha[2] + caras)/(alpha[2] + betas[2] + n), color = "white", linetype = "dashed") +
+    labs(x = expression(theta), y = "Densidad") +
+    dark_theme_gray() +
+    scale_color_manual("Prior", values = c("red", "white"), labels = c("\u03B1 = 1, \u03B2 = 1", "\u03B1 = 2, \u03B2 = 2")) +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50),
+        legend.title = element_text(size=25),
+        legend.text = element_text(size=20),
+        legend.position = c(.11, .8),
+        legend.key.size = unit(2, 'cm'), #change legend key size
+        legend.key.height = unit(2, 'cm'), #change legend key height
+        legend.key.width = unit(2, 'cm'))
+```
+
+## Intervalos de credibilidad {.smaller}
+
+::: {.nonincremental}
+- Otra forma de estimar $\theta$ es utilizando un **intervalo de credibilidad**. Un intervalo de credibilidad es un intervalo que contiene un cierto porcentaje de la posterior de $\theta$. Por ejemplo, si queremos un intervalo de credibilidad del 95%, entonces queremos un intervalo que contenga el 95% de la posterior de $\theta$.
+
+- Son la contraparte Bayesiana de los intervalos de confianza. Para calcular un intervalo de credibilidad, tenemos que calcular los cuantiles de la posterior de $\theta$. Por ejemplo, si queremos un intervalo de credibilidad del 95%, tenemos que calcular el cuantil 0.025 y el cuantil 0.975 de la posterior de $\theta$.
+
+- En el ejemplo de la moneda, tenemos que:
+```{r echo=TRUE}
+q_prior1 <- qbeta(c(0.025, 0.975), alpha[1] + caras, betas[1] + n - caras)
+q_prior2 <- qbeta(c(0.025, 0.975), alpha[2] + caras, betas[2] + n - caras)
+
+print(paste("Intervalo de credibilidad del 95% para el prior 1: [", round(q_prior1[1], 4), ",", round(q_prior1[2], 4), "]"))
+
+print(paste("Intervalo de credibilidad del 95% para el prior 2: [", round(q_prior2[1], 4), ",", round(q_prior2[2], 4), "]"))
+```
+
+- Podemos visualizar estos intervalos:
+```{r}
+
+ggplot() +
+    geom_line(aes(x = theta, y = dbeta(theta, alpha[1] + caras, betas[1] + n - caras), color = "red")) +
+    geom_line(aes(x = theta, y = dbeta(theta, alpha[2] + caras, betas[2] + n - caras), color = "white")) +
+    geom_vline(xintercept = q_prior1[1], color = "red", linetype = "dashed") +
+    geom_vline(xintercept = q_prior1[2], color = "red", linetype = "dashed") +
+    geom_vline(xintercept = q_prior2[1], color = "white", linetype = "dashed") +
+    geom_vline(xintercept = q_prior2[2], color = "white", linetype = "dashed") +
+    labs(x = expression(theta), y = "Densidad") +
+    dark_theme_gray() +
+    scale_color_manual("Prior", values = c("red", "white"), labels = c("\u03B1 = 1, \u03B2 = 1", "\u03B1 = 2, \u03B2 = 2")) +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50),
+        legend.title = element_text(size=25),
+        legend.text = element_text(size=20),
+        legend.position = c(.11, .8),
+        legend.key.size = unit(2, 'cm'), #change legend key size
+        legend.key.height = unit(2, 'cm'), #change legend key height
+        legend.key.width = unit(2, 'cm'))
+```
+
+:::
+
+# Cadenas de Markov Monte Carlo (MCMC)
+
+## Cadenas de Markov Monte Carlo (MCMC) {.smaller}
+
+- En el ejemplo anterior, vimos que el prior conjugado nos ayudo a calcular la posterior de $\theta$ de forma analítica. Pero, ¿qué pasa si no tenemos un prior conjugado?
+
+- En este caso, podemos utilizar algoritmos MCMC para aproximar la posterior de $\theta$.
+
+- Los algoritmos MCMC son algoritmos que generan una secuencia de muestras de una distribución de probabilidad. Estas muestras se conocen como **cadenas de Markov**.
+
+- La idea de estos algoritmos es generar una secuencia de muestras de una distribución de probabilidad $f(x)$, donde $x$ es un vector de variables aleatorias. Estas muestras se generan de tal forma que la distribución de probabilidad de la muestra $x_t$ depende únicamente de la muestra anterior $x_{t-1}$. Es decir, la distribución de probabilidad de la muestra $x_t$ es una **distribución condicional** de la muestra anterior $x_{t-1}$:
+$$
+f(x_t|x_{t-1})
+$$
+
+- Esta propiedad se conoce como **propiedad de Markov**. Y una secuencia de muestras que cumple con esta propiedad se conoce como **cadena de Markov**.
+
+- La idea de los algoritmos MCMC es generar una cadena de Markov cuya distribución de probabilidad estacionaria sea la distribución de probabilidad $f(x)$. Estacionaria significa que la distribución de probabilidad de la muestra $x_t$ es la misma que la distribución posterior $f(x)$:
+$$
+f(x_t)=f(x)
+$$
+
+- Si logramos generar una cadena de Markov cuya distribución de probabilidad estacionaria sea la distribución de probabilidad $f(x)$, entonces podemos utilizar las muestras de la cadena para aproximar la distribución de probabilidad $f(x)$.
+
+## Cadenas de Markov Monte Carlo (MCMC) {.smaller}
+
+- Existen varios algoritmos MCMC. Los más comunes son:
+    - **Metropolis-Hastings**. Este algoritmo es el más sencillo de implementar. Sin embargo, es el más lento de los tres.
+    - **Muestreo de Gibbs**. El muestreo de Gibbs es más rápido que el Metropolis-Hastings. Sin embargo, no siempre es posible utilizarlo, ya que requiere que la distribución de probabilidad $f(x)$ se pueda descomponer en distribuciones condicionales.
+    - **Muestreo Hamiltoniano**. El muestreo Hamiltoniano es el más rápido de los dos anteriores. Sin embargo, es el más difícil de implementar y solo se puede utilizar en distribuciones de probabilidad continuas.
+    - **Muestreo NUTS**. El muestreo NUTS es una variante del muestreo Hamiltoniano. Este algoritmo es el más rápido.
+
+- Existe software que implementa estos algoritmos. El más popular es [Stan](https://mc-stan.org/). Stan es un lenguaje de programación que permite especificar modelos estadísticos y que utiliza el muestreo NUTS para aproximar la posterior de los parámetros.
+
+- Otro software popular es [PyMC3](https://docs.pymc.io/). PyMC3 es una librería de Python que permite especificar modelos estadísticos y que utiliza el muestreo NUTS para aproximar la posterior de los parámetros.
+
+- Un tercer software es [JAGS](https://mcmc-jags.sourceforge.io/). JAGS es un lenguaje de programación que permite especificar modelos estadísticos y que utiliza el muestreo de Gibbs para aproximar la posterior de los parámetros.
+
+## Caminata aleatoria Metropolis-Hastings (MH) {.smaller}
+::: {.nonincremental}
+- Las cadenas de Markov se pueden generar utilizando un algoritmo de caminata aleatoria. Este algoritmo se conoce como **caminata aleatoria Metropolis-Hastings** (MH).
+
+- Un ejemplo muy sencillo de una caminata aleatoria es el siguiente:
+    - Supongamos que estamos en el punto $x_t$.
+    - Para generar el siguiente punto $x_{t+1}$, generamos un número aleatorio $u$ entre 0 y 1.
+    - Si $u<0.5$, entonces $x_{t+1}=x_t-1$.
+    - Si $u\geq 0.5$, entonces $x_{t+1}=x_t+1$.
+
+ - Implementemos este algoritmo en R:
+
+```{r echo=TRUE}
+# Definimos el número de muestras
+n <- 1000
+# Definimos el vector de muestras
+x <- rep(0, n)
+# Definimos el punto inicial
+x[1] <- 0
+# Generamos las muestras
+set.seed(123)
+for (i in 2:n) {
+    u <- runif(1)
+    if (u < 0.5) {
+        x[i] <- x[i-1] - 1
+    } else {
+        x[i] <- x[i-1] + 1
+    }
+}
+# Graficamos las muestras
+ggplot() +
+    geom_line(aes(x = 1:n, y = x), color = "white") +
+    labs(x = "Muestra", y = "x") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+- Podemos visualizar las muestras en un histograma:
+```{r echo=TRUE}
+ggplot() +
+    geom_histogram(aes(x = x, y = ..density..), bins = 20, color = "white", fill = "white") +
+    labs(x = "x", y = "Densidad") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+:::
+
+## Caminata aleatoria Metropolis-Hastings (MH) {.smaller}
+
+::: {.nonincremental}
+
+- En el ejemplo anterior, la probabilidad de que el siguiente punto sea $x_{t+1}=x_t-1$ es $0.5$. Y la probabilidad de que el siguiente punto sea $x_{t+1}=x_t+1$ es $0.5$.
+
+- Veamos un ejemplo un poco más complicado.
+
+- Supongamos que somos Claudia Sheinbaum y queremos ir a los distintos estados de México para obtener votos y tener que llevar la menor cantidad de acarreados. Una forma de decidir cuantas veces visitaremos cada estado es utilizando la cantidad de habitantes. Por el moemnto pensemos en 7 estados: CDMX, EdoMex, Jalisco, Nuevo León, Puebla, Veracruz y Yucatán. Y supongamos que la cantidad de habitantes de cada estado es:
+```{r echo=FALSE}
+habitantes <- c(9, 16, 8, 5, 6, 8, 2)
+estado <- c("CDMX", "EdoMex", "Jalisco", "Nuevo León", "Puebla", "Veracruz", "Yucatán")
+
+knitr::kable(data.frame(estado, habitantes))
+```
+
+- La decisión de cuantas veces visitaremos cada estado la podemos modelar como en la caminata aleatoria anterior. Es decir, si estamos en el estado $x_t$, la probabilidad de que el siguiente estado sea $x_{t+1}$ es 1 si los habitantes del estado $x_{t+1}$ son más que los habitantes del estado $x_t$
+
+- Si los habitantes del estado $x_{t+1}$ son menos que los habitantes del estado $x_t$, entonces se usa un número aleatorio $u$ entre 0 y 1. 
+    - Si $u<\frac{habitantes(x_{t+1})}{habitantes(x_t)}$, entonces $x_{t+1}= x_{t} + 1$. 
+    - Si $u\geq \frac{habitantes(x_{t+1})}{habitantes(x_t)}$, entonces $x_{t+1}=x_t$.
+
+- Cada estado sería un valor del 1 al 7. Por lo tanto, podemos utilizar el algoritmo de la caminata aleatoria anterior para generar la secuencia de estados que visitaremos. La probabilidad de ir a 0 seria 0 y la probabilidad de ir a 8 seria 0. No podemos ir a un estado que no existe.
+
+- Implementemos este algoritmo en R:
+
+```{r echo=TRUE}
+# Definimos el número de muestras
+n <- 1000
+# Definimos el vector de muestras
+x <- rep(0, n)
+
+# Definimos el punto inicial
+set.seed(123)
+init <- sample(1:7, 1)
+x[1] <- init
+# Definimos los habitantes de cada estado
+
+hab <- c(9, 16, 8, 5, 6, 8, 2)
+curr_hab <- hab[x[1]]
+curr_pos <- x[1]
+
+set.seed(1234)
+for (i in 1:n) {
+    next_position <- curr_pos + sample(c(-1, 1), 1, prob = c(0.5, 0.5))
+    # Check the next position is valid
+    if (next_position > 0 & next_position < 8) {
+        next_hab <- hab[next_position]
+        # Check if the next position is better
+        if (next_hab > curr_hab) {
+            x[i] <- next_position
+            curr_pos <- next_position
+            curr_hab <- next_hab
+        } else {
+            u <- runif(1)
+            if (u < next_hab/curr_hab) {
+                x[i] <- next_position
+                curr_pos <- next_position
+                curr_hab <- next_hab
+            } else {
+                x[i] <- curr_pos
+            }
+        }
+    } else {
+        x[i] <- curr_pos
+    }
+}
+
+# Graficamos las muestras
+ggplot() +
+    geom_line(aes(x = 1:n, y = x), color = "white", linetype = "solid") +
+    geom_point(aes(x = 1:n, y = x), color = "white", size = 5) +
+    coord_flip() +
+    labs(x = "Muestra", y = "Estado") +
+    scale_y_continuous(breaks = 1:7, labels = c("CDMX", "EdoMex", "Jalisco", 
+                        "Nuevo León", "Puebla", "Veracruz", "Yucatán")) +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+- Podemos visualizar las muestras en un histograma:
+```{r echo=TRUE}
+ggplot() +
+    geom_histogram(aes(x = x, y = ..density..), bins = 20, color = "white", fill = "white") +
+    labs(x = "Estado", y = "Densidad") +
+    scale_x_continuous(breaks = 1:7, labels = c("CDMX", "EdoMex", "Jalisco", "Nuevo León", "Puebla", "Veracruz", "Yucatán")) +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+- La verdadera distribución de probabilidad de los estados es:
+```{r echo=FALSE}
+density_states <- habitantes/sum(habitantes)
+
+ggplot() +
+    geom_bar(aes(x = estado, y = density_states), stat = "identity", color = "white", fill = "white") +
+    labs(x = "Estado", y = "Densidad") +
+    scale_x_discrete(labels = c("CDMX", "EdoMex", "Jalisco", "Nuevo León", "Puebla", "Veracruz", "Yucatán")) +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+:::

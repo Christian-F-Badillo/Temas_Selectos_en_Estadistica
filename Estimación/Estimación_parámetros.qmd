@@ -258,7 +258,7 @@ $$
 
 - Las funciones de pérdida Lasso y Ridge son utilizadas en la regresión lineal para evitar el sobreajuste del modelo y cada una tiene sus propiedades.
 
-- La regresión con la función Ridge se conoce como ***regresión de Ridge*** y la regresión con la función Lasso se conoce como ***regresión Lasso***. La primera se utiliza cuando las variables independientes están correlacionadas y la segunda cuando las variables independientes están correlacionadas y se desea hacer selección de variables.
+- La regresión con la función Ridge se conoce como ***regresión de Lasso*** y la regresión con la función Lasso se conoce como ***regresión Ridge***. La primera se utiliza cuando las variables independientes están correlacionadas y la segunda cuando las variables independientes están correlacionadas y se desea hacer selección de variables.
 
 ## Ejemplo {.smaller}
 :::{.nonincremental}
@@ -576,7 +576,9 @@ ggplot(data, aes(x = x, y = y)) +
 
 - La regresión lineal no implica causalidad. Es decir, el modelo de regresión lineal puede ser utilizado para predecir el valor esperado de la variable dependiente, pero no necesariamente una variable causa la otra.
 
-- Sin embargo, se puede utilizar la regresión lineal para probar la causalidad. Por ejemplo, si se tiene un experimento aleatorizado, entonces se puede utilizar la regresión lineal para probar la causalidad. Aquellos interesados en la causalidad pueden consultar el libro de ***Causal Inference: The Mixtape*** de Scott Cunningham, y si quieren profundizar en el tema, pueden consultar el libro de ***Causality*** de Judea Pearl. Un libro para el público general es ***The Book of Why*** de Judea Pearl.
+- Sin embargo, se puede utilizar la regresión lineal para probar la causalidad. Por ejemplo, si se tiene un experimento aleatorizado, entonces se puede utilizar la regresión lineal para probar la causalidad. 
+
+    - Aquellos interesados en la causalidad pueden consultar el libro de ***Causal Inference: The Mixtape*** de Scott Cunningham, y si quieren profundizar en el tema, pueden consultar el libro de ***Causality*** de Judea Pearl. Un libro para el público general es ***The Book of Why*** de Judea Pearl.
 
 ## Correlación y causalidad {.smaller}
 
@@ -627,9 +629,9 @@ $$
 
 - Los ***intervalos de confianza*** son un rango de valores que contiene el valor real del parámetro con una cierta probabilidad $1 - \alpha$. Es decir, si el intervalo de confianza es $[a, b]$, entonces el valor real del parámetro está en el intervalo $[a, b]$ con una probabilidad $1 - \alpha$.
 
-- El valor de $\alpha$ se conoce como ***nivel de confianza***. Los valores más comunes de $\alpha$ son 0.05, 0.01 y 0.1. Y los niveles de confianza más comunes son 95\%, 99\% y 90\%.
+- El valor de $\alpha$ se conoce como ***nivel de confianza***. Los valores más comunes de $\alpha$ son 0.05, 0.01 y 0.1.
 
-- Los intervalos de confianza se calculan a partir de la distribución de probabilidad de la estimación puntual, en el caso de la regresión lineal, la distribución es la normal.
+- Los intervalos de confianza se calculan a partir de la distribución de probabilidad de la estimación puntual.
 
 ## Cálculo de intervalos de confianza {.smaller}
 
@@ -740,6 +742,15 @@ beta_0 + t_alpha*sqrt(MSE/sum((data$Petal.Length - mean(data$Petal.Length))^2))
 
 - El intervalo de confianza para el intercepto es $[4.27, 4.34]$. Lo que indica que el intercepto está entre 4.27 y 4.34 con una probabilidad de 95\%.
 
+- El intervalo de confianza para el efecto del largo del pétalo sobre el largo del sépalo es:
+
+```{r echo = TRUE}
+# Calculamos el intervalo de confianza para el efecto del largo del pétalo sobre el largo del sépalo
+beta_1 - t_alpha*sqrt(MSE/sum((data$Petal.Length - mean(data$Petal.Length))^2))
+beta_1 + t_alpha*sqrt(MSE/sum((data$Petal.Length - mean(data$Petal.Length))^2))
+```
+
+
 - Podemos graficar el intervalo de confianza:
 
 ```{r echo = TRUE}
@@ -777,7 +788,7 @@ ggplot(data, aes(x = Petal.Length, y = Sepal.Length)) +
 
 ```{r echo = TRUE}
 # Simulamos la paradoja de Simpson
-install.packages("bayestestR")
+#install.packages("bayestestR")
 library(bayestestR)
 library(ggplot2)
 library(ggdark)
@@ -950,38 +961,39 @@ ggplot(data.frame(data), aes(x = data)) +
 ```
 
 - Para estimar la media y la desviación estándar, primero debemos especificar una función de verosimilitud, en este caso la función de verosimilitud es:
+
 $$
-L(\mu, \sigma | x) = \prod_{i=1}^n \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x_i - \mu)^2}{2 \sigma^2}}
+L(\mu, \sigma | x) = \prod_{i=1}^n \frac{1}{\sqrt{2 \pi \sigma^2}} 
+e^{-\frac{(x_i - \mu)^2}{2 \sigma^2}}
 $$
 
 - Dado que es más fácil trabajar con el logaritmo de la función de verosimilitud, entonces la función de verosimilitud es:
+
 $$
 \begin{align*}
 \ell(\mu, \sigma | x) &= \sum_{i=1}^n \log \left( \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x_i - \mu)^2}{2 \sigma^2}} \right) \\
-
 &= \sum_{i=1}^n \left( \log \left( \frac{1}{\sqrt{2 \pi \sigma^2}} \right) + \log \left( e^{-\frac{(x_i - \mu)^2}{2 \sigma^2}} \right) \right) \\
-
 &= \sum_{i=1}^n \left( \log \left( \frac{1}{\sqrt{2 \pi \sigma^2}} \right) - \frac{(x_i - \mu)^2}{2 \sigma^2} \right) \\
-
 &= \sum_{i=1}^n \left( -\frac{1}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{(x_i - \mu)^2}{2 \sigma^2} \right) \\
-
 \end{align*}
 $$
 
 - Utilzando propiedades de la sumatoria, podemos escribir la función de verosimilitud como:
+
 $$
 \ell(\mu, \sigma | x) = -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i - \mu)^2
 $$
 
 
 - Para estimar cada parámetro, se deriva la función de verosimilitud con respecto al parámetro y se iguala a cero.
+
 $$
 \begin{align*}
 &\frac{\partial \ell(\mu, \sigma | x)}{\partial \mu} = \\
-&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i - \mu)^2 \right) = \\
-&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i^2 - 2 x_i \mu + \mu^2) \right) = \\
-&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 - 2 \sum_{i=1}^n x_i \mu + \sum_{i=1}^n \mu^2 \right) \right) = \\
-&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 - 2 n \mu \bar{x} + n \mu^2 \right) \right) = \\
+&-\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i - \mu)^2 = \\
+&-\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i^2 - 2 x_i \mu + \mu^2) = \\
+&-\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 -2\sum_{i=1}^n x_i \mu + \sum_{i=1}^n \mu^2 \right) = \\
+&-\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 - 2 n \mu \bar{x} + n \mu^2 \right) 
 \end{align*}
 $$
 
@@ -989,14 +1001,15 @@ $$
 $$
 \begin{align*}
 &\frac{\partial \ell(\mu, \sigma | x)}{\partial \mu} = \\
-&\frac{\partial}{\partial \mu} \left( -\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 - 2 n \mu \bar{x} + n \mu^2 \right) \right) = \\
-&\frac{\partial}{\partial \mu} \left( - \frac{1}{2 \sigma^2} \left(- 2 n \mu \bar{x} + n \mu^2 \right) \right) = \\
-&\frac{\partial}{\partial \mu} \left( \frac{n \mu^2}{2 \sigma^2} - \frac{n \mu \bar{x}}{\sigma^2} \right) = \\
+&-\frac{n}{2} \log \left( 2 \pi \sigma^2 \right) - \frac{1}{2 \sigma^2} \left( \sum_{i=1}^n x_i^2 - 2 n \mu \bar{x} + n \mu^2 \right) = \\
+&-\frac{1}{2 \sigma^2} \left(- 2 n \mu \bar{x} + n \mu^2 \right) = \\
+&\frac{n \mu^2}{2 \sigma^2} - \frac{n \mu \bar{x}}{\sigma^2} = \\
 &\frac{n \mu}{\sigma^2} - \frac{n \bar{x}}{\sigma^2} = 0
 \end{align*}
 $$
 
 - Resolvemos la ecuación para $\mu$:
+
 $$
 \begin{align*}
 &\frac{n \mu}{\sigma^2} - \frac{n \bar{x}}{\sigma^2} = 0 \Rightarrow \\
@@ -1007,7 +1020,12 @@ $$
 $$
 
 - Con un proceso similar se puede calcular el valor puntual de la desviación estándar. El valor puntual de la media es $\bar{x}$ y el valor puntual de la desviación estándar es $s$, que es la desviación estándar muestral.
+:::
 
+
+## Ejemplo 2: Máxima verosimilitud {.smaller}
+
+::: {.nonincremental}
 - Dado que son dos parámetros, se puede graficar la función de verosimilitud en 3D:
 ```{r echo = TRUE}
 library(plotly)
@@ -1070,7 +1088,7 @@ $$
 \hline
 \text{Normal} & \text{Identidad} = E(y) & (-\infty, \infty) \\
 \hline
-\text{Binomial} & \text{Logit} = \log \left( \frac{p}{1 - p} \right) & (0, 1) \\
+\text{Bernoulli} & \text{Logit} = \log \left( \frac{p}{1 - p} \right) & (0, 1) \\
 \hline
 \text{Poisson} & \text{Log} = \log(\lambda) & (0, \infty) \\
 \hline
@@ -1110,23 +1128,90 @@ $$
 
 - Observemos la forma de la distribución logística:
 
-```{r echo = TRUE eval = TRUE}
-# Graficamos la distribución logística
+![](img/logistic_regression_plot.png){width="100%" height="550px"}
+
+##
+
+![](img/logistic_regresion.jpg){width="100%" height="550px"}
+
+## Características de la regresión logística {.smaller}
+
+- Algunas características de la curva de la regresión logística son:
+
+    - La curva de la regresión logística es sigmoide, es decir, tiene forma de S.
+
+    - La curva de la regresión logística tiene un rango de 0 a 1.   
+
+    - La curva de la regresión logística es simétrica alrededor de 0.5. Y ese es el valor de la probabilidad cuando la combinación lineal de los parámetros es 0.
+
+## Ejemplo 3: Regresión logística {.smaller}
+
+:::{.nonincremental}
+
+- Utilizemos una base de datos para analizar los datos de pacientes con enfermedad coronaria. Los datos son:
+```{r echo = FALSE}
+# Datos
+data <- read.csv("framingham.csv")
+knitr::kable(head(data), caption = "Datos")
+```
+
+- Visualicemos los pacientes con la enfermedad coronaria:
+```{r echo = TRUE}
+
+disease <- data$TenYearCHD
+ggplot(data.frame(disease), aes(x = disease)) +
+    geom_bar(fill = "#F8766D", color = "white", alpha = 0.8) +
+    scale_x_continuous(breaks = c(0, 1), labels = c("No", "Sí")) +
+    labs(x = "Enfermedad Coronaria", y = "Frecuencia") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+- Podemos ver que la mayoría de los pacientes no tienen enfermedad coronaria. Esto es un problema de datos desbalanceados. Dado que la mayoría de los pacientes no tienen enfermedad coronaria, el modelo de regresión logística va a tener un sesgo hacia la clase mayoritaria.
+
+- Veamos el resumen de los datos:
+```{r echo = TRUE}
+# Resumen de los datos
+knitr::kable(summary(data), caption = "Resumen de los datos")
+```
+
+- Podemos incluso visualizar si existe correlación entre las variables:
+```{r echo = TRUE}
+# Correlación entre las variables
+library(corrplot)
+
+corrplot(cor(data[, c(2:4, 6:16)]), method = "color", 
+        tl.col = "black", tl.srt = 45, bg = "white")
+```
+
+- Estimemos un modelo de regresión logística para predecir la enfermedad coronaria:
+```{r echo = TRUE}
+# Estimamos el modelo de regresión logística
+#install.packages("tidymodels")
+library(tidymodels)
 library(ggplot2)
 library(ggdark)
 
-x <- seq(-10, 10, 0.01)
-y <- exp(x)/(1 + exp(x))
+# Estimamos el modelo
+logistic_model <- glm(TenYearCHD ~ ., data = data, family = binomial(link = "logit"))
 
-ggplot() +
-    geom_line(aes(x = x, y = y), color = "#F8766D", size = 1) +
-    labs(x = "x", y = "y") +
-    dark_theme_gray() +
-    theme(axis.text = element_text(size = 30),
-          axis.title = element_text(size = 40),
-          plot.title = element_text(size = 50))
+# Imprimimos los resultados
+summary(logistic_model)
 ```
 
+:::
+
+## Regresión Logística en Psicología {.smaller}
+
+- Existen modelos de regresión logtica para variables dependientes multinomiales, es decir, variables dependientes con más de dos categorías.
+
+- También existen modelos de regresión logística para variables dependientes ordinales, es decir, variables dependientes con categorías ordenadas. En este caso se utiliza la función de enlace logit acumulada. Y se nombran modelos de regresión logística ordinal.
+
+- Todos los modelos de regresión logística mencionados se suelen utilizar en psicometría para modelar variables latentes de habilidades y actitudes de los individuos, como por ejemplo, la inteligencia, la ansiedad, la depresión, etc.
+
+- Cuando el test tiene ítems dicotómicos, es decir, ítems con dos categorías, se utiliza la regresión logística para modelar la probabilidad de que un individuo responda correctamente un ítem. Con más de dos categorías se utiliza la regresión logística multinomial. Con categorías ordenadas se utiliza la regresión logística ordinal.
 
 ## Modelo de Rasch {.smaller}
 
@@ -1213,7 +1298,7 @@ $$
 - No se puede resolver de forma analítica, por lo que se utiliza un método numérico para estimar los parámetros. En R tenemos la función `RM` del paquete `eRm` que estima los parámetros del modelo de Rasch.
 
 ```{r echo = TRUE}
-install.packages("eRm")
+#install.packages("eRm")
 library(eRm)
 
 rasch_model <- RM(responses)
@@ -1287,10 +1372,4 @@ ggplot(data_betas, aes(x = beta, y = betas)) +
 
 <center>
 ![](img/statistics_water.jpg){width="100%" height="550px"}
-</center>
-
-##
-
-<center>
-![](img/sad_science.jpg){width="100%" height="550px"}
 </center>

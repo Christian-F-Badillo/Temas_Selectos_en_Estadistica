@@ -1,0 +1,72 @@
+---
+title: "Tarea 2"
+author: "Christian Badillo"
+date: today
+date-format: long
+format:
+    pdf: 
+        documentclass: article
+        papersize: a4
+        geometry: margin=1in    
+        toc: false
+        number-sections: true
+        lang: es
+        fontsize: 12pt
+        fig-align: center
+---
+
+## Regresión Lineal
+
+- Usando R se generó una muestra de 12 observaciones.
+
+```{r echo=TRUE}
+set.seed(123)
+x <- round(rnorm(12, mean = 0, sd = 1), 2)
+y <- round(12 + 3*x + rnorm(12, mean = 0, sd = 1), 2)
+
+## Se grafican los datos
+library(ggplot2)
+ggplot() + geom_point(aes(x, y)) + ggtitle("Datos")
+```
+
+- Los datos se muestran en la siguiente tabla:
+
+```{r echo=TRUE}
+data <- data.frame(x, y)
+
+knitr::kable(data, caption = "Datos")
+```
+
+- Utilizando las formulas de la regreisón lineal. ¿Cuáles son los valores de $\hat{\beta}_0$ y $\hat{\beta}_1$?
+
+- ¿Cuál es la ecuación de la recta de regresión?
+
+- ¿Cuál es el valor de $R^2$?
+
+- ¿Cuál es la correlación entre $x$ y $y$?
+
+- ¿Cuál es el MSE?
+
+- ¿Qué es un intervalo de confianza y para qué sirve?
+
+- ¿Puedes inferir una relación causal entre $x$ y $y$? Justifica tu respuesta.
+
+- ¿Qué es una función de pérdida?
+
+- ¿Qué es mínimos cuadrados ordinarios?
+
+## Modelos Lineales Generalizados
+
+- Define un modelo lineal generalizado.
+
+- ¿Qué es la función de enlace?
+
+- ¿Cuál es la función de enlace para el modelo logístico?
+
+- ¿Cuál es la diferencia entre un modelo lineal y un modelo lineal generalizado?
+
+- Menciona 4 ejemplos en los cuáles puedas aplicar un modelo logístico.
+
+- ¿Qué es máxima verosimilitud? ¿Cómo se relaciona con los modelos lineales generalizados?
+
+- Explica las propiedades de un buen estimador.
