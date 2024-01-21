@@ -547,3 +547,280 @@ ggplot() +
 ```
 
 :::
+
+## Caminata aleatoria Metropolis-Hastings (MH) {.smaller}
+
+- En nuestro ejemplo, cada ves que estamos en un estado $x_t$, la probabilidad de ir a otro estado $x_{t+1}$ depende de la cantidad de habitantes de cada estado (la densidad de probabilidad de cada estado). La regla que utilizamos para decidir si vamos a otro estado o no, se conoce como **regla de aceptación**.
+
+- Solo nos podiamos mover a la izquierda o a la derecha y la probabilidad de ir a la izquierda o a la derecha era la misma y dependia del estado en el que estabamos. Este tipo de caminata aleatoria se conoce como **caminata aleatoria simétrica**. Ya que la distribución de probabilidad de ir a la izquierda es la misma que la distribución de probabilidad de ir a la derecha.
+
+- EL último paso fue registrar el estado en el que estamos. Este paso se conoce como **muestreo**. En nuestro ejemplo, el muestreo se realizo cada vez que se genero un nuevo estado.
+
+- Al final el muestreo se acerco a la distribución de probabilidad de los estados. Cuando realizamos estos pasos $n$ veces, obtenemos una secuencia de estados $x_1,\ldots,x_n$ que se conoce como **cadena de Markov**. En nuestro ejemplo, la cadena de Markov es la secuencia de estados que visitaremos.
+
+- Normalmente se realizan varias cadenas de Markov. Cada una con un punto inicial diferente. Esto se conoce como **muestreo por cadenas de Markov Monte Carlo** (MCMC).
+
+## Metroplis-Hastings {.smaller}
+
+- El algoritmo de la caminata aleatoria Metropolis-Hastings (MH) es un algoritmo MCMC. Este algoritmo se puede utilizar para aproximar la posterior de $\theta$.
+
+- De forma general realiza los siguientes pasos:
+    1. Selecciona un punto inicial $\theta_0$.
+    2. Genera un nuevo punto $\theta'$ utilizando una distribución de probabilidad $q(\theta'|\theta_t)$.
+    3. Calcula la razón de aceptación:
+$$
+r= min \left( 1,\frac{P(x_1,\ldots,x_n|\theta')P(\theta')q(\theta_t|\theta')}{P(x_1,\ldots,x_n|\theta_t)P(\theta_t)q(\theta'|\theta_t)} \right)
+$$
+    4. Genera un número aleatorio $u$ entre 0 y 1.
+    5. Si $u<r$, entonces $\theta_{t+1}=\theta'$.
+    6. Si $u\geq r$, entonces $\theta_{t+1}=\theta_t$.
+    7. Regresa al paso 2 y repite $n$ veces.
+
+## Metroplis-Hastings {.smaller}
+
+- De la expresión del punto 3, conocemos la verosimilitud $P(x_1,\ldots,x_n|\theta')$ y el prior $P(\theta')$. Pero, ¿cómo elegimos la distribución de probabilidad $q(\theta'|\theta_t)$?
+
+- La distribución de probabilidad $q(\theta'|\theta_t)$ se conoce como **distribución de propuesta**. Esta distribución se puede elegir de varias formas. Las más comunes son:
+    - **Distribución normal**: $q(\theta'|\theta_t)=N(\theta_t,\sigma^2)$.
+    - **Distribución t**: $q(\theta'|\theta_t)=t(\theta_t,\sigma^2,\nu)$.
+    - **Distribución uniforme**: $q(\theta'|\theta_t)=U(\theta_t-\sigma,\theta_t+\sigma)$.
+    - **Distribución gamma**: $q(\theta'|\theta_t)=Gamma(\theta_t,\sigma^2)$.
+    - **Distribución beta**: $q(\theta'|\theta_t)=Beta(\theta_t,\sigma^2)$.
+
+- La distribución de propuesta se puede elegir de varias formas. La más común es utilizando una distribución normal con media $\theta_t$ y varianza $\sigma^2$. El algoritmo resultante se conoce como **algoritmo Metropolis**. Y elige la $\sigma^2$ de tal forma que la razón de aceptación sea cercana a 0.5, este periodo se conoce como **periodo de calentamiento**. 
+
+- Existen diversos problemas cuando la distribución propuesta es una distribución normal. Por lo tanto, se recomienda utilizar una distribución no simétrica. Esto ya lo realiza el software que implementa el algoritmo Metropolis-Hastings.
+
+## Metroplis-Hastings {.smaller}
+
+- Veamos el ejemplo de la moneda con el algoritmo Metropolis. En este caso, la distribución de probabilidad $q(\theta'|\theta_t)$ es una distribución normal con media $\theta_t$ y varianza $\sigma^2$:
+$$
+q(\theta'|\theta_t)=N(\theta_t,\sigma^2)
+$$
+
+- Nuestro prior era una distribución Beta y nuestro modelo era una distribución binomial. Así que la tasa de aceptación es:
+$$
+\begin{align*}
+&r= min \left( 1,\frac{P(x_1,\ldots,x_n|\theta')P(\theta')q(\theta_t|\theta')}{P(x_1,\ldots,x_n|\theta_t)P(\theta_t)q(\theta'|\theta_t)} \right)= \\
+&min \left( 1,\frac{\theta'^{\sum x_i}(1-\theta')^{n-\sum x_i}\frac{\theta'^{\alpha-1}(1-\theta')^{\beta-1}}{B(\alpha,\beta)}N(\theta_t,\sigma^2)}{\theta_t^{\sum x_i}(1-\theta_t)^{n-\sum x_i}\frac{\theta_t^{\alpha-1}(1-\theta_t)^{\beta-1}}{B(\alpha,\beta)}N(\theta',\sigma^2)} \right)
+\end{align*}
+$$
+
+## Metroplis-Hastings {.smaller}
+
+- Veamos por partes como implementar el algorítmo Metropolis-Hastings en Python para nuestro ejemplo de la moneda.
+
+- Para se usará el servicio de Google Colaboratory. Este servicio permite ejecutar código de Python en la nube. Para utilizarlo, es necesario tener una cuenta de Google.
+
+- El link para acceder al servicio es: [https://colab.research.google.com/](https://colab.research.google.com/)
+
+- El código se encuentra en el archivo [metropolis_MCMC.ipynb](https://drive.google.com/file/d/1pL5qiH-Cn-TOzQQh5IO6pbZB-C3g4bcC/view?usp=sharing)
+
+## Otros algoritmos MCMC {.smaller}
+
+- El algoritmo Metropolis-Hastings es una variante entre distintas que existen. Diversas modificaciones a la forma de proponer nuevos valores han llevado al desarrollo de variantes de la misma familia.
+
+- Un ejemplo es el ***muestreo Halmintoniano***. Este algoritmo simula un modelo físico del movimiento de una partícula (valor del parámetro) para proponer nuevos valores. La regla de aceptación es la misma que en el algoritmo Metropolis-Hastings.
+
+- El ***muestro NUTS*** (Not U-Turn Sampler) es una variante del muestreo Hamiltoniano. Permite una búsqueda más eficiente de los valores de los parámetros. Este algoritmo es el más eficiente de los tres.
+
+- Cuando nuestro parámetro es discreto, podemos utilizar el ***muestreo de Gibbs***. Este algoritmo propone un nuevo valor para cada parámetro de forma secuencial, usando la distribución condicional de cada parámetro.
+
+- La mayoria de los sofware de MCMC como Stan, Turing.jl, PyMC3 utilizan el muestreo NUTS. JAGS (Just Another Gibbs Sampler) utiliza el muestreo de Gibbs.
+
+## Regresión lineal {.smaller}
+
+::: {.nonincremental}
+- Apliquemos lo que hemos visto hasta ahora a un ejemplo de regresión lineal.
+
+- Simulemos datos con R.
+
+```{r echo = FALSE}
+# Definimos el número de muestras
+n <- 100
+# Definimos el vector de muestras
+x <- seq(0, 10, length.out = n)
+# Definimos el vector de parámetros
+beta <- c(1, 2)
+# Definimos el vector de errores
+set.seed(12346)
+e <- rnorm(n, 0, 4)
+# Definimos el vector de muestras
+y <- beta[1] + beta[2]*x + e
+
+# Graficamos las muestras
+library(ggplot2)
+library(ggdark)
+ggplot() +
+    geom_point(aes(x = x, y = y), color = "white", size = 5) +
+    labs(x = "x", y = "y") +
+    dark_theme_gray() +
+    theme(axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+- Para modelar de forma bayesiana tenemos que definir una distribución de probabilidad para los parámetros $\beta_0$ y $\beta_1$. Por ejemplo, podemos utilizar una distribución normal para cada parámetro:
+$$
+\begin{align*}
+\beta_0 &\sim N(0,10) \\
+\beta_1 &\sim N(0,10)
+\end{align*}
+$$
+
+- También tenemos que definir una distribución de probabilidad para los errores. Por ejemplo, podemos utilizar una distribución normal:
+$$
+e_i \sim N(0,\sigma^2)
+$$
+
+- Finalmente, tenemos que definir una distribución de probabilidad para los datos. En este caso, podemos utilizar una distribución normal:
+$$
+y_i \sim N(\beta_0+\beta_1x_i,\sigma^2)
+$$
+
+- Donde $\sigma^2$ es la varianza de los errores.
+:::
+
+## Regresión lineal {.smaller}
+
+::: {.nonincremental}
+- Para resolver este problema, podemos utilizar el software Stan. Stan es un lenguaje de programación que permite especificar modelos estadísticos y que utiliza el muestreo NUTS para aproximar la posterior de los parámetros.
+
+- Escribamos el modelo:
+```{r echo =TRUE}
+model <- "
+data {
+    int<lower=0> N;
+    vector[N] x;
+    vector[N] y;
+}
+parameters {
+    real beta0;
+    real beta1;
+    real<lower=0> sigma;
+}
+model {
+    beta0 ~ normal(0, 10);
+    beta1 ~ normal(0, 10);
+    sigma ~ normal(0, 10);
+
+    y ~ normal(beta0 + beta1*x, sigma);
+}
+"
+```
+
+- El modelo se escribe en un archivo de texto con extensión `.stan`. En este caso, el archivo se llama `regresion.stan`.
+
+- El modelo se compone de tres bloques:
+    - **data**: En este bloque se definen los datos que se utilizarán en el modelo. En este caso, los datos son el vector `x` y el vector `y`.
+    - **parameters**: En este bloque se definen los parámetros del modelo. En este caso, los parámetros son `beta0`, `beta1` y `sigma`.
+    - **model**: En este bloque se definen las distribuciones de probabilidad de los parámetros y de los datos. En este caso, las distribuciones de probabilidad de los parámetros son normales y la distribución de probabilidad de los datos es normal.
+
+:::
+
+## Regresión lineal {.smaller}
+
+::: {.nonincremental}
+- Ahora, solo queda ejecutar el modelo en Stan. Para esto, utilizaremos el paquete `rstan` de R.
+
+- Primero, tenemos que instalar el paquete `rstan`:
+```{r echo = TRUE}
+#install.packages("rstan")
+```
+
+- Después, tenemos que cargar el paquete `rstan` y create la estructura de los datos.
+```{r echo = TRUE}
+library(rstan)
+
+# Definimos los datos
+data <- list(N = n, x = x, y = y)
+```
+
+- Finalmente, tenemos que ejecutar el modelo en Stan:
+```{r echo = TRUE}
+# Ejecutamos el modelo
+fit <- stan(model_code = model, data = data, iter = 500, chains = 4)
+```
+
+- El modelo se ejecuta con la función `stan`. Esta función recibe los siguientes argumentos:
+    - **model_code**: El código del modelo.
+    - **data**: Los datos del modelo.
+    - **iter**: El número de iteraciones.
+    - **chains**: El número de cadenas de Markov.
+:::
+
+## Regresión lineal {.smaller}
+
+::: {.nonincremental}
+- Una vez que se ejecuta el modelo, podemos ver un resumen de los parámetros:
+```{r echo = TRUE}
+print(fit, digits = 3, probs = c(0.025, 0.5, 0.975))
+```
+
+- Podemos ver las distribuciones de probabilidad de los parámetros:
+```{r echo = TRUE}
+plot(fit, pars = c("beta0", "beta1", "sigma"))
+```
+
+- Las cadenas de Markov de los parámetros:
+```{r echo = TRUE}
+traceplot(fit, pars = c("beta0"))
+```
+```{r echo = TRUE}
+traceplot(fit, pars = c("beta1"))
+```
+```{r echo = TRUE}
+traceplot(fit, pars = c("sigma"))
+```
+
+- Y las correlaciones entre los parámetros:
+```{r echo = TRUE}
+pairs(fit, pars = c("beta0", "beta1", "sigma"))
+```
+:::
+
+## Regresión lineal {.smaller}
+
+::: {.nonincremental}
+- Podemos gráficar la distribución posterior y su intervalo de credibilidad al 95%:
+```{r echo = TRUE}
+library(bayesplot)
+mcmc_areas(fit, pars = c("beta0", "beta1", "sigma"), prob = 0.95)
+```
+
+- Podemos gráficar diversas líneas de regresión:
+```{r echo = TRUE}
+# Definimos el número de muestras
+beta_0_hat <- as.matrix(fit, pars = "beta0")
+beta_1_hat <- as.matrix(fit, pars = "beta1")
+
+n <- 100
+
+beta_0_hat <- beta_0_hat[sample(1:nrow(beta_0_hat), n), ]
+beta_1_hat <- beta_1_hat[sample(1:nrow(beta_1_hat), n), ]
+
+y_hat <- matrix(0, nrow = n, ncol = length(x))
+
+for (i in 1:n) {
+    y_hat[i, ] <- beta_0_hat[i] + beta_1_hat[i]*x
+}
+
+# Graficamos las muestras
+
+plot(NULL, xlim = c(0, 10), ylim = c(-10, 30), ann = FALSE, axes = FALSE)
+for (i in 1:n) {
+    lines(x, y_hat[i, ], col = "pink", lwd = 1, alpha = 0.45)
+}
+
+points(x, y, col = "black", pch = 20, cex = 2)
+
+
+axis(1, at = seq(0, 10, 2), labels = seq(0, 10, 2))
+axis(2, at = seq(-10, 30, 5), labels = seq(-10, 30, 5))
+
+mtext("x", side = 1, line = 2.5, cex = 3)
+mtext("y", side = 2, line = 2.5, cex = 3)
+
+legend("topleft", legend = "y = beta0 + beta1*x", col = "pink", lwd = 2, cex = 2)
+```
+:::

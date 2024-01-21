@@ -1,0 +1,4 @@
+- source: Bayes.qmd
+  quarto-pub:
+    - id: 4287b53e-a22a-4694-ac3b-e0f59348da5d
+      url: 'https://christian-badillo.quarto.pub/estimacion_bayes'
