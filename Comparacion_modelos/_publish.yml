@@ -1,0 +1,8 @@
+- source: comparación_modelos.qmd
+  quarto-pub:
+    - id: d885d750-ca03-441b-8897-0f939e1023d5
+      url: 'https://christian-badillo.quarto.pub/comparación-de-modelos'
+- source: comparacion_modelos.qmd
+  quarto-pub:
+    - id: 28eacd9e-92ef-41be-9eb1-743cfdbd2766
+      url: 'https://christian-badillo.quarto.pub/model-comparation'

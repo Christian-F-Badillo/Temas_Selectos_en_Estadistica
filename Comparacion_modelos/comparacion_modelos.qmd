@@ -1,0 +1,450 @@
+---
+title: "Comparación de Modelos"
+subtitle: "Prueba de Hipótesis"
+author: "Christian F. Badillo Hernández"
+date: 01/21/24
+lang: "es"
+date-format: "D MMM YYYY"
+format:
+    revealjs:
+        incremental: true
+        scrollable: true
+        smaller: false   
+        theme: night
+        logo: img/Lab25_logo_2015.png
+        footer: "Temas Selectos en Estadística"
+        preview-links: true
+        preload-iframes: true
+        slide-number: true
+        transition: convex
+        background-transition: fade
+        transition-speed: slow
+        navigation-mode: linear
+        touch: true
+        controls: true
+        embed-resources: true
+        page-layout: custom
+        reference-location: document
+        link-external-newwindow: true
+        fig-height: 7
+        fig-responsive: true
+---
+
+## Introducción {.smaller}
+
+- Hasta ahora hemos visto como estimar parámetros y como hacer inferencia sobre ellos. Pero, en la realidad nunca tenemos un solo modelo, siempre tenemos varios modelos que se ajustan a nuestros datos.
+
+- Otra manera de verlo es que siempre tenemos varias hipótesis que queremos probar. 
+
+- En esta clase veremos como comparar modelos y como probar hipótesis sobre ellos.
+
+## Comparación de Modelos {.smaller}
+
+- En estadística, la comparación de modelos es el proceso de seleccionar un modelo estadístico de un conjunto de modelos alternativos, dado un conjunto de datos.
+
+- Incluso cuando realizamos una regresión lineal simple, estamos comparando dos modelos: ***el modelo con la variable independiente y el modelo sin la variable independiente.***
+
+- En otras palabras, tenemos dos hipótesis que queremos probar:
+
+    - $H_0$: $\beta_1 = 0$
+    - $H_1$: $\beta_1 \neq 0$
+
+- Una **hipótesis** se define como una afirmación sobre el valor de un parámetro poblacional. En este caso, el parámetro poblacional es $\beta_1$. En general, hablamos de dos tipos de hipótesis:
+
+    - ***Hipótesis nula:*** $H_0$
+    - ***Hipótesis alternativa:*** $H_1$
+
+## Prueba de Hipótesis {.smaller}
+
+- Una ***prueba de hipótesis*** es una regla de decisión que nos permite decidir si rechazamos o no la hipótesis nula. Existen diversos tipos de pruebas de hipótesis según el tipo de variable que estemos analizando y el parámetro que estemos estimando.
+
+- Para rechazar o aceptar la hipótesis nula, se utiliza un **estadístico de prueba**. Este estadístico de prueba se calcula a partir de los datos y se compara con una ***región crítica***. Si el estadístico de prueba cae en la región crítica, entonces rechazamos la hipótesis nula.
+
+- La ***región crítica*** se define como el conjunto de valores que toma el estadístico de prueba que nos llevan a rechazar la hipótesis nula. 
+
+- Por ejemplo, si tenemos datos que provienen de una distribución normal, entonces podemos utilizar un test de hipótesis para probar si la media de la distribución es igual a un valor específico. Lo cual se puede expresar como:
+
+    - $H_0$: $\mu = \mu_0$
+    - $H_1$: $\mu \neq \mu_0$
+
+    - Es lógico pensar que si $\overline{x}$ es muy diferente de $\mu_0$, entonces rechazamos la hipótesis nula. Pero, ¿qué tan diferente es muy diferente? ¿Cuál es el valor de $\overline{x}$ que nos hace rechazar la hipótesis nula?
+
+## Tipos Error y Poder de la Prueba {.smaller}
+
+- Cuando realizamos una prueba de hipótesis, podemos cometer dos tipos de errores:
+
+    - ***Error tipo I:*** Rechazar la hipótesis nula cuando es verdadera.
+    - ***Error tipo II:*** No rechazar la hipótesis nula cuando es falsa.
+
+- Se puede resumir en la siguiente tabla:
+$$
+\begin{array}{|c|c|c|}
+\hline
+& \text{No rechazar } H_0 & \text{Rechazar } H_0 \\
+\hline
+\text{Verdadera} & \text{Decisión correcta} & \text{Error tipo I} \\
+\hline
+\text{Falsa} & \text{Error tipo II} & \text{Decisión correcta} \\
+\hline
+\end{array}
+$$
+
+- Cada error tiene una probabilidad asociada, denotada por $\alpha$ y $\beta$ respectivamente. Es decir, $P(\text{Error tipo I}) = \alpha$ y $P(\text{Error tipo II}) = \beta$.
+
+- Estos errores están relacionados con el ***poder de la prueba***, el cual se define como $1 - \beta$. Es decir, el poder de la prueba es la probabilidad de rechazar la hipótesis nula cuando es falsa.
+
+##
+
+![](img/TypesOfError.png){width="100%" height=550px}
+
+## Nivel de Significancia {.smaller}
+
+- Siempre se quiere minimizar la probabilidad de cometer ambos errores. Pero, en la práctica, es imposible minimizar ambos errores al mismo tiempo. Por lo tanto, se debe elegir un nivel de significancia $\alpha$ que nos permita minimizar el error que consideremos más importante.
+
+- El error tipo I es el más comúnmente utilizado. Por lo tanto, se suele elegir un nivel de significancia de $\alpha = 0.05$.
+
+- El nivel de significancia se define como la probabilidad de cometer un error tipo I. Es decir, $\alpha = P(\text{Error tipo I})$. El cual se puede expresar como:
+
+    - $\alpha = P(\text{Rechazar } H_0 \mid H_0 \text{ es verdadera})$
+
+- En otras palabras, el nivel de significancia es la probabilidad de rechazar la hipótesis nula cuando es verdadera. Su importancia radica en que nos permite definir la región crítica.
+
+## Pruebas de Hipótesis de una o dos colas {.smaller}
+
+- Las pruebas de hipótesis se pueden clasificar en dos tipos:
+
+    - ***Pruebas de hipótesis de una cola:*** Se rechaza la hipótesis nula si el estadístico de prueba cae en una de las colas de la distribución.
+    - ***Pruebas de hipótesis de dos colas:*** Se rechaza la hipótesis nula si el estadístico de prueba cae en alguna de las colas de la distribución.
+
+- Cuando tenemos dos hipótesis alternativas, se suele utilizar una prueba de hipótesis de dos colas. Por ejemplo, si queremos probar que la media de una distribución es diferente de un valor específico, entonces las hipótesis serían:
+
+    - $H_0$: $\mu = \mu_0$
+    - $H_1$: $\mu \neq \mu_0$
+
+- Pero no se indica si la media es mayor o menor que $\mu_0$, lo cual define a una prueba de hipótesis de dos colas. Y el nivel de significancia se divide entre las dos colas.
+
+- Cada estadístico de prueba tiene una distribución asociada, que depende del tipo de variable que estemos analizando y el parámetro que estemos estimando.
+
+- Cuando especificamos en nuestra hipótesis alternativa si el parámetro es mayor o menor que un valor específico, entonces se utiliza una prueba de hipótesis de una cola. Si el valor del estadístico de prueba cae en la cola especificada, entonces rechazamos la hipótesis nula. Si decimos que es mayor, la región crítica cae en la cola derecha. Si decimos que es menor, la región crítica cae en la cola izquierda.
+
+## Valor $p$ {.smaller}
+
+- El valor $p$ es la probabilidad de obtener un estadístico de prueba igual o más extremo que el que se obtuvo, asumiendo que la hipótesis nula es verdadera.
+
+- Es decir, si el valor $p$ es muy pequeño, entonces es muy poco probable que la hipótesis nula sea verdadera. Por lo tanto, rechazamos la hipótesis nula.
+
+- Es un debate muy común en estadística, si se debe utilizar el valor $p$ para tomar decisiones. En general, se recomienda utilizar el valor $p$ como una medida de la evidencia en contra de la hipótesis nula. 
+
+- Esta interpretación proviene de la definición de valor $p$. Pero, en la práctica, se suele utilizar el valor $p$ para tomar decisiones (lo cual no es correcto).
+
+- Muchas veces se confunde el valor $p$ con la probabilidad de que la hipótesis nula sea verdadera.
+
+- Igual se toma como un valor de significancia, es decir, si el valor $p$ es menor que el nivel de significancia, entonces se rechaza la hipótesis nula. Pero, esto tampoco es correcto.
+
+- Lo más importante en prueba de hipótesis es ver que todo se basa en la hipótesis nula pero ***observar evidencia en contra de $H_0$ no es evidencia a favor de $H_1$***.
+
+## Prueba de Hipótesis de Normalidad {.smaller}
+
+::: {.nonincremental}
+- En la mayoría de las pruebas de hipótesis se va a suponer que los datos provienen de una distribución normal.
+
+- Una forma de verificar si nuestros datos son normales es gráficar el histograma de los datos y ver si tiene forma de campana. Otra forma es utilizar el test de ***Shapiro-Wilk***.
+
+- Este test de hipótesis se utiliza para probar si una muestra proviene de una distribución normal. Las hipótesis son:
+
+    - $H_0$: Los datos provienen de una distribución normal.
+    - $H_1$: Los datos no provienen de una distribución normal.
+
+- Se puede utilizar la función `shapiro.test()` para realizar el test de Shapiro-Wilk. El cual devuelve el estadístico de prueba y el valor $p$.
+
+- Usemos los datos de la flor Iris para probar si la longitud del sépalo de la especie *Iris setosa* proviene de una distribución normal.
+
+```{r}
+library(tidyverse)
+# Cargamos los datos
+data("iris")
+
+# Filtramos los datos de la especie Iris setosa
+iris_setosa <- iris %>% 
+    filter(Species == "setosa")
+
+# Realizamos el test de Shapiro-Wilk
+shapiro.test(iris_setosa$Sepal.Length)
+```
+
+- El valor $p$ es muy grande, por lo tanto, no tenemos evidencia para rechazar la hipótesis nula. Por lo tanto, podemos asumir que los datos provienen de una distribución normal.
+
+- Esta prueba es muy robusta a violaciones de normalidad. Por lo tanto, si el valor $p$ es muy pequeño, entonces podemos asumir que los datos no provienen de una distribución normal.
+
+:::
+
+## Prueba de medias de una población {.smaller}
+
+- La prueba de medias de una población se utiliza para probar si la media de una población es igual a un valor específico. Las hipótesis son:
+
+    - $H_0$: $\mu = \mu_0$
+    - $H_1$: $\mu \neq \mu_0$
+
+- Para realizar esta prueba, se utiliza el estadístico de prueba $t$ de Student. El cual se define como:
+$$
+t = \frac{\overline{x} - \mu_0}{s / \sqrt{n}}
+$$
+
+- Donde $\overline{x}$ es la media muestral, $s$ es la desviación estándar muestral y $n$ es el tamaño de la muestra.
+
+- En general se utiliza una prueba de hipótesis de dos colas. Por lo tanto, la región crítica se define como:
+$$
+t < -t_{\alpha/2, n-1} \ \ \text{o} \ \ t > t_{\alpha/2, n-1}
+$$ 
+
+- Donde $t_{\alpha/2, n-1}$ es el cuantil de orden $\alpha/2$ de la distribución $t$ de Student con $n-1$ grados de libertad.
+
+- La hipótesis nula se rechaza si el estadístico de prueba cae en la región crítica. Normalmente el valor de la hipótesis nula es cero, así $H_0: \mu = 0$. O si tenemos dos grupos de datos, entonces $H_0: \mu_1 - \mu_2 = 0$. Lo que significa que las medias de los dos grupos son iguales.
+
+## Ejemplo t de Student {.smaller}
+
+::: {.nonincremental}
+- Usemos los datos de la flor Iris para probar si la longitud del sépalo de la especie *Iris setosa* es igual a 5.5.
+
+```{r echo= TRUE}
+
+# Realizamos el test de Shapiro-Wilk
+shapiro.test(iris_setosa$Sepal.Length)
+
+# Realizamos la prueba de hipótesis
+t.test(iris_setosa$Sepal.Length, mu = 5.5)
+```
+
+- También podemos probar si la longitud del sépalo es distinta en la especie *Iris setosa* y *Iris versicolor*.
+
+```{r echo= TRUE}
+
+# Filtramos los datos de la especie Iris versicolor
+iris_versicolor <- iris %>% 
+    filter(Species == "versicolor")
+
+# Realizamos la prueba de hipótesis
+t.test(iris_setosa$Sepal.Length, iris_versicolor$Sepal.Length)
+```
+
+- De estas dos prubas, se puede concluir que existe evidencia para decir que la media de la longitud del sépalo de la especie *Iris setosa* es distinta a 5.5. Y que la media de la longitud del sépalo de la especie *Iris setosa* es distinta a la media de la longitud del sépalo de la especie *Iris versicolor*.
+
+:::
+
+## Prueba de medias de dos poblaciones {.smaller}
+
+::: {.nonincremental}
+- El estadístico t sigue una distribución $t$ de Student. Pero, cuando queremos probar si dos medias son iguales, se utiliza una distribución $t$ de Student con $n_1 + n_2 - 2$ grados de libertad.
+
+- Podemos gráficar la distribución $t$ de Student para cuando pensamos que la longitud del sépalo de la especie *Iris setosa* es igual a 5.5.
+
+```{r echo= TRUE}
+# Cargamos la librería
+library(ggplot2)
+library(ggdark)
+
+# Creamos una secuencia de valores
+x <- seq(-10, 10, 0.01)
+
+# Calculamos la densidad de la distribución t de Student
+y <- dt(x, df = 49)
+
+# Creamos un data frame
+df <- data.frame(x, y)
+
+# t value
+t_value <- (mean(iris_setosa$Sepal.Length) - 5.5) / (sd(iris_setosa$Sepal.Length) / sqrt(length(iris_setosa$Sepal.Length)))
+
+# Gráficamos la distribución
+ggplot(df, aes(x = x, y = y)) +
+    geom_line() +
+    geom_vline(xintercept = -qt(0.025, df = 49), linetype = "dashed") +
+    geom_vline(xintercept = qt(0.025, df = 49), linetype = "dashed") +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_area(data = subset(df, x < qt(0.025, df = 49)), fill = "pink", alpha = 0.5) +
+    geom_area(data = subset(df, x > qt(0.975, df = 49)), fill = "yellowgreen", alpha = 0.5) +
+    geom_area(data = subset(df, x > qt(0.025, df = 49) & x < qt(0.975, df = 49)), fill = "white", alpha = 0.5) +
+    geom_vline(xintercept = t_value, linetype = "dashed", color = "red") +
+    labs(x = "t", y = "Densidad") +
+    dark_theme_gray() + 
+    theme(legend.position = "none")
+```
+
+```{r echo= TRUE}
+# t value
+print(t_value)
+```
+
+:::
+
+## Prueba de medias de dos poblaciones {.smaller}
+
+::: {.nonincremental}
+
+- Ahora hagamos la misma prueba para la longitud del sépalo de la especie *Iris setosa* y *Iris versicolor* pero de forma direccional, es decir, si la longitud del sépalo de la especie *Iris setosa* es mayor que la longitud del sépalo de la especie *Iris versicolor*.
+
+```{r echo= TRUE}
+# Realizamos la prueba de hipótesis
+t.test(iris_setosa$Sepal.Length, iris_versicolor$Sepal.Length, alternative = "greater")
+```
+
+- En este caso, la región crítica se define como:
+$$
+t > t_{\alpha, n_1 + n_2 - 2}
+$$
+
+- Donde $t_{\alpha, n_1 + n_2 - 2}$ es el cuantil de orden $\alpha$ de la distribución $t$ de Student con $n_1 + n_2 - 2$ grados de libertad.
+
+- EL valor $p$ es $1$. Por lo tanto, no tenemos evidencia para rechazar la hipótesis nula. Es decir, no podemos decir que la longitud del sépalo de la especie *Iris setosa* es mayor que la longitud del sépalo de la especie *Iris versicolor*.
+
+- Gráfiquemos la distribución $t$ de Student para esta prueba.
+
+```{r echo= TRUE}
+# Creamos una secuencia de valores
+x <- seq(-10, 10, 0.01)
+
+# Calculamos la densidad de la distribución t de Student
+y <- dt(x, df = 98)
+
+# Creamos un data frame
+df <- data.frame(x, y)
+
+# t value
+t_value <- (mean(iris_setosa$Sepal.Length) - mean(iris_versicolor$Sepal.Length)) / (sqrt((sd(iris_setosa$Sepal.Length)^2 / length(iris_setosa$Sepal.Length)) + (sd(iris_versicolor$Sepal.Length)^2 / length(iris_versicolor$Sepal.Length))))
+
+# Gráficamos la distribución
+ggplot(df, aes(x = x, y = y)) +
+    geom_line() +
+    geom_vline(xintercept = qt(0.95, df = 98), linetype = "dashed") +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_area(data = subset(df, x > qt(0.95, df = 98)), fill = "yellowgreen", alpha = 0.5) +
+    geom_vline(xintercept = t_value, linetype = "dashed", color = "red") +
+    labs(x = "t", y = "Densidad") +
+    dark_theme_gray() + 
+    theme(legend.position = "none")
+```
+
+```{r echo= TRUE}
+# t value
+print(t_value)
+```
+:::
+
+## T de Student como una regresión lineal {.smaller}
+
+- La prueba de medias de dos poblaciones se puede expresar como una regresión lineal simple. Para ello, se define una variable indicadora $I$ que toma el valor de $1$ si la observación pertenece a la primera población y $0$ si pertenece a la segunda población.
+
+- Por ejemplo, si queremos probar si la longitud del sépalo de la especie *Iris setosa* es igual a 5.5, entonces la variable indicadora se define como:
+$$
+I = \begin{cases}
+1 & \text{si la observación pertenece a la especie Iris setosa} \\
+0 & \text{si la observación no pertenece a la especie Iris setosa}
+\end{cases}
+$$
+
+- En general, la variable indicadora se define como:
+$$
+I = \begin{cases}
+1 & \text{si la observación pertenece a la primera población} \\
+0 & \text{si la observación no pertenece a la primera población}
+\end{cases}
+$$
+
+- Por lo tanto, la prueba de medias de dos poblaciones se puede expresar como:
+$$
+y = \beta_0 + \beta_1 I + \epsilon
+$$
+
+- Donde $\beta_0$ es la media de la segunda población, $\beta_1$ es la diferencia entre las medias de las dos poblaciones y $\epsilon$ es el error.
+
+## T de Student como una regresión lineal {.smaller}
+
+::: {.nonincremental}
+- Si queremos probar si la longitud del sépalo de la especie *Iris setosa* es igual a $0$, entonces la regresión lineal se define como:
+$$
+H_0: \beta_0 = 0 \ \ \text{vs} \ \ H_1: \beta_0 \neq 0
+$$
+
+- Donde $\mu$ es la media de la primera población. Podemos ver en R que la función `t.test()` devuelve el mismo valor $t$ que la función `lm()`.
+
+```{r echo= TRUE}
+# Realizamos la prueba de hipótesis
+t.test(iris_setosa$Sepal.Length)
+
+# Realizamos la regresión lineal
+summary(lm(formula = iris_setosa$Sepal.Length ~ 1))
+```
+
+- Visualmente la hipótesis nula es equivalente a que la recta de regresión pase por el origen con pendiente cero y la hipótesis alternativa es equivalente a que la recta de regresión no pase por el origen.
+```{r echo= TRUE}
+# Cargamos la librería
+library(ggplot2)
+library(ggdark)
+
+# Gráficamos la distribución
+ggplot(iris_setosa, aes(y = Sepal.Length, x = 1)) +
+    geom_point() +
+    geom_hline(yintercept = mean(iris_setosa$Sepal.Length), linetype = "dashed", color = "yellowgreen", linewidth = 2) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "red", linewidth = 2) +
+    scale_y_continuous(limits = c(-1, 6)) +
+    labs(y = "Longitud del sépalo", x = "Variable indicadora") +
+    dark_theme_gray() + 
+    theme(legend.position = "none",
+        axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+:::
+
+## T de Student como una regresión lineal {.smaller}
+
+::: {.nonincremental}
+
+- Para probar si la longitud del sépalo de la especie *Iris setosa* es distinta a la longitud del sépalo de la especie *Iris versicolor*, entonces la regresión lineal se define como:
+$$
+H_0: \mu_1 - \mu_2 = 0 \ \ \text{vs} \ \ H_1: \mu_1 - \mu_2 \neq 0
+$$
+
+- Donde $\mu_1$ es la media de la primera población, $\mu_2$ es la media de la segunda población y $\beta_1$ es la diferencia entre las medias de las dos poblaciones. Podemos ver en R que la función `t.test()` devuelve el mismo valor $t$ que la función `lm()`.
+
+```{r echo= TRUE}
+# Realizamos la prueba de hipótesis
+t.test(iris_setosa$Sepal.Length, iris_versicolor$Sepal.Length)
+
+# Realizamos la regresión lineal
+dummy_variable <- c(rep(1, length(iris_setosa$Sepal.Length)), rep(0, length(iris_versicolor$Sepal.Length)))
+
+summary(lm(formula = c(iris_setosa$Sepal.Length, iris_versicolor$Sepal.Length) ~ dummy_variable))
+```
+
+- Vemos que el valor de la $t$ de Student para la pendiente es el mismo que el valor $t$ de Student de la prueba de hipótesis. Visualmente esto es:
+
+![](img/t_as_linear_regression.png){width="100%" height=550px}
+
+:::
+
+## T de Student variantes y supuestos {.smaller}
+
+- Los supuestos de la prueba de medias de dos poblaciones son:
+    - ***Normalidad:*** Los errores siguen una distribución normal.
+    - ***Homocedasticidad:*** La varianza de las dos poblaciones es aproximadamente la misma.
+    - ***Independencia:*** Los errores son independientes entre sí. 
+
+- Cuando no se cumple el supuesto de homocedasticidad se puede utilizar la prueba de Welch. La cual se define como:
+$$
+t = \frac{\overline{x}_1 - \overline{x}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
+$$
+
+- Y los grados de libertad se calculan como:
+$$
+\nu = \frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}{\frac{\left(\frac{s_1^2}{n_1}\right)^2}{n_1 - 1} + \frac{\left(\frac{s_2^2}{n_2}\right)^2}{n_2 - 1}}
+$$
+
+- En R, se puede utilizar la función `t.test()` con el argumento `var.equal = FALSE` para realizar la prueba de Welch.
+
+- Cuando nuestro datos son pareados, es decir, tenemos dos mediciones para cada observación (se mide la presión arterial de una persona antes y después de tomar un medicamento.), se puede utilizar la prueba de medias de dos poblaciones pareadas. La cual se define como:
+$$
+t = \frac{\overline{d}}{s_d / \sqrt{n}}
+$$
+
+- Donde $\overline{d}$ es la media de las diferencias, $s_d$ es la desviación estándar de las diferencias y $n$ es el número de observaciones. En R, se puede utilizar la función `t.test()` con el argumento `paired = TRUE` para realizar la prueba de medias de dos poblaciones pareadas.
