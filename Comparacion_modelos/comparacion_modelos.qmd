@@ -342,14 +342,6 @@ I = \begin{cases}
 \end{cases}
 $$
 
-- En general, la variable indicadora se define como:
-$$
-I = \begin{cases}
-1 & \text{si la observación pertenece a la primera población} \\
-0 & \text{si la observación no pertenece a la primera población}
-\end{cases}
-$$
-
 - Por lo tanto, la prueba de medias de dos poblaciones se puede expresar como:
 $$
 y = \beta_0 + \beta_1 I + \epsilon
@@ -421,6 +413,12 @@ summary(lm(formula = c(iris_setosa$Sepal.Length, iris_versicolor$Sepal.Length) ~
 
 ![](img/t_as_linear_regression.png){width="100%" height=550px}
 
+- Esto se puede comprobar al ver que el valor del intercepto es la media de la segunda población y el valor de la pendiente es la diferencia entre las medias de las dos poblaciones.
+```{r echo= TRUE}
+print(mean(iris_versicolor$Sepal.Length))
+print(mean(iris_setosa$Sepal.Length) - mean(iris_versicolor$Sepal.Length))
+```
+
 :::
 
 ## T de Student variantes y supuestos {.smaller}
@@ -448,3 +446,654 @@ t = \frac{\overline{d}}{s_d / \sqrt{n}}
 $$
 
 - Donde $\overline{d}$ es la media de las diferencias, $s_d$ es la desviación estándar de las diferencias y $n$ es el número de observaciones. En R, se puede utilizar la función `t.test()` con el argumento `paired = TRUE` para realizar la prueba de medias de dos poblaciones pareadas.
+
+## Prueba para medias de más de dos poblaciones {.smaller}
+
+- Cuando queremos probar si las medias de más de dos poblaciones son iguales, se utiliza el análisis de varianza (ANOVA). Las hipótesis son:
+
+    - $H_0$: $\mu_1 = \mu_2 = \cdots = \mu_k$
+    - $H_1$: Al menos una de las medias es distinta.
+
+- Para realizar esta prueba, se utiliza el estadístico de prueba $F$. El cual se define como:
+$$
+F = \frac{MS_{\text{entre}}}{MS_{\text{dentro}}}
+$$
+
+- Donde $MS_{\text{entre}}$ es la suma de cuadrados entre grupos dividida entre los grados de libertad entre grupos y $MS_{\text{dentro}}$ es la suma de cuadrados dentro de grupos dividida entre los grados de libertad dentro de grupos.
+
+- La ***suma de cuadrados entre grupos*** se define como:
+$$
+SS_{\text{entre}} = \sum_{i=1}^k n_i (\overline{x}_i - \overline{x})^2
+$$
+
+- Donde $n_i$ es el número de observaciones en el grupo $i$, $\overline{x}_i$ es la media del grupo $i$ y $\overline{x}$ es la media de todas las observaciones.
+
+- La ***suma de cuadrados dentro de grupos*** se define como:
+$$
+SS_{\text{dentro}} = \sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij} - \overline{x}_i)^2
+$$
+
+- Donde $x_{ij}$ es la observación $j$ del grupo $i$.
+
+- Los ***grados de libertad entre grupos*** se definen como:
+$$
+\text{Grados de libertad entre grupos} = k - 1
+$$
+
+- Donde $k$ es el número de grupos.
+
+- Los ***grados de libertad dentro de grupos*** se definen como:
+$$
+\text{Grados de libertad dentro de grupos} = n - k
+$$
+
+- Donde $n$ es el número total de observaciones.
+
+## ANOVA: Ejemplo {.smaller}
+
+::: {.nonincremental}
+- Usemos el dataset de la flor iris para probar si la longitud del sépalo es igual en las tres especies. Las hipótesis son:
+
+    - $H_0$: $\mu_{\text{setosa}} = \mu_{\text{versicolor}} = \mu_{\text{virginica}}$
+    - $H_1$: Al menos una de las medias es distinta.
+
+- Realicemos paso por paso la prueba de hipótesis.
+
+```{r echo= TRUE}
+library(tidyverse)
+# Cargamos los datos
+data("iris")
+
+# Realizamos el ANOVA
+mean_iris <- iris %>% 
+    group_by(Species) %>% 
+    summarise(mean = mean(Sepal.Length))
+
+# ANOVA
+big_mean <- mean(iris$Sepal.Length)
+
+ss_entre <- ((mean_iris - big_mean)^2) * table(iris$Species)
+ss_entre <- sum(ss_entre$mean)
+
+ss_dentro_vector <- c()
+for(i in 1:length(unique(iris$Species))){
+    ss_dentro_vector[i] <- sum((iris %>% filter(Species == unique(iris$Species)[i]) %>% pull(Sepal.Length) - mean_iris$mean[i])^2)
+}
+
+ss_dentro <- sum(ss_dentro_vector)
+
+grades_entre <- length(unique(iris$Species)) - 1
+grades_dentro <- length(iris$Sepal.Length) - length(unique(iris$Species))
+
+f_value <- (ss_entre / grades_entre) / (ss_dentro / grades_dentro)
+
+
+# imprime el valor de F
+print(f_value)
+
+# Calculamos el valor p
+p_value <- 1 - pf(f_value, grades_entre, grades_dentro)
+
+# imprime el valor de p
+print(p_value)
+
+# imprime los grados de libertad
+print(grades_entre)
+print(grades_dentro)
+
+## imprime suma de cuadrados entre grupos
+print(ss_entre)
+
+## imprime suma de cuadrados dentro de grupos
+print(ss_dentro)
+```
+
+- Podemos comprobar usando la función `aov()` que el valor de $F$ es el mismo.
+
+```{r echo= TRUE}
+# Realizamos el ANOVA
+summary(aov(Sepal.Length ~ Species, data = iris))
+```
+
+- Como antes visualizemos la distribución $F$ de Fisher.
+
+```{r echo= TRUE}
+# Cargamos la librería
+library(ggplot2)
+library(ggdark)
+
+# Creamos una secuencia de valores
+x <- seq(0, 120, 0.01)
+
+# Calculamos la densidad de la distribución F de Fisher
+y <- df(x, df1 = 2, df2 = 147)
+
+# Creamos un data frame
+df <- data.frame(x, y)
+
+# graficamos
+
+ggplot(df, aes(x = x, y = y)) +
+    geom_line() +
+    geom_vline(xintercept = qf(0.95, df1 = 2, df2 = 147), linetype = "dashed") +
+    geom_vline(xintercept = f_value, linetype = "dashed", color = "red") +
+    geom_area(data = subset(df, x > qf(0.95, df1 = 2, df2 = 147)), fill = "yellowgreen", alpha = 0.5) +
+    labs(x = "F", y = "Densidad") +
+    dark_theme_gray() + 
+    theme(legend.position = "none",
+    axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+::: 
+
+## ANOVA: Ejemplo {.smaller}
+
+::: {.nonincremental}
+
+- Ahora usemos los datos del dataset `PlantGrowth` de R que nos indica la cosecha de plantas bajo tres tratamientos diferentes. Las hipótesis son:
+
+    - $H_0$: $\mu_{\text{tratamiento 1}} = \mu_{\text{tratamiento 2}} = \mu_{\text{tratamiento 3}}$
+    - $H_1$: Al menos una de las medias es distinta.
+
+- Visualicemos los datos usando un boxplot y un digrama de violín.
+
+```{r echo= TRUE}
+# Cargamos los datos
+data("PlantGrowth")
+
+# Gráficamos los datos
+
+ggplot(PlantGrowth, aes(x = group, y = weight)) +
+    geom_violin(fill = "blue", color = "white") +
+    geom_boxplot(width = 0.3, fill = "white", outlier.color = "red", outlier.size = 4) +
+    stat_summary(fun.y=mean, geom="point", shape=20, size=14, color="pink", fill="pink") +
+    labs(x = "Tratamiento", y = "Peso") +
+    dark_theme_gray() + 
+    theme(legend.position = "none",
+    axis.text = element_text(size = 30),
+        axis.title = element_text(size = 40),
+        plot.title = element_text(size = 50))
+```
+
+- Realicemos paso por paso la prueba de hipótesis.
+    
+```{r echo= TRUE}
+# Cargamos los datos
+data("PlantGrowth")
+
+# Realizamos el ANOVA
+model <- aov(weight ~ group, data = PlantGrowth)
+
+# Imprimimos el resultado
+summary(model)
+```
+
+- Si asumimos un nivel de significa de $\alpha = 0.05$, entonces rechazamos la hipótesis nula. Es decir, existe evidencia para decir que al menos una de las medias es distinta.
+
+- EL ANOVA nos indica si existe evidencia para decir que al menos una de las medias es distinta. Pero, no nos indica cuáles medias son distintas. Para identificar el grupo, se suele utilizar la prueba post hoc de Tukey, pero en este caso tenemos un grupo control. Por lo tanto, se debe utilizar la prueba post hoc de Dunnett.
+
+- La ***prueba post hoc de Dunnett*** se utiliza para probar si las medias de los grupos de tratamiento son iguales a la media del grupo control. Las hipótesis son:
+
+    - $H_0$: $\mu_{\text{tratamiento}} = \mu_{\text{control}}$
+    - $H_1$: $\mu_{\text{tratamiento}} \neq \mu_{\text{control}}$
+
+- Implementemos la prueba en R
+```{r echo= TRUE}
+#install.packages("DescTools")
+library(DescTools)
+# Cargamos los datos
+data("PlantGrowth")
+
+# Realizamos la prueba post hoc de Dunnett
+DunnettTest(weight ~ group, data = PlantGrowth)
+```
+
+- El valor p nos indica que no hay evidencia para decir que las medias de los grupos de tratamiento son distintas a la media del grupo control. Pero el ANOVA indico que al menos una de las medias es distinta. 
+
+- Realicemos la prueba de Tukey para ver cuáles medias son distintas.
+```{r echo= TRUE}
+# Cargamos los datos
+data("PlantGrowth")
+
+# Realizamos la prueba post hoc de Tukey
+TukeyHSD(aov(weight ~ group, data = PlantGrowth))
+```
+
+- Lo que se observa es que la diferencia encontrada en el ANOVA se debe a que la media de los tratamientos 1 y 2 son distintas entre sí, más no a la media del grupo control.
+
+- El uso de pruebas post hoc se debe realizar con cuidado, ya que se aumenta la probabilidad de cometer un error tipo I. Por lo tanto, se debe utilizar un nivel de significancia más pequeño o correcciones de Bonferroni, para controlar el error tipo I.
+:::
+
+## ANOVA como una regresión lineal {.smaller}
+
+::: {.nonincremental}
+- El ANOVA se puede expresar como una regresión lineal múltiple. Para ello, se define una variable indicadora $I_1, I_2, \ldots, I_k$ que toma el valor de $1$ si la observación pertenece al grupo $i$ y $0$ si pertenece a otro grupo.
+
+- En el caso de nuestro dataset `PlantGrowth`, la variable indicadora se define como:
+$$
+I_1 = \begin{cases}
+1 & \text{si la observación pertenece al grupo i} \\
+0 & \text{si la observación no pertenece al grupo i}
+\end{cases}
+$$ 
+
+- El modelo de regresión lineal múltiple se define como:
+$$
+y = \beta_0 + \beta_1 I_1 + \beta_2 I_2 + \cdots + \beta_k I_k + \epsilon
+$$
+
+- Si la observación pertenece al grupo control entonces $I_1 = I_2 = \cdots = I_k = 0$. Por lo tanto, el modelo se reduce a:
+$$
+y = \beta_0 + \epsilon
+$$
+
+- Si la observación pertenece al primer tratamiento entonces $I_1 = 1$ y $I_2 = \cdots = I_k = 0$. Por lo tanto, el modelo se reduce a:
+$$
+y = \beta_0 + \beta_1 + \epsilon
+$$
+
+- Visto de esta forma, cada $\beta_i$ es la media del grupo $i$ menos la media del grupo control. Por lo tanto, la prueba de hipótesis se puede expresar como:
+$$
+\begin{align*}
+&H_0: \beta_1 = \beta_2 = \cdots = \beta_k = 0 \\ 
+&\text{vs} \\
+&H_1: \text{Al menos uno de los } \beta_i \text{ es distinto de cero}
+\end{align*}
+$$
+
+- Visualmente esto es:
+
+![](img/ANOVA_as_lm.png){width="100%" height=550px}
+
+- Recordemos lo que el ANOVA nos dio como resultado.
+```{r echo= TRUE}
+# Cargamos los datos
+data("PlantGrowth")
+
+# Realizamos el ANOVA
+model <- aov(weight ~ group, data = PlantGrowth)
+summary(model)
+```
+
+- Ahora usemos el modelo de regresión lineal múltiple para obtener los valores de $\beta_i$.
+```{r echo= TRUE}
+# Cargamos los datos
+data("PlantGrowth")
+
+# Realizamos el ANOVA
+model <- lm(weight ~ group, data = PlantGrowth)
+summary(model)
+```
+
+- Vemos que nos da los mismos valores de F y las betas son las medias de los grupos menos la media del grupo control. Se ve cuando usamos la prueba post hoc de Dunnett.
+```{r echo= TRUE}
+#install.packages("DescTools")
+library(DescTools)
+# Cargamos los datos
+data("PlantGrowth")
+
+# Realizamos la prueba post hoc de Dunnett
+DunnettTest(weight ~ group, data = PlantGrowth)
+```
+:::
+
+- Y el intercepto es la media del grupo control.
+```{r echo= TRUE}
+print(model$coefficients[1])
+print(mean(PlantGrowth$weight[PlantGrowth$group == "ctrl"]))
+```
+
+## Supuestos del ANOVA y variantes {.smaller}
+
+- Los supuestos del ANOVA son:
+    - ***Normalidad:*** Los errores siguen una distribución normal.
+    - ***Homocedasticidad:*** La varianza de los grupos es aproximadamente la misma.
+    - ***Independencia:*** Los errores son independientes entre sí.
+    - ***Independencia:*** Las observaciones de cada grupo son independientes entre sí y dentro de cada grupo.
+    - ***Escala de medición:*** Las variables deben ser de escala de intervalo o razón.
+
+- Cuando no se cumple el supuesto de homocedasticidad se puede utilizar el ANOVA de Welch, pero si los datos son desbalanceados, es decir, el número de observaciones en cada grupo es distinto, entonces se debe utilizar el ANOVA clásico.
+
+- Cuando no se cumple el supuesto de normalidad se puede utilizar el ANOVA de Kruskal-Wallis o el ANOVA de Friedman en el caso de datos pareados.
+
+- Cuando se viola el supuesto de independencia se puede utilizar el ANOVA datos pareados, o también conocido como ANOVA de medidas repetidas.
+
+## Prueba Xi-cuadrada {.smaller}
+
+- La prueba Xi-cuadrada se utiliza para probar si la frecuencia de una variable categórica es igual a una distribución específica. Las hipótesis son:
+
+    - $H_0$: No hay asociación entre las variables (son independientes).
+    - $H_1$: Existe asociación entre las variables (no son independientes).
+
+- Para realizar esta prueba, se utiliza el estadístico de prueba $\chi^2$. El cual se define como:
+$$
+\chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
+$$
+
+- Donde $O_i$ es la frecuencia observada del grupo $i$ y $E_i$ es la frecuencia esperada del grupo $i$. El estadístico de la prueba sigue una distribución $\chi^2$ con $k-1$ grados de libertad.
+
+- La ***frecuencia esperada*** se define como:
+$$
+E_i = r_i \times c_i
+$$
+
+- Donde $r_i$ es la frecuencia relativa del grupo $i$ y $c_i$ es la frecuencia relativa de la categoría $i$.
+
+- Los ***grados de libertad*** se definen como:
+$$
+\text{Grados de libertad} = (r - 1) \times (c - 1)
+$$
+
+- Donde $r$ es el número de grupos y $c$ es el número de categorías.
+
+## Prueba Xi-cuadrada: Ejemplo {.smaller}
+
+::: {.nonincremental}
+
+- Si tenemos la siguiente tabla de frecuencias observadas:
+$$
+\begin{array}{|c|c|c|c|c|}
+\hline
+\text{Categoría} & \text{Grupo 1} & \text{Grupo 2} & \text{Grupo 3} & \text{Grupo 4} \\ \hline
+\text{Categoría 1} & 10 & 20 & 30 & 40 \\ \hline
+\text{Categoría 2} & 20 & 30 & 40 & 50 \\ \hline
+\text{Categoría 3} & 30 & 40 & 50 & 60 \\ \hline
+\text{Categoría 4} & 40 & 50 & 60 & 70 \\ \hline
+\end{array}
+$$
+
+- Entonces, la frecuencia esperada para la celda 1, 1 es:
+$$
+\begin{align*}
+E_{1,1} &= r_1 \times c_1 = \\
+&= \frac{100 \times 100}{400} \\
+&= 25
+\end{align*}
+$$
+
+- Realicemos paso por paso la prueba de hipótesis.
+
+```{r echo= TRUE}
+# Datos
+rows <- rep(c(10, 20, 30, 40), 4)
+data <- matrix(rows, ncol = 4, byrow = T)
+
+# Realizamos el test de hipótesis
+chisq.test(data)
+```
+
+- Podemos ver que el valor de $\chi^2$ es $1$. Por lo tanto, no tenemos evidencia para rechazar la hipótesis nula. Es decir, no podemos decir que existe asociación entre las variables.
+:::
+
+## Prueba Xi-cuadrada: Ejemplo {.smaller}
+
+::: {.nonincremental}
+- Usemos los datos de `mtcars` para ver si el número de cilindros es independiente del número de marchas. Las hipótesis son:
+
+    - $H_0$: No hay asociación entre las variables (son independientes).
+    - $H_1$: Existe asociación entre las variables (no son independientes).
+
+- Realicemos paso por paso la prueba de hipótesis.
+```{r echo= TRUE}
+# Realizamos el test de hipótesis
+chisq.test(table(mtcars$cyl, mtcars$gear), simulate.p.value = TRUE)
+```
+
+- Debido a que el valor $p$ es muy pequeño, rechazamos la hipótesis nula. Es decir, existe evidencia para decir que el número de cilindros no es independiente del número de marchas.
+
+- Hay pocos datos, por lo cual es mejor utilizar la prueba exacta de Fisher.
+```{r echo= TRUE}
+# Realizamos el test de hipótesis
+fisher.test(table(mtcars$cyl, mtcars$gear))
+```
+
+- El valor $p$ es muy pequeño, por lo tanto, rechazamos la hipótesis nula. Es decir, existe evidencia para decir que el número de cilindros no es independiente del número de marchas.
+:::
+
+##
+
+<center>
+![](img/bayes_priors_meme.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_1.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_2.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_3.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_4.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_5.jpeg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_6.jpeg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_7.jpeg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_8.jpeg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_9.jpeg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_10.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_11.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_12.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_13.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_14.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_15.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_16.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_17.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_18.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_19.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_20.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_21.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/Statistician_memes_10.png){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_22.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_23.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_24.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_25.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_26.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_27.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_28.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_29.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_30.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_31.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_32.jpg){width="100%" height=550px}
+</center>
+
+##
+
+<center>
+![](img/meme_33.jpg){width="100%" height=550px}
+</center>
+
+## Gracias! {.smaller}
+
+<center>
+En el rincón cuántico, donde la probabilidad danza,
+
+Se teje un poema, con cifras que la razón alcanza.
+
+En el suave vals de la normalidad, los datos se abrazan,
+
+Mientras la media y la desviación en armonía traspasan.
+
+Cada gráfico es un lienzo, donde la dispersión es arte,
+
+En la paleta de la estadística, la variabilidad parte.
+
+Bajo el cielo estrellado de la regresión, caminamos,
+
+Entre los intervalos de confianza, donde los secretos hallamos.
+
+La simetría de la campana, una elegante poesía,
+
+Mientras la curva se despliega, revelando la sinfonía.
+
+En el telar de la correlación, entrelazamos los hilos,
+
+Cada coeficiente, una melodía que nuestros sentidos cabillos.
+
+Y así, en este éxtasis numérico, la estadística nos guía,
+
+Cantamos con datos, danzamos con la alegría.
+
+Al concluir este verso, agradecemos la estadística que nos une,
+
+En este poema matemático, donde la lógica y la lírica se perfuman.
+</center>
+> ChatGPT-3
