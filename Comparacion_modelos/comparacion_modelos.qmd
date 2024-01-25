@@ -1097,3 +1097,11 @@ Al concluir este verso, agradecemos la estadística que nos une,
 En este poema matemático, donde la lógica y la lírica se perfuman.
 </center>
 > ChatGPT-3
+
+## Código
+
+Todo el código de las presentaciones se encuentra en el siguiente repositorio de GitHub:
+
+<center>
+[https://github.com/Christian-F-Badillo/Temas_Selectos_en_Estadistica](https://github.com/Christian-F-Badillo/Temas_Selectos_en_Estadistica)
+</center>
